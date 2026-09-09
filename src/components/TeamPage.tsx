@@ -51,7 +51,7 @@ export function TeamPage({ division }: { division: Division }) {
       )}
 
       <h3>Schedule</h3>
-      <ScheduleList games={teamGames} division={division} startOpen />
+      <ScheduleList games={teamGames} division={division} startOpen perspectiveTeam={teamName} />
     </section>
   )
 }

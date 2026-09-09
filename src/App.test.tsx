@@ -70,6 +70,32 @@ const SAMPLE: RankingsData = {
           homeGoals: 8,
           played: true,
         },
+        {
+          gameId: '2',
+          date: 'Sat Sep 5',
+          day: 'Sat',
+          time: '9:00 AM',
+          rink: 'San Jose',
+          type: 'Preseason',
+          away: 'Santa Clara Blackhawks 10-2',
+          home: 'Fresno Jr Monsters 10-1',
+          awayGoals: 5,
+          homeGoals: 1,
+          played: true,
+        },
+        {
+          gameId: '3',
+          date: 'Sun Sep 6',
+          day: 'Sun',
+          time: '11:00 AM',
+          rink: 'Fresno',
+          type: 'Preseason',
+          away: 'Fresno Jr Monsters 10-1',
+          home: 'Lake Tahoe Grizzlies 10-2',
+          awayGoals: 3,
+          homeGoals: 3,
+          played: true,
+        },
       ],
     },
   ],
@@ -127,5 +153,44 @@ describe('App', () => {
 
     const scheduleLinks = screen.getAllByRole('link', { name: 'Vacaville Jets 10-2' })
     expect(scheduleLinks.length).toBeGreaterThan(0)
+  })
+
+  it("highlights the viewed team and color-codes each row by that team's result", async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
+    await user.click(teamLink)
+    await screen.findByRole('heading', { name: 'Fresno Jr Monsters 10-1' })
+
+    const winRow = screen.getByText('Fri Sep 4').closest('tr')
+    const loseRow = screen.getByText('Sat Sep 5').closest('tr')
+    const tieRow = screen.getByText('Sun Sep 6').closest('tr')
+
+    expect(winRow).toHaveClass('schedule-table__row--win')
+    expect(loseRow).toHaveClass('schedule-table__row--lose')
+    expect(tieRow).toHaveClass('schedule-table__row--tie')
+
+    // Fresno's own name is highlighted in every row it appears in, regardless
+    // of whether it's listed as home or away.
+    const fresnoCells = winRow!.querySelectorAll('.schedule-table__me')
+    expect(fresnoCells.length).toBe(1)
+  })
+
+  it('filters a team schedule by result', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
+    await user.click(teamLink)
+    await screen.findByRole('heading', { name: 'Fresno Jr Monsters 10-1' })
+
+    expect(screen.getByText('Fri Sep 4')).toBeInTheDocument()
+    expect(screen.getByText('Sat Sep 5')).toBeInTheDocument()
+    expect(screen.getByText('Sun Sep 6')).toBeInTheDocument()
+
+    await user.selectOptions(screen.getByLabelText(/result/i), 'win')
+
+    expect(screen.getByText('Fri Sep 4')).toBeInTheDocument()
+    expect(screen.queryByText('Sat Sep 5')).not.toBeInTheDocument()
+    expect(screen.queryByText('Sun Sep 6')).not.toBeInTheDocument()
   })
 })
