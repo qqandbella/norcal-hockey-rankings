@@ -45,6 +45,10 @@ files under a different division entirely (e.g. a B team's game against a BB
 opponent gets filed under BB, not B), or move levels mid-season. Each game
 row is tagged with the division it's actually filed under, and links from
 that row use that game's own division rather than the team's home one.
+Likewise, a team rated in more than one division (a cross-tested team, like
+the real San Mateo Black Stars 10-2 case) gets one rating block per division
+it's actually rated in, not just whichever one the page was reached from —
+each labeled with, and linking to, its own division.
 
 See `scripts/ratings.py` for the implementation and `scripts/test_ratings.py`
 for a regression fixture built from real results.

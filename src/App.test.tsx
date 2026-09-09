@@ -53,7 +53,18 @@ const SAMPLE: RankingsData = {
       ageLabel: '10U',
       levelLabel: 'B',
       ratingsByType: {
-        All: { teams: [FRESNO, VACAVILLE], unratedTeams: [] },
+        All: {
+          teams: [
+            FRESNO,
+            VACAVILLE,
+            // Also rated in BB below -- a dual-rated (cross-tested) team,
+            // like the real San Mateo Black Stars 10-2 case. A fresh name
+            // (not reused from the BB fixture teams below) so this doesn't
+            // collide with the unrelated cross-division-prediction tests.
+            team({ name: 'Oakland Bears 10-2', rating: -1.0, rank: 3, tier: 'low', gamesPlayed: 1, losses: 1 }),
+          ],
+          unratedTeams: [],
+        },
         Preseason: { teams: [FRESNO, VACAVILLE], unratedTeams: [] },
       },
       teamLinks: {
@@ -61,6 +72,21 @@ const SAMPLE: RankingsData = {
           'https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1',
       },
       games: [
+        {
+          gameId: '6',
+          date: 'Sat Sep 5',
+          day: 'Sat',
+          time: '10:00 AM',
+          rink: 'San Jose',
+          type: 'Preseason',
+          away: 'Oakland Bears 10-2',
+          home: 'Vacaville Jets 10-2',
+          awayGoals: 1,
+          homeGoals: 4,
+          played: true,
+          ageLabel: '10U',
+          levelLabel: 'B',
+        },
         {
           gameId: '1',
           date: 'Fri Sep 4',
@@ -117,6 +143,7 @@ const SAMPLE: RankingsData = {
           teams: [
             team({ name: 'Capital Thunder 10-1', rating: 1.5, rank: 1, tier: 'top', gamesPlayed: 1, wins: 1 }),
             team({ name: 'Lake Tahoe Grizzlies 10-1', rating: -1.5, rank: 2, tier: 'low', gamesPlayed: 1, losses: 1 }),
+            team({ name: 'Oakland Bears 10-2', rating: -2.0, rank: 3, tier: 'low', gamesPlayed: 1, losses: 1 }),
           ],
           unratedTeams: ['Santa Clara Blackhawks 10-1', 'Fresno Jr Monsters 10-1'],
         },
@@ -390,5 +417,26 @@ describe('App', () => {
       'href',
       '#/predict/10U?a=Santa%20Clara%20Blackhawks%2010-1&b=Fresno%20Jr%20Monsters%2010-1',
     )
+  })
+
+  it('shows a rating block per division for a team rated in more than one, each linking to its own division', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const teamLink = await screen.findByRole('link', { name: 'Oakland Bears 10-2' })
+    await user.click(teamLink)
+    await screen.findByRole('heading', { name: /Oakland Bears 10-2/ })
+
+    // One "Rating (...)" block per division this team is actually rated in.
+    const ratingHeadings = screen.getAllByText(/^Rating \(/)
+    expect(ratingHeadings).toHaveLength(2)
+
+    const bLink = screen.getByRole('link', { name: '10U B' })
+    expect(bLink).toHaveAttribute('href', '#/10U/B')
+    const bbLink = screen.getByRole('link', { name: '10U BB' })
+    expect(bbLink).toHaveAttribute('href', '#/10U/BB')
+
+    // No separate "<- rankings" back-link anymore -- navigation lives in
+    // the rating block labels themselves.
+    expect(screen.queryByText(/rankings$/)).not.toBeInTheDocument()
   })
 })
