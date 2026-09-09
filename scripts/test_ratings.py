@@ -1,4 +1,13 @@
-from ratings import Game, GOAL_CAP, TeamRating, W_PRIOR, compute_ratings, compute_team_stats, compute_tier_offsets
+from ratings import (
+    Game,
+    GOAL_CAP,
+    TeamRating,
+    W_PRIOR,
+    _assign_tiers,
+    compute_ratings,
+    compute_team_stats,
+    compute_tier_offsets,
+)
 
 # Real 10U B preseason results (Labor Day weekend 2026), used as a regression
 # fixture. Home/away order matches how they were originally recorded; only
@@ -232,3 +241,60 @@ def test_tier_offsets_missing_tier_handled_gracefully():
     offsets = compute_tier_offsets(within, bridge_games=[])
     assert "AA" not in offsets
     assert offsets["B"]["offset"] == 0.0
+
+
+def test_assign_tiers_keeps_a_tight_cluster_together_across_a_rank_boundary():
+    # 9 teams: exact-rank-thirds would cut top=1-3/mid=4-6/low=7-9, splitting
+    # the tightly-clustered 6th (0.1) and 7th (0.0) place teams into
+    # different tiers despite a near-zero gap between them, while the real,
+    # large gaps sit elsewhere (index 2->3 and index 7->8). This is exactly
+    # the "Jets1" case: a team just past an arbitrary rank cutoff shouldn't
+    # be labeled a full tier below a team it's rated almost identically to.
+    ratings_desc = [10, 9, 8, 2, 1, 0.1, 0.0, -0.1, -10]
+    tiers = _assign_tiers(ratings_desc)
+    assert tiers == ["top", "top", "top", "mid", "mid", "mid", "mid", "mid", "low"]
+
+
+def test_assign_tiers_too_few_teams_falls_back_to_mid():
+    assert _assign_tiers([5.0, -5.0]) == ["mid", "mid"]
+    assert _assign_tiers([1.0]) == ["mid"]
+    assert _assign_tiers([]) == []
+
+
+def test_variance_aware_shrinkage_trusts_consistent_records_more():
+    # C beats three different (otherwise-neutral, single-game) opponents by
+    # the same margin each time -- a consistent, low-variance profile.
+    consistent_games = [
+        Game("C", "O1", 6, 0),
+        Game("C", "O2", 6, 0),
+        Game("C", "O3", 6, 0),
+    ]
+    # S has a similar overall win record but a scattered, high-variance
+    # profile: one big win, one narrow loss, one big win.
+    scattered_games = [
+        Game("S", "O4", 7, 0),
+        Game("O5", "S", 1, 0),  # S loses by 1
+        Game("S", "O6", 7, 0),
+    ]
+    consistent = {r.name: r.rating for r in compute_ratings(consistent_games)}
+    scattered = {r.name: r.rating for r in compute_ratings(scattered_games)}
+    # Consistency earns C less shrinkage -- a more confident (larger
+    # magnitude) rating than S's scattered record, even though S's raw
+    # average margin is comparable or better.
+    assert abs(consistent["C"]) > abs(scattered["S"])
+
+
+def test_variance_aware_shrinkage_bounded_by_min_max_ratio():
+    # A single-game team can't have its consistency measured at all --
+    # confirm it falls back to the unadjusted base shrinkage rather than
+    # blowing up from a degenerate (zero-sample) variance estimate.
+    single_game = compute_ratings([Game("X", "Y", 7, 0)])
+    x = next(r for r in single_game if r.name == "X")
+    # Fixed point of the mutual 2-team iteration (X and Y only reference
+    # each other): rating[X] = (-rating[X] + 7) / (1 + SHRINKAGE_K), solved
+    # for rating[X] -- the plain (non-adaptive) shrinkage formula, since a
+    # single game gives no basis to estimate consistency.
+    from ratings import SHRINKAGE_K
+
+    expected = round(7 / (2 + SHRINKAGE_K), 3)
+    assert x.rating == expected

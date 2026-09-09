@@ -1,7 +1,7 @@
 """Capped, shrinkage-regularized iterative rating for a set of games.
 
 Same family as MyHockeyRankings' iterative averaging: each team's rating is
-the average of (opponent rating + goal differential) across its games. Two
+the average of (opponent rating + goal differential) across its games. Three
 modifications on top of the plain average:
 
 - Goal differential is capped at +/-GOAL_CAP before being used. Beyond that
@@ -11,6 +11,15 @@ modifications on top of the plain average:
   to how few games it has played. With ~3 games per team this matters a lot:
   an unregularized average lets one blowout swing a season-long-looking
   rating from three data points.
+- That shrinkage is *variance-aware*, not uniform: a team whose games all
+  imply roughly the same strength (e.g. capped wins over several
+  differently-weak opponents) is shrunk less than a team with the same game
+  count but a scattered, inconsistent record. A fixed K=3 for both
+  under-states a team whose entire profile is consistently extreme -- e.g. a
+  team that beats everyone by the capped margin has *more* real evidence of
+  being dominant than the raw capped numbers alone can show, and uniform
+  shrinkage was suppressing that evidence identically to a team with a messy
+  1-blowout-win/1-blowout-loss/1-close-game record.
 
 This is a Jacobi iteration solving a ridge-regularized Massey/least-squares
 rating system, not a heuristic average.
@@ -18,12 +27,24 @@ rating system, not a heuristic average.
 
 from __future__ import annotations
 
+import statistics
 from dataclasses import dataclass
 
 GOAL_CAP = 7
 SHRINKAGE_K = 3.0
 MAX_ITERS = 300
 CONVERGENCE_EPS = 1e-9
+
+# Variance of a uniform margin over [-GOAL_CAP, GOAL_CAP] -- the reference
+# point for "typical, uninformative" game-to-game spread. A team whose own
+# implied-value variance sits well below this is unusually consistent
+# (trust it more, shrink less); well above it is unusually scattered (trust
+# it less, shrink more). Bounds picked via scripts/backtest.py grid search
+# (walk-forward MAE/directional-accuracy), not guessed -- (0.1, 8.0) beat
+# tighter bounds like (0.3, 3.0) and looser ones like (0.05, 10.0) both.
+MIN_SHRINKAGE_RATIO = 0.1
+MAX_SHRINKAGE_RATIO = 8.0
+REFERENCE_VARIANCE = (2 * GOAL_CAP) ** 2 / 12
 
 # Top to bottom. Mirrors src/lib/grouping.ts's LEVEL_ORDER -- keep both in
 # sync if this list changes.
@@ -80,6 +101,28 @@ def capped_margin(home_goals: int, away_goals: int) -> int:
     return max(-GOAL_CAP, min(GOAL_CAP, margin))
 
 
+def _assign_tiers(ratings_desc: list[float]) -> list[str]:
+    """top/mid/low based on the two largest natural gaps in the sorted
+    ratings, not a fixed exact-rank-thirds split. A team just past an
+    arbitrary rank cutoff but barely different in rating from the tier
+    above it (e.g. a tightly-clustered mid-pack) shouldn't be labeled a
+    full tier lower than a team it's rated almost identically to."""
+    n = len(ratings_desc)
+    if n <= 2:
+        return ["mid"] * n
+    gaps = [(ratings_desc[i] - ratings_desc[i + 1], i) for i in range(n - 1)]
+    cut_after = sorted(i for _, i in sorted(gaps, key=lambda g: -g[0])[:2])
+    tier_names = ["top", "mid", "low"]
+    tiers = []
+    tier_idx = 0
+    for i in range(n):
+        tiers.append(tier_names[tier_idx])
+        if cut_after and i == cut_after[0]:
+            tier_idx += 1
+            cut_after.pop(0)
+    return tiers
+
+
 def compute_ratings(games: list[Game], k: float = SHRINKAGE_K) -> list[TeamRating]:
     """Compute centered, shrinkage-regularized ratings for all teams in `games`."""
     teams = sorted({g.home for g in games} | {g.away for g in games})
@@ -99,8 +142,15 @@ def compute_ratings(games: list[Game], k: float = SHRINKAGE_K) -> list[TeamRatin
         for t in teams:
             opp_games = adjacency[t]
             n = len(opp_games)
-            total = sum(rating[opp] + margin for opp, margin in opp_games)
-            new_rating[t] = total / (n + k)
+            implied = [rating[opp] + margin for opp, margin in opp_games]
+            if n >= 2:
+                ratio = statistics.pvariance(implied) / REFERENCE_VARIANCE
+                ratio = max(MIN_SHRINKAGE_RATIO, min(MAX_SHRINKAGE_RATIO, ratio))
+                k_t = k * ratio
+            else:
+                # Can't estimate consistency from a single game -- no adjustment.
+                k_t = k
+            new_rating[t] = sum(implied) / (n + k_t)
             max_delta = max(max_delta, abs(new_rating[t] - rating[t]))
         rating = new_rating
         if max_delta < CONVERGENCE_EPS:
@@ -110,16 +160,11 @@ def compute_ratings(games: list[Game], k: float = SHRINKAGE_K) -> list[TeamRatin
     centered = {t: v - mean for t, v in rating.items()}
 
     ordered = sorted(teams, key=lambda t: -centered[t])
-    n_teams = len(ordered)
+    tiers = _assign_tiers([centered[t] for t in ordered])
     results: list[TeamRating] = []
     for i, t in enumerate(ordered):
         rank = i + 1
-        if rank <= max(1, round(n_teams / 3)):
-            tier = "top"
-        elif rank <= max(1, round(2 * n_teams / 3)):
-            tier = "mid"
-        else:
-            tier = "low"
+        tier = tiers[i]
         results.append(
             TeamRating(
                 name=t,

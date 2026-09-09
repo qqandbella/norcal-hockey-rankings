@@ -20,6 +20,22 @@ family as MyHockeyRankings:
 - A ridge shrinkage term pulls a team's rating toward the division average in
   proportion to how few games it has played, so a single lopsided result with
   a 2-3 game sample doesn't swing the rating as if it were a full season.
+- That shrinkage is **variance-aware**, not uniform: a team whose games all
+  point the same direction (e.g. capped wins over several different
+  opponents) is shrunk less than a team with the same game count but a
+  scattered, inconsistent record (one blowout win, one blowout loss, one
+  close game) — a fixed shrinkage constant treated both identically, which
+  understated genuinely dominant/weak teams and overstated teams whose one
+  bad (or good) result was really just an outlier game against an unusually
+  strong (or weak) opponent. Bounds (`MIN_SHRINKAGE_RATIO`/`MAX_SHRINKAGE_RATIO`
+  in `scripts/ratings.py`) picked via `scripts/backtest.py` grid search, not
+  guessed — real, validated improvement (MAE 3.84→3.45 goals, directional
+  accuracy 68%→72% on live data), not just a better-looking spread.
+- **Tier labels (top/mid/low) come from the two largest natural gaps** in a
+  division's sorted ratings, not an exact one-third-of-teams-each rank split
+  — a team just past an arbitrary rank cutoff, but barely different in
+  rating from the tier above it, no longer gets mislabeled a full tier down
+  from a near-identical peer.
 
 Traditional counting stats (W-L-T, points, GF/GA/GD) are also shown alongside
 the rating — those use standard hockey scoring (win=2, tie=1, loss=0) and the
