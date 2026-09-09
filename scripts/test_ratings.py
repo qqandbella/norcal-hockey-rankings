@@ -1,4 +1,4 @@
-from ratings import Game, GOAL_CAP, compute_components, compute_ratings, compute_team_stats
+from ratings import Game, GOAL_CAP, TeamRating, W_PRIOR, compute_ratings, compute_team_stats, compute_tier_offsets
 
 # Real 10U B preseason results (Labor Day weekend 2026), used as a regression
 # fixture. Home/away order matches how they were originally recorded; only
@@ -108,27 +108,111 @@ def test_team_stats_uncapped_unlike_rating():
     assert stats["A"].goal_diff == 20
 
 
-def test_components_same_division_share_one_component():
-    components = compute_components(TEN_U_B_GAMES)
-    assert len(set(components.values())) == 1
+def _b_bb_setup():
+    """A + B (native only, no bridges) division, ratings picked so the
+    prior gap (B's top vs BB's bottom) is a clean, known number."""
+    b_ratings = [
+        TeamRating("B_top", rating=5.0, games_played=3),
+        TeamRating("B_mid", rating=0.0, games_played=3),
+        TeamRating("B_bottom", rating=-5.0, games_played=3),
+    ]
+    bb_ratings = [
+        TeamRating("BB_top", rating=6.0, games_played=3),
+        TeamRating("BB_bottom", rating=-4.0, games_played=3),
+    ]
+    return {"B": b_ratings, "BB": bb_ratings}
 
 
-def test_components_bridge_game_merges_two_divisions():
-    division_b = [Game("B1", "B2", 5, 2), Game("B2", "B3", 3, 1)]
-    division_bb = [Game("BB1", "BB2", 4, 1), Game("BB2", "BB3", 2, 2)]
-    # B1 also plays a cross-division test game against BB1 -- the bridge.
-    bridge = [Game("B1", "BB1", 6, 3)]
+def test_tier_offsets_prior_only_when_no_bridge_evidence():
+    within = _b_bb_setup()
+    offsets = compute_tier_offsets(within, bridge_games=[])
+    assert offsets["B"]["offset"] == 0.0
+    assert offsets["B"]["evidenceCount"] == 0
+    # prior_gap = max(B) - min(BB) = 5.0 - (-4.0) = 9.0
+    assert offsets["BB"]["offset"] == 9.0
+    assert offsets["BB"]["evidenceCount"] == 0
+    assert offsets["BB"]["bridgeGames"] == []
+    # The prior anchor names exactly which two teams justify the default gap.
+    assert offsets["BB"]["priorAnchor"] == {
+        "lowTeam": "B_top",
+        "lowRating": 5.0,
+        "highTeam": "BB_bottom",
+        "highRating": -4.0,
+        "gap": 9.0,
+    }
 
-    without_bridge = compute_components(division_b + division_bb)
-    assert without_bridge["B1"] != without_bridge["BB1"]
 
-    with_bridge = compute_components(division_b + division_bb + bridge)
-    assert with_bridge["B1"] == with_bridge["BB1"] == with_bridge["B3"] == with_bridge["BB3"]
+def test_tier_offsets_one_bridge_game_nudges_toward_its_implied_gap():
+    within = _b_bb_setup()
+    # B_top (native B, rating 5.0 there) plays one game filed under BB,
+    # against BB_bottom (native BB, rating -4.0) -- B_top loses by 2. B_top
+    # is "cross-tested": it has no separate BB-side rating, so its own
+    # established B rating is what translates it into this BB game.
+    bridge_games = [("BB_bottom", "B_top", 2, "BB")]  # home=BB_bottom, away=B_top, margin=home-away=2
+
+    offsets = compute_tier_offsets(within, bridge_games)
+    prior_gap = 9.0
+    # unified(B_top) - unified(BB_bottom) = -margin = -2
+    # (5.0 + offset[B]) - (-4.0 + offset[BB]) = -2  =>  offset[BB]-offset[B] = 2 + 5.0 + 4.0 = 11.0
+    implied_gap = 11.0
+    expected = (W_PRIOR * prior_gap + implied_gap) / (W_PRIOR + 1)
+    assert offsets["BB"]["offset"] == round(expected, 3)
+    assert offsets["BB"]["evidenceCount"] == 1
+    # A single noisy bridge shouldn't swing the offset anywhere near its own
+    # raw implied value -- it should still sit much closer to the prior.
+    assert abs(offsets["BB"]["offset"] - prior_gap) < abs(offsets["BB"]["offset"] - implied_gap)
+    # The evidence itself is explainable: which teams, which gap.
+    assert offsets["BB"]["bridgeGames"] == [
+        {
+            "homeTeam": "BB_bottom",
+            "homeTier": "BB",
+            "awayTeam": "B_top",
+            "awayTier": "B",
+            "margin": 2,
+            "impliedGap": 11.0,
+        }
+    ]
 
 
-def test_components_fully_disconnected_divisions_stay_separate():
-    games = [Game("X1", "X2", 3, 1), Game("Y1", "Y2", 4, 2)]
-    components = compute_components(games)
-    assert components["X1"] == components["X2"]
-    assert components["Y1"] == components["Y2"]
-    assert components["X1"] != components["Y1"]
+def test_tier_offsets_repeated_bridge_games_from_same_team_each_count():
+    within = _b_bb_setup()
+    # Same cross-tested team (B_top, whose primary tier stays B -- it has no
+    # separate BB appearances of its own), three separate BB games against
+    # different native BB opponents -- matches the real San Mateo Black
+    # Stars 10-2 case (one team, three bridge games).
+    bridge_games = [
+        ("BB_bottom", "B_top", 2, "BB"),
+        ("B_top", "BB_top", -3, "BB"),
+        ("BB_bottom", "B_top", 1, "BB"),
+    ]
+    offsets = compute_tier_offsets(within, bridge_games)
+    assert offsets["BB"]["evidenceCount"] == 3
+
+
+def test_tier_offsets_ordinary_game_between_two_native_teams_is_not_evidence():
+    within = _b_bb_setup()
+    # Neither team is cross-tested -- an everyday within-BB game.
+    bridge_games = [("BB_top", "BB_bottom", 5, "BB")]
+    offsets = compute_tier_offsets(within, bridge_games)
+    assert offsets["BB"]["evidenceCount"] == 0
+
+
+def test_tier_offsets_chain_three_tiers():
+    within = {
+        "A": [TeamRating("A_top", rating=3.0, games_played=3), TeamRating("A_bottom", rating=-3.0, games_played=3)],
+        "BB": [TeamRating("BB_top", rating=2.0, games_played=3), TeamRating("BB_bottom", rating=-2.0, games_played=3)],
+        "B": [TeamRating("B_top", rating=1.0, games_played=3), TeamRating("B_bottom", rating=-1.0, games_played=3)],
+    }
+    offsets = compute_tier_offsets(within, bridge_games=[])
+    assert offsets["B"]["offset"] == 0.0
+    # gap(BB,B) = B's top (1.0) - BB's bottom (-2.0) = 3.0
+    assert offsets["BB"]["offset"] == 3.0
+    # gap(A,BB) = BB's top (2.0) - A's bottom (-3.0) = 5.0, chained onto offset[BB]
+    assert offsets["A"]["offset"] == 8.0
+
+
+def test_tier_offsets_missing_tier_handled_gracefully():
+    within = {"B": _b_bb_setup()["B"], "AA": []}
+    offsets = compute_tier_offsets(within, bridge_games=[])
+    assert "AA" not in offsets
+    assert offsets["B"]["offset"] == 0.0

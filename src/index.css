@@ -312,7 +312,7 @@ body {
   padding: 1rem;
   border: 1px solid var(--border);
   border-radius: 8px;
-  max-width: 32rem;
+  max-width: 42rem;
 }
 
 .predict__margin {
@@ -327,9 +327,40 @@ body {
   opacity: 0.8;
 }
 
-.predict__confidence--unbridged {
+.predict__confidence--prior {
   color: var(--lose);
   opacity: 1;
+}
+
+.predict__hop {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--border);
+  font-size: 0.85rem;
+}
+
+.predict__hop-heading {
+  font-weight: 600;
+  margin: 0 0 0.4rem;
+}
+
+.predict__evidence-list {
+  margin: 0 0 0.6rem;
+  padding-left: 1.2rem;
+}
+
+.predict__evidence-list li {
+  margin-bottom: 0.25rem;
+}
+
+.predict__hop-prior {
+  opacity: 0.85;
+  margin: 0 0 0.4rem;
+}
+
+.predict__hop-blend {
+  opacity: 0.7;
+  margin: 0;
 }
 
 .app__footer {

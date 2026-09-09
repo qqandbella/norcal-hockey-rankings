@@ -53,14 +53,41 @@ export interface Division {
 export interface UnifiedTeamRating {
   rating: number
   gamesPlayed: number
-  /** Teams sharing a componentId are connected by a chain of played
-   * cross-division games this season; different ids means no real evidence
-   * ties their scales together yet. */
-  componentId: number
+}
+
+export interface PriorAnchor {
+  lowTeam: string
+  lowRating: number
+  highTeam: string
+  highRating: number
+  gap: number
+}
+
+export interface BridgeGame {
+  homeTeam: string
+  homeTier: string
+  awayTeam: string
+  awayTier: string
+  margin: number
+  impliedGap: number
+}
+
+export interface TierOffset {
+  offset: number
+  evidenceCount: number
+  /** The "a tier's bottom is on par with the tier above's top" default,
+   * naming exactly which two teams justify it. Null for the bottom-most
+   * tier present (offset 0, nothing to anchor). */
+  priorAnchor: PriorAnchor | null
+  /** Real cross-division games backing this tier's offset, each with its
+   * own implied gap -- the actual evidence trail behind the number. */
+  bridgeGames: BridgeGame[]
 }
 
 export interface AgeGroupRatings {
   teams: Record<string, UnifiedTeamRating>
+  /** Keyed by division tier ("A", "BB", "B", ...). */
+  tierOffsets: Record<string, TierOffset>
 }
 
 export interface RankingsData {

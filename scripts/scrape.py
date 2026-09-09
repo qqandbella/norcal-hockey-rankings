@@ -19,7 +19,15 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
-from ratings import Game, compute_components, compute_ratings, compute_team_stats
+from ratings import (
+    DIVISION_HIERARCHY,
+    Game,
+    TeamRating,
+    capped_margin,
+    compute_ratings,
+    compute_team_stats,
+    compute_tier_offsets,
+)
 
 BASE_URL = "https://www.norcalyouthhockey.org"
 SCHEDULES_URL = f"{BASE_URL}/Schedules.php"
@@ -168,6 +176,19 @@ def split_age_level(label: str) -> tuple[str, str]:
     return label, ""
 
 
+def tier_of(level_label: str) -> str | None:
+    """Which DIVISION_HIERARCHY tier a division's levelLabel belongs to, for
+    the cross-division offset model. Exact matches map directly; a future
+    split like "B East"/"B West" is a sibling of "B" (same competitive tier,
+    just two flights), so strip a trailing " East"/" West"/" <N>" and retry.
+    Anything unrecognized (house leagues, etc.) returns None -- excluded
+    from the hierarchy rather than guessed at."""
+    if level_label in DIVISION_HIERARCHY:
+        return level_label
+    base = re.sub(r"\s+(East|West)$", "", level_label).strip()
+    return base if base in DIVISION_HIERARCHY else None
+
+
 def _rating_games(raw_games: list[dict]) -> list[Game]:
     return [
         Game(home=g["home"], away=g["away"], home_goals=g["home_goals"], away_goals=g["away_goals"])
@@ -269,40 +290,82 @@ def build_division_payload(
     }
 
 
+def _team_ratings_from_bucket(bucket: dict) -> list[TeamRating]:
+    return [
+        TeamRating(
+            name=t["name"], rating=t["rating"], games_played=t["gamesPlayed"], rank=t["rank"], tier=t["tier"]
+        )
+        for t in bucket["teams"]
+    ]
+
+
 def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
-    """One unified rating per team, spanning every division within an age
-    group (10U, 12U, ...), not just its own division.
+    """One unified, cross-division-comparable rating per team, spanning every
+    division within an age group (10U, 12U, ...) -- not just its own.
 
     A division-scoped rating (ratingsByType) can't be compared across
-    divisions -- each is centered to its own division's mean. This pools
-    every division's played games for the age group, played cross-division
-    "bridge" games included, and runs the same rating model once over the
-    combined graph so the numbers land on one shared scale. `componentId`
-    flags whether two teams are actually connected by any such bridge (same
-    id) or the comparison rests entirely on the assumption that two
-    divisions' average teams are equal (different id) -- see compute_components.
+    divisions on its own -- each is centered to its own division's mean,
+    with no notion that e.g. BB is generally a stronger division than B.
+    See compute_tier_offsets in ratings.py for the model: each division's
+    within-rating gets an additive offset, defaulting to the empirical rule
+    "a tier's bottom is on par with the tier above's top", refined by real
+    cross-division game evidence in proportion to how much of it exists.
     """
-    games_by_age: dict[str, dict[str, Game]] = {}
+    divisions_by_age: dict[str, list[dict]] = {}
     for division in payload_divisions:
-        bucket = games_by_age.setdefault(division["ageLabel"], {})
-        for g in division["games"]:
-            if not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
+        divisions_by_age.setdefault(division["ageLabel"], []).append(division)
+
+    age_groups: dict[str, dict] = {}
+    for age_label, divisions in divisions_by_age.items():
+        within_ratings_by_tier: dict[str, list[TeamRating]] = {}
+        for division in divisions:
+            tier = tier_of(division["levelLabel"])
+            if tier is None:
                 continue
-            bucket[g["gameId"]] = Game(
-                home=g["home"], away=g["away"], home_goals=g["homeGoals"], away_goals=g["awayGoals"]
+            within_ratings_by_tier.setdefault(tier, []).extend(
+                _team_ratings_from_bucket(division["ratingsByType"]["All"])
             )
 
-    age_groups = {}
-    for age_label, games_by_id in games_by_age.items():
-        games = list(games_by_id.values())
-        ratings = compute_ratings(games)
-        components = compute_components(games)
-        age_groups[age_label] = {
-            "teams": {
-                r.name: {"rating": r.rating, "gamesPlayed": r.games_played, "componentId": components[r.name]}
-                for r in ratings
-            }
-        }
+        bridge_games: list[tuple[str, str, int, str]] = []
+        seen_game_ids: set[str] = set()
+        for division in divisions:
+            for g in division["games"]:
+                if g["gameId"] in seen_game_ids:
+                    continue
+                seen_game_ids.add(g["gameId"])
+                if not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
+                    continue
+                game_tier = tier_of(g["levelLabel"])
+                if game_tier is None:
+                    continue
+                bridge_games.append(
+                    (g["home"], g["away"], capped_margin(g["homeGoals"], g["awayGoals"]), game_tier)
+                )
+
+        offsets = compute_tier_offsets(within_ratings_by_tier, bridge_games)
+        if not offsets:
+            continue
+
+        # Unified rating per team = games-played-weighted average of
+        # (within-rating + that tier's offset) across every tier the team
+        # is rated in -- almost always just one, more for cross-tested teams.
+        team_tier_ratings: dict[str, list[tuple[TeamRating, str]]] = {}
+        for tier, rows in within_ratings_by_tier.items():
+            if tier not in offsets:
+                continue
+            for r in rows:
+                team_tier_ratings.setdefault(r.name, []).append((r, tier))
+
+        teams = {}
+        for name, entries in team_tier_ratings.items():
+            total_games = sum(r.games_played for r, _ in entries)
+            unified = (
+                sum((r.rating + offsets[tier]["offset"]) * r.games_played for r, tier in entries) / total_games
+            )
+            teams[name] = {"rating": round(unified, 3), "gamesPlayed": total_games}
+
+        age_groups[age_label] = {"teams": teams, "tierOffsets": offsets}
+
     return age_groups
 
 

@@ -111,15 +111,14 @@ export function ScheduleList({
                 .join(' ')
               const isCrossLevel = homeLevelLabel !== undefined && game.levelLabel !== homeLevelLabel
               const hasScore = game.played && game.awayGoals !== null && game.homeGoals !== null
+              // perspectiveTeam's own tier is the page's home division; the
+              // opponent is presumed native to whichever division this
+              // specific game is filed under.
+              const awayTier = game.away === perspectiveTeam ? (homeLevelLabel ?? game.levelLabel) : game.levelLabel
+              const homeTier = game.home === perspectiveTeam ? (homeLevelLabel ?? game.levelLabel) : game.levelLabel
               const prediction =
                 !hasScore && ageGroups && perspectiveTeam
-                  ? predictMatchup(
-                      ageGroups,
-                      game.ageLabel,
-                      game.away,
-                      game.home,
-                      !isCrossLevel,
-                    )
+                  ? predictMatchup(ageGroups, game.ageLabel, game.away, awayTier, game.home, homeTier)
                   : null
               return (
                 <tr key={game.gameId} className={rowClass || undefined}>

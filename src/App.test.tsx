@@ -165,15 +165,31 @@ const SAMPLE: RankingsData = {
   ageGroups: {
     '10U': {
       teams: {
-        'Fresno Jr Monsters 10-1': { rating: 3.5, gamesPlayed: 3, componentId: 0 },
-        'Vacaville Jets 10-2': { rating: -3.1, gamesPlayed: 3, componentId: 0 },
-        'Santa Clara Blackhawks 10-2': { rating: 0.5, gamesPlayed: 1, componentId: 0 },
-        'Lake Tahoe Grizzlies 10-2': { rating: -0.2, gamesPlayed: 1, componentId: 0 },
-        // Unconnected component -- no bridge game between B and BB has been
-        // played in this fixture (game 4 above is still just scheduled).
-        'Capital Thunder 10-1': { rating: 1.5, gamesPlayed: 1, componentId: 1 },
-        'Lake Tahoe Grizzlies 10-1': { rating: -1.5, gamesPlayed: 1, componentId: 1 },
-        'Santa Clara Blackhawks 10-1': { rating: 1.0, gamesPlayed: 1, componentId: 1 },
+        'Fresno Jr Monsters 10-1': { rating: 3.5, gamesPlayed: 3 },
+        'Vacaville Jets 10-2': { rating: -3.1, gamesPlayed: 3 },
+        'Santa Clara Blackhawks 10-2': { rating: 0.5, gamesPlayed: 1 },
+        'Lake Tahoe Grizzlies 10-2': { rating: -0.2, gamesPlayed: 1 },
+        // BB ratings already include the tier offset below (+4.0).
+        'Capital Thunder 10-1': { rating: 5.5, gamesPlayed: 1 },
+        'Lake Tahoe Grizzlies 10-1': { rating: 2.5, gamesPlayed: 1 },
+        'Santa Clara Blackhawks 10-1': { rating: 5.0, gamesPlayed: 1 },
+      },
+      tierOffsets: {
+        B: { offset: 0, evidenceCount: 0, priorAnchor: null, bridgeGames: [] },
+        // No bridge game between B and BB has been played in this fixture
+        // (game 4 above is still just scheduled) -- pure prior, no evidence.
+        BB: {
+          offset: 4.0,
+          evidenceCount: 0,
+          priorAnchor: {
+            lowTeam: 'Fresno Jr Monsters 10-1',
+            lowRating: 3.5,
+            highTeam: 'Lake Tahoe Grizzlies 10-1',
+            highRating: -1.5,
+            gap: 5.0,
+          },
+          bridgeGames: [],
+        },
       },
     },
   },
@@ -318,14 +334,14 @@ describe('App', () => {
     await user.click(screen.getByRole('link', { name: 'Predict' }))
     await screen.findByRole('heading', { name: '10U Predictor' })
 
-    await user.selectOptions(screen.getByLabelText('Team A'), 'Fresno Jr Monsters 10-1')
-    await user.selectOptions(screen.getByLabelText('Team B'), 'Vacaville Jets 10-2')
+    await user.selectOptions(screen.getByLabelText('Home team'), 'Fresno Jr Monsters 10-1')
+    await user.selectOptions(screen.getByLabelText('Away team'), 'Vacaville Jets 10-2')
 
     expect(await screen.findByText(/favored by/)).toBeInTheDocument()
     expect(screen.getByText('Same division')).toBeInTheDocument()
   })
 
-  it('predicts a cross-division matchup as unbridged when no bridge game has been played', async () => {
+  it('predicts a cross-division matchup as resting on the prior when no bridge game has been played, and explains it', async () => {
     const user = userEvent.setup()
     render(<App />)
     await screen.findByText('Fresno Jr Monsters 10-1')
@@ -333,11 +349,15 @@ describe('App', () => {
     await user.click(screen.getByRole('link', { name: 'Predict' }))
     await screen.findByRole('heading', { name: '10U Predictor' })
 
-    await user.selectOptions(screen.getByLabelText('Team A'), 'Fresno Jr Monsters 10-1')
-    await user.selectOptions(screen.getByLabelText('Team B'), 'Capital Thunder 10-1')
+    await user.selectOptions(screen.getByLabelText('Home team'), 'Fresno Jr Monsters 10-1')
+    await user.selectOptions(screen.getByLabelText('Away team'), 'Capital Thunder 10-1')
 
     expect(await screen.findByText(/favored by/)).toBeInTheDocument()
-    expect(screen.getByText(/No bridge games yet/)).toBeInTheDocument()
+    expect(screen.getByText(/no bridge games yet/i)).toBeInTheDocument()
+    // The evidence trail itself: which two teams anchor the default gap.
+    const result = document.querySelector<HTMLElement>('.predict__result')!
+    expect(within(result).getByText(/Lake Tahoe Grizzlies 10-1/)).toBeInTheDocument()
+    expect(within(result).getByText(/pure default assumption/)).toBeInTheDocument()
   })
 
   it('prefills the predictor from a team page\'s "predict vs..." link', async () => {
@@ -350,7 +370,7 @@ describe('App', () => {
     await user.click(screen.getByRole('link', { name: /predict vs/i }))
     await screen.findByRole('heading', { name: '10U Predictor' })
 
-    expect(screen.getByLabelText('Team A')).toHaveValue('Fresno Jr Monsters 10-1')
+    expect(screen.getByLabelText('Home team')).toHaveValue('Fresno Jr Monsters 10-1')
   })
 
   it("shows a tentative predicted margin on a team's unplayed cross-division game", async () => {

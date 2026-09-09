@@ -1,6 +1,8 @@
 import type { Division } from './types'
 
-const LEVEL_ORDER = ['AA', 'A', 'BB', 'B']
+// Top to bottom. Mirrors scripts/ratings.py's DIVISION_HIERARCHY -- keep
+// both in sync if this list changes.
+export const LEVEL_ORDER = ['AA', 'A', 'BB', 'B']
 
 function ageSortKey(ageLabel: string): number {
   const match = /^(\d+)/.exec(ageLabel)

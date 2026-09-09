@@ -25,6 +25,17 @@ SHRINKAGE_K = 3.0
 MAX_ITERS = 300
 CONVERGENCE_EPS = 1e-9
 
+# Top to bottom. Mirrors src/lib/grouping.ts's LEVEL_ORDER -- keep both in
+# sync if this list changes.
+DIVISION_HIERARCHY = ["AA", "A", "BB", "B"]
+
+# Pseudo-observation weight for the "a tier's bottom is roughly on par with
+# the tier above's top" prior when blending it with real cross-division
+# evidence (see compute_tier_offsets). ~5 independent bridge-game
+# observations are needed to meaningfully override the prior; one or two
+# noisy games barely move it.
+W_PRIOR = 5.0
+
 # Standard hockey points: win=2, tie=1, loss=0. The source feed carries no
 # OT/shootout marker, so ties are recorded as plain ties rather than OTL.
 POINTS_WIN = 2
@@ -64,7 +75,7 @@ class TeamStats:
         return self.goals_for - self.goals_against
 
 
-def _capped_margin(home_goals: int, away_goals: int) -> int:
+def capped_margin(home_goals: int, away_goals: int) -> int:
     margin = home_goals - away_goals
     return max(-GOAL_CAP, min(GOAL_CAP, margin))
 
@@ -77,7 +88,7 @@ def compute_ratings(games: list[Game], k: float = SHRINKAGE_K) -> list[TeamRatin
 
     adjacency: dict[str, list[tuple[str, int]]] = {t: [] for t in teams}
     for g in games:
-        margin = _capped_margin(g.home_goals, g.away_goals)
+        margin = capped_margin(g.home_goals, g.away_goals)
         adjacency[g.home].append((g.away, margin))
         adjacency[g.away].append((g.home, -margin))
 
@@ -121,38 +132,117 @@ def compute_ratings(games: list[Game], k: float = SHRINKAGE_K) -> list[TeamRatin
     return results
 
 
-def compute_components(games: list[Game]) -> dict[str, int]:
-    """Connected-component id per team (union-find over shared games).
+def _adjacent_pair(t1: str, t2: str) -> tuple[str, str] | None:
+    """Return (higher, lower) if t1/t2 are adjacent in DIVISION_HIERARCHY,
+    else None. Non-adjacent cross-division evidence (e.g. a game directly
+    between A and B, skipping BB) is intentionally not used -- rare, and
+    handled implicitly once each adjacent hop's offset is chained."""
+    if t1 not in DIVISION_HIERARCHY or t2 not in DIVISION_HIERARCHY:
+        return None
+    i1, i2 = DIVISION_HIERARCHY.index(t1), DIVISION_HIERARCHY.index(t2)
+    if abs(i1 - i2) != 1:
+        return None
+    return (t1, t2) if i1 < i2 else (t2, t1)
 
-    Two teams share a component iff there's a chain of played games linking
-    them -- directly, or via a cross-division "bridge" game through a third
-    team. Used to flag whether a cross-division rating comparison is backed
-    by any real evidence at all, versus resting entirely on the assumption
-    that two divisions' average teams are equal.
+
+def compute_tier_offsets(
+    within_ratings_by_tier: dict[str, list[TeamRating]],
+    bridge_games: list[tuple[str, str, int, str]],
+    w_prior: float = W_PRIOR,
+) -> dict[str, dict]:
+    """Offset to add to each tier's within-division ratings so they land on
+    one shared, cross-division-comparable scale.
+
+    `bridge_games` is every *played* game across an age group's divisions,
+    as (home, away, capped_margin, game_tier) -- capped_margin is
+    home_goals - away_goals already capped to +/-GOAL_CAP. `game_tier` is
+    informational only (which division filed the game); it does not drive
+    the math below.
+
+    Each team's *primary* tier is whichever tier it has the most games in
+    (almost always its only tier). A game is ordinary, contributing nothing,
+    when both sides share the same primary tier. It becomes bridge evidence
+    only when the two sides' primary tiers differ -- e.g. a team primarily
+    playing BB (3 games there) that also has one B game is evidence for that
+    one game, translated through its *established* BB rating, not its
+    single-game B rating; its other 3 (ordinary, BB-vs-BB) games are not
+    re-litigated as evidence just because it happens to also play B.
+
+    Returns {tier: {"offset": float, "evidenceCount": int}}, offsets
+    relative to the lowest tier present (which gets offset 0).
     """
-    parent: dict[str, str] = {}
+    rating_by_tier_name: dict[str, dict[str, float]] = {
+        tier: {r.name: r.rating for r in rows} for tier, rows in within_ratings_by_tier.items() if rows
+    }
 
-    def find(t: str) -> str:
-        parent.setdefault(t, t)
-        while parent[t] != t:
-            parent[t] = parent[parent[t]]
-            t = parent[t]
-        return t
+    primary_tier: dict[str, str] = {}
+    most_games: dict[str, int] = {}
+    for tier, rows in within_ratings_by_tier.items():
+        for r in rows:
+            if r.games_played > most_games.get(r.name, -1):
+                most_games[r.name] = r.games_played
+                primary_tier[r.name] = tier
 
-    def union(a: str, b: str) -> None:
-        ra, rb = find(a), find(b)
-        if ra != rb:
-            parent[ra] = rb
+    # (higher_tier, lower_tier) -> list of evidence dicts, each carrying
+    # enough detail to explain the observation on its own (which two teams,
+    # which game, what gap it implies) -- not just the bare number, so the
+    # site can show *why* a prediction says what it says.
+    evidence: dict[tuple[str, str], list[dict]] = {}
 
-    teams = sorted({g.home for g in games} | {g.away for g in games})
-    for t in teams:
-        find(t)
-    for g in games:
-        union(g.home, g.away)
+    for home, away, margin, _game_tier in bridge_games:
+        home_tier, away_tier = primary_tier.get(home), primary_tier.get(away)
+        if home_tier is None or away_tier is None or home_tier == away_tier:
+            continue
+        pair = _adjacent_pair(home_tier, away_tier)
+        if pair is None:
+            continue
+        home_rating = rating_by_tier_name[home_tier][home]
+        away_rating = rating_by_tier_name[away_tier][away]
+        # unified(home) - unified(away) = margin
+        # (home_rating + offset[home_tier]) - (away_rating + offset[away_tier]) = margin
+        gap = margin - home_rating + away_rating  # offset[home_tier] - offset[away_tier]
+        gap = gap if pair == (home_tier, away_tier) else -gap
+        evidence.setdefault(pair, []).append(
+            {
+                "homeTeam": home,
+                "homeTier": home_tier,
+                "awayTeam": away,
+                "awayTier": away_tier,
+                "margin": margin,
+                "impliedGap": round(gap, 3),
+            }
+        )
 
-    roots = sorted({find(t) for t in teams})
-    component_id = {root: i for i, root in enumerate(roots)}
-    return {t: component_id[find(t)] for t in teams}
+    tiers_present = [t for t in DIVISION_HIERARCHY if t in rating_by_tier_name]
+    offsets: dict[str, dict] = {}
+    if not tiers_present:
+        return offsets
+
+    # Bottom of the hierarchy present is the reference point.
+    offsets[tiers_present[-1]] = {"offset": 0.0, "evidenceCount": 0, "priorAnchor": None, "bridgeGames": []}
+    for i in range(len(tiers_present) - 2, -1, -1):
+        higher, lower = tiers_present[i], tiers_present[i + 1]
+        low_rows = within_ratings_by_tier[lower]
+        high_rows = within_ratings_by_tier[higher]
+        low_top = max(low_rows, key=lambda r: r.rating)
+        high_bottom = min(high_rows, key=lambda r: r.rating)
+        prior_gap = low_top.rating - high_bottom.rating
+        prior_anchor = {
+            "lowTeam": low_top.name,
+            "lowRating": low_top.rating,
+            "highTeam": high_bottom.name,
+            "highRating": high_bottom.rating,
+            "gap": round(prior_gap, 3),
+        }
+        bridges = evidence.get((higher, lower), [])
+        blended = (w_prior * prior_gap + sum(b["impliedGap"] for b in bridges)) / (w_prior + len(bridges))
+        offsets[higher] = {
+            "offset": round(offsets[lower]["offset"] + blended, 3),
+            "evidenceCount": len(bridges),
+            "priorAnchor": prior_anchor,
+            "bridgeGames": bridges,
+        }
+    return offsets
 
 
 def compute_team_stats(games: list[Game]) -> dict[str, TeamStats]:
