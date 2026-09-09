@@ -232,8 +232,17 @@ def compute_tier_offsets(
         higher, lower = tiers_present[i], tiers_present[i + 1]
         low_rows = within_ratings_by_tier[lower]
         high_rows = within_ratings_by_tier[higher]
-        low_top = max(low_rows, key=lambda r: r.rating)
-        high_bottom = min(high_rows, key=lambda r: r.rating)
+        # 2nd-best of the lower tier / 2nd-worst of the higher tier, not the
+        # literal extremes: checked against a full historical season
+        # (900+ games), the trimmed version was both lower *and* far more
+        # stable (e.g. 4.2-5.4 vs 5.5-8.2 spread across age groups) -- a
+        # single outlier team, even across a whole season, still visibly
+        # distorts the literal max/min. Needs at least 3 teams to trim --
+        # with only 2, "excluding one" just leaves the *other* extreme,
+        # which flips the sign of the gap rather than stabilizing it, so
+        # fall back to the plain extreme itself below that.
+        low_top = sorted(low_rows, key=lambda r: r.rating)[-2 if len(low_rows) >= 3 else -1]
+        high_bottom = sorted(high_rows, key=lambda r: r.rating)[1 if len(high_rows) >= 3 else 0]
         prior_gap = low_top.rating - high_bottom.rating
         prior_anchor = {
             "lowTeam": low_top.name,

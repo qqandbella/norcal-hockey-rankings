@@ -64,9 +64,16 @@ a simple manual cross-check.
 The fix (`compute_tier_offsets` in `scripts/ratings.py`): decompose a team's
 unified rating into `(within-division rating) + (tier offset)`. Each
 adjacent tier-pair's offset defaults to the empirical rule of thumb "a
-tier's bottom is on par with the tier above's top" (computed from each
-division's own rank-1/last-rank ratings), then blends toward real evidence
-in proportion to how much exists — each team's *primary* tier (wherever it
+tier's bottom is on par with the tier above's top" — computed from each
+division's own **2nd-best/2nd-worst** rating, not the literal extremes
+(needs at least 3 teams per side to trim; falls back to the plain extreme
+below that). Checked against a full historical completed season (900+
+games, `scripts/historical_tier_gap.py`): even with a whole season of data,
+literal extremes still swing 5.5-8.2 across age groups, while the trimmed
+version clusters much tighter at 4.2-5.4 — one outlier team distorts the
+raw max/min regardless of sample size, so trimming is the fix, not just
+more data. This then blends toward real evidence in proportion to how much
+exists — each team's *primary* tier (wherever it
 has the most games) anchors it, and a game only becomes bridge evidence when
 the two sides' primary tiers actually differ, so a cross-tested team's
 *ordinary* same-tier games are never mistaken for cross-division evidence.

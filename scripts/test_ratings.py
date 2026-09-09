@@ -128,18 +128,34 @@ def test_tier_offsets_prior_only_when_no_bridge_evidence():
     offsets = compute_tier_offsets(within, bridge_games=[])
     assert offsets["B"]["offset"] == 0.0
     assert offsets["B"]["evidenceCount"] == 0
-    # prior_gap = max(B) - min(BB) = 5.0 - (-4.0) = 9.0
-    assert offsets["BB"]["offset"] == 9.0
+    # B has 3 teams (>=3, trimmed): 2nd-best = B_mid (0.0), not B_top (5.0).
+    # BB only has 2 teams (<3, falls back to the plain extreme): BB_bottom (-4.0).
+    # prior_gap = 0.0 - (-4.0) = 4.0
+    assert offsets["BB"]["offset"] == 4.0
     assert offsets["BB"]["evidenceCount"] == 0
     assert offsets["BB"]["bridgeGames"] == []
     # The prior anchor names exactly which two teams justify the default gap.
     assert offsets["BB"]["priorAnchor"] == {
-        "lowTeam": "B_top",
-        "lowRating": 5.0,
+        "lowTeam": "B_mid",
+        "lowRating": 0.0,
         "highTeam": "BB_bottom",
         "highRating": -4.0,
-        "gap": 9.0,
+        "gap": 4.0,
     }
+
+
+def test_tier_offsets_trimming_needs_at_least_three_teams_per_side():
+    # With exactly 2 teams, "trimming one" just leaves the *other* extreme
+    # (flipping the gap's sign), which is worse than not trimming at all --
+    # confirm the 2-team fallback still uses the plain extreme, not that.
+    within = {
+        "B": [TeamRating("B1", rating=5.0, games_played=3), TeamRating("B2", rating=-5.0, games_played=3)],
+        "BB": [TeamRating("BB1", rating=6.0, games_played=3), TeamRating("BB2", rating=-4.0, games_played=3)],
+    }
+    offsets = compute_tier_offsets(within, bridge_games=[])
+    # Both sides have only 2 teams -> both fall back to plain extremes,
+    # identical to the pre-trimming formula: max(B) - min(BB) = 5.0 - (-4.0).
+    assert offsets["BB"]["offset"] == 9.0
 
 
 def test_tier_offsets_one_bridge_game_nudges_toward_its_implied_gap():
@@ -151,7 +167,7 @@ def test_tier_offsets_one_bridge_game_nudges_toward_its_implied_gap():
     bridge_games = [("BB_bottom", "B_top", 2, "BB")]  # home=BB_bottom, away=B_top, margin=home-away=2
 
     offsets = compute_tier_offsets(within, bridge_games)
-    prior_gap = 9.0
+    prior_gap = 4.0  # see test_tier_offsets_prior_only_when_no_bridge_evidence
     # unified(B_top) - unified(BB_bottom) = -margin = -2
     # (5.0 + offset[B]) - (-4.0 + offset[BB]) = -2  =>  offset[BB]-offset[B] = 2 + 5.0 + 4.0 = 11.0
     implied_gap = 11.0
