@@ -41,6 +41,8 @@ export interface Division {
   /** Keyed by game type ("Preseason", "Regular", ...), plus a synthetic "All" bucket. */
   ratingsByType: Record<string, RatingsBucket>
   games: GameRecord[]
+  /** Team name -> official stats.caha.timetoscore.com schedule URL, where resolved. */
+  teamLinks: Record<string, string>
 }
 
 export interface RankingsData {

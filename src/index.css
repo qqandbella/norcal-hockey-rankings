@@ -230,6 +230,12 @@ body {
   opacity: 0.7;
 }
 
+.team-page__tts-link {
+  font-size: 0.85rem;
+  font-weight: 400;
+  opacity: 0.7;
+}
+
 .app__footer {
   margin-top: 3rem;
   opacity: 0.5;

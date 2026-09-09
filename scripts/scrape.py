@@ -39,6 +39,27 @@ KNOWN_MISSING_LEVELS = {3: "10U B"}
 
 LEVEL_LINE_RE = re.compile(r"'Level:\s*([^|']+)\|(\d+)'")
 
+# Built by scripts/build_team_ids.py (run manually/rarely -- see its
+# docstring for why). Missing file or missing entries just means no outbound
+# TTS link for that team; never block the regular scrape on this.
+TEAM_IDS_PATH = Path(__file__).resolve().parent / "team_ids.json"
+TTS_TEAM_URL = "https://stats.caha.timetoscore.com/display-schedule?team={team_id}&season={season}&league=3&stat_class=1"
+
+
+def load_team_ids() -> dict[str, dict[str, str]]:
+    if not TEAM_IDS_PATH.exists():
+        return {}
+    return json.loads(TEAM_IDS_PATH.read_text())
+
+
+def build_team_links(team_names: set[str], team_ids: dict[str, dict[str, str]]) -> dict[str, str]:
+    links = {}
+    for name in team_names:
+        entry = team_ids.get(name)
+        if entry:
+            links[name] = TTS_TEAM_URL.format(team_id=entry["teamId"], season=entry["season"])
+    return links
+
 
 def _session() -> requests.Session:
     s = requests.Session()
@@ -191,7 +212,9 @@ def _build_team_rows(played_of_type: list[dict], roster_of_type: list[dict]) -> 
     return {"teams": rows, "unratedTeams": unrated}
 
 
-def build_division_payload(level_id: int, label: str, raw_games: list[dict]) -> dict:
+def build_division_payload(
+    level_id: int, label: str, raw_games: list[dict], team_ids: dict[str, dict[str, str]]
+) -> dict:
     age_label, level_label = split_age_level(label)
 
     # Precompute one ratings+stats table per distinct game type actually
@@ -224,12 +247,14 @@ def build_division_payload(level_id: int, label: str, raw_games: list[dict]) -> 
         }
         for g in raw_games
     ]
+    all_team_names = {g["home"] for g in raw_games} | {g["away"] for g in raw_games}
     return {
         "levelId": level_id,
         "ageLabel": age_label,
         "levelLabel": level_label,
         "ratingsByType": ratings_by_type,
         "games": games,
+        "teamLinks": build_team_links(all_team_names, team_ids),
     }
 
 
@@ -239,13 +264,14 @@ def main() -> int:
     if not divisions:
         print("No divisions discovered -- aborting without overwriting data/latest.json", file=sys.stderr)
         return 1
+    team_ids = load_team_ids()
 
     payload_divisions = []
     for i, (level_id, label) in enumerate(sorted(divisions.items())):
         if i > 0:
             time.sleep(REQUEST_DELAY_SECONDS)
         games = fetch_division_games(session, level_id)
-        payload_divisions.append(build_division_payload(level_id, label, games))
+        payload_divisions.append(build_division_payload(level_id, label, games, team_ids))
         print(f"  {label} (level={level_id}): {len(games)} games", file=sys.stderr)
 
     payload = {

@@ -33,7 +33,11 @@ precomputed server-side for each type plus an "All" bucket, so switching the
 filter doesn't require running anything client-side.
 
 Every team name links to a **team page** showing that team's full schedule
-and stats.
+and stats — including, where resolved, an outbound link to that team's
+official page on `stats.caha.timetoscore.com`. On a team's own page, its
+schedule rows are color-coded by result (green win / red loss / yellow tie)
+from that team's perspective, its own name is bolded, and there's a result
+filter (win only / lose only / win-or-tie).
 
 See `scripts/ratings.py` for the implementation and `scripts/test_ratings.py`
 for a regression fixture built from real results.
@@ -62,6 +66,25 @@ gh workflow run scrape.yml --repo qqandbella/norcal-hockey-rankings
 credential somewhere — either exposed in the public site's JS, or in a small
 backend proxy that doesn't exist yet. Revisit if that tradeoff becomes worth
 it.)
+
+### Team IDs (for the outbound TTS link)
+
+`scripts/team_ids.json` maps team name → TTS's own numeric team id, so team
+pages can link out to `stats.caha.timetoscore.com/display-schedule?team=...`.
+Unlike everything else in this project, resolving that mapping requires
+querying `stats.caha.timetoscore.com` directly (its `robots.txt` disallows
+crawling, which is exactly why the regular scraper never touches it) — so
+this is deliberately **not** part of `scrape.yml`. It's a one-off/rarely-run
+script instead:
+
+```bash
+python3 scripts/build_team_ids.py   # single direct request, run by hand
+```
+
+TTS assigns each season's teams new ids, so re-run this roughly once per
+season (existing entries just silently stop matching if a team's id changes;
+nothing breaks, the outbound link just disappears for that team until the
+mapping is refreshed).
 
 ## Development
 

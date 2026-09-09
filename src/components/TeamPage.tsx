@@ -19,7 +19,22 @@ export function TeamPage({ division }: { division: Division }) {
       <p>
         <Link to={divisionRoute(division)}>&larr; {division.ageLabel} {division.levelLabel} rankings</Link>
       </p>
-      <h2>{teamName}</h2>
+      <h2>
+        {teamName}
+        {division.teamLinks[teamName] && (
+          <>
+            {' '}
+            <a
+              className="team-page__tts-link"
+              href={division.teamLinks[teamName]}
+              target="_blank"
+              rel="noreferrer"
+            >
+              (official TTS page)
+            </a>
+          </>
+        )}
+      </h2>
 
       {row ? (
         <dl className="team-stats">

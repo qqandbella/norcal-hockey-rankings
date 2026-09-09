@@ -56,6 +56,10 @@ const SAMPLE: RankingsData = {
         All: { teams: [FRESNO, VACAVILLE], unratedTeams: [] },
         Preseason: { teams: [FRESNO, VACAVILLE], unratedTeams: [] },
       },
+      teamLinks: {
+        'Fresno Jr Monsters 10-1':
+          'https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1',
+      },
       games: [
         {
           gameId: '1',
@@ -140,8 +144,27 @@ describe('App', () => {
     render(<App />)
     const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
     await user.click(teamLink)
-    expect(await screen.findByRole('heading', { name: 'Fresno Jr Monsters 10-1' })).toBeInTheDocument()
+    expect(await screen.findByRole('heading', { name: /Fresno Jr Monsters 10-1/ })).toBeInTheDocument()
     expect(screen.getByText(/3-0-0/)).toBeInTheDocument()
+  })
+
+  it('links out to the official TTS page when a team id is resolved', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
+    await user.click(teamLink)
+    await screen.findByRole('heading', { name: /Fresno Jr Monsters 10-1/ })
+
+    const ttsLink = screen.getByRole('link', { name: /official TTS page/i })
+    expect(ttsLink).toHaveAttribute(
+      'href',
+      'https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1',
+    )
+
+    // Vacaville has no entry in teamLinks -- no outbound link should appear.
+    await user.click(screen.getByRole('link', { name: 'Vacaville Jets 10-2' }))
+    await screen.findByRole('heading', { name: /Vacaville Jets 10-2/ })
+    expect(screen.queryByRole('link', { name: /official TTS page/i })).not.toBeInTheDocument()
   })
 
   it('links team names inside the schedule table too', async () => {
@@ -160,7 +183,7 @@ describe('App', () => {
     render(<App />)
     const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
     await user.click(teamLink)
-    await screen.findByRole('heading', { name: 'Fresno Jr Monsters 10-1' })
+    await screen.findByRole('heading', { name: /Fresno Jr Monsters 10-1/ })
 
     const winRow = screen.getByText('Fri Sep 4').closest('tr')
     const loseRow = screen.getByText('Sat Sep 5').closest('tr')
@@ -181,7 +204,7 @@ describe('App', () => {
     render(<App />)
     const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
     await user.click(teamLink)
-    await screen.findByRole('heading', { name: 'Fresno Jr Monsters 10-1' })
+    await screen.findByRole('heading', { name: /Fresno Jr Monsters 10-1/ })
 
     expect(screen.getByText('Fri Sep 4')).toBeInTheDocument()
     expect(screen.getByText('Sat Sep 5')).toBeInTheDocument()
