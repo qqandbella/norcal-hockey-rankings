@@ -235,10 +235,60 @@ body {
   opacity: 0.7;
 }
 
-.team-page__tts-link {
+.team-page__tts-link,
+.team-page__predict-link {
   font-size: 0.85rem;
   font-weight: 400;
   opacity: 0.7;
+}
+
+.division-nav__link--predict {
+  font-style: italic;
+}
+
+.predict__pickers {
+  display: flex;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 1rem 0;
+}
+
+.predict__picker {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-size: 0.9rem;
+}
+
+.predict__picker select {
+  font: inherit;
+  padding: 0.3rem;
+  min-width: 260px;
+}
+
+.predict__result {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  max-width: 32rem;
+}
+
+.predict__margin {
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin: 0 0 0.35rem;
+}
+
+.predict__confidence {
+  margin: 0;
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.predict__confidence--unbridged {
+  color: var(--lose);
+  opacity: 1;
 }
 
 .app__footer {

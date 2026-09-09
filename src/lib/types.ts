@@ -50,10 +50,25 @@ export interface Division {
   teamLinks: Record<string, string>
 }
 
+export interface UnifiedTeamRating {
+  rating: number
+  gamesPlayed: number
+  /** Teams sharing a componentId are connected by a chain of played
+   * cross-division games this season; different ids means no real evidence
+   * ties their scales together yet. */
+  componentId: number
+}
+
+export interface AgeGroupRatings {
+  teams: Record<string, UnifiedTeamRating>
+}
+
 export interface RankingsData {
   scraped_at: string
   source: string
   divisions: Division[]
+  /** Unified, cross-division rating per age group ("10U", "12U", ...). */
+  ageGroups: Record<string, AgeGroupRatings>
 }
 
 export const ALL_TYPES = 'All'

@@ -121,6 +121,40 @@ def compute_ratings(games: list[Game], k: float = SHRINKAGE_K) -> list[TeamRatin
     return results
 
 
+def compute_components(games: list[Game]) -> dict[str, int]:
+    """Connected-component id per team (union-find over shared games).
+
+    Two teams share a component iff there's a chain of played games linking
+    them -- directly, or via a cross-division "bridge" game through a third
+    team. Used to flag whether a cross-division rating comparison is backed
+    by any real evidence at all, versus resting entirely on the assumption
+    that two divisions' average teams are equal.
+    """
+    parent: dict[str, str] = {}
+
+    def find(t: str) -> str:
+        parent.setdefault(t, t)
+        while parent[t] != t:
+            parent[t] = parent[parent[t]]
+            t = parent[t]
+        return t
+
+    def union(a: str, b: str) -> None:
+        ra, rb = find(a), find(b)
+        if ra != rb:
+            parent[ra] = rb
+
+    teams = sorted({g.home for g in games} | {g.away for g in games})
+    for t in teams:
+        find(t)
+    for g in games:
+        union(g.home, g.away)
+
+    roots = sorted({find(t) for t in teams})
+    component_id = {root: i for i, root in enumerate(roots)}
+    return {t: component_id[find(t)] for t in teams}
+
+
 def compute_team_stats(games: list[Game]) -> dict[str, TeamStats]:
     """Traditional W-L-T / points / GF / GA, uncalibrated -- the official-style
     counting stats, independent of the rating model above."""

@@ -24,6 +24,16 @@ export function DivisionNav({ ageGroups }: DivisionNavProps) {
                 {div.levelLabel}
               </NavLink>
             ))}
+            <NavLink
+              to={`/predict/${encodeURIComponent(group.ageLabel)}`}
+              className={({ isActive }) =>
+                isActive
+                  ? 'division-nav__link division-nav__link--active division-nav__link--predict'
+                  : 'division-nav__link division-nav__link--predict'
+              }
+            >
+              Predict
+            </NavLink>
           </div>
         </div>
       ))}

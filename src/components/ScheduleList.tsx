@@ -1,7 +1,8 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { teamRoute } from '../lib/grouping'
-import type { GameRecord } from '../lib/types'
+import { predictMatchup } from '../lib/predict'
+import type { AgeGroupRatings, GameRecord } from '../lib/types'
 
 type Outcome = 'win' | 'lose' | 'tie'
 type ResultFilter = 'all' | 'win' | 'lose' | 'winOrTie'
@@ -13,9 +14,20 @@ const RESULT_FILTER_LABEL: Record<ResultFilter, string> = {
   winOrTie: 'Win or tie',
 }
 
-function scoreLabel(game: GameRecord): string {
-  if (!game.played || game.awayGoals === null || game.homeGoals === null) return 'Scheduled'
-  return `${game.awayGoals} - ${game.homeGoals}`
+function scoreLabel(
+  game: GameRecord,
+  perspectiveTeam: string | undefined,
+  ageGroups: Record<string, AgeGroupRatings> | undefined,
+  sameDivision: boolean,
+): string {
+  if (game.played && game.awayGoals !== null && game.homeGoals !== null) {
+    return `${game.awayGoals} - ${game.homeGoals}`
+  }
+  if (!ageGroups || !perspectiveTeam) return 'Scheduled'
+  const opponent = game.home === perspectiveTeam ? game.away : game.home
+  const prediction = predictMatchup(ageGroups, game.ageLabel, perspectiveTeam, opponent, sameDivision)
+  if (!prediction) return 'Scheduled'
+  return `Predicted: ${prediction.marginText}`
 }
 
 /** Outcome for `perspectiveTeam` in this game, or null if unplayed / team isn't in it. */
@@ -47,9 +59,18 @@ interface ScheduleListProps {
   /** The division the page itself is being viewed from -- if a game's own
    * division differs (a cross-level test game), that's flagged inline. */
   homeLevelLabel?: string
+  /** When set (only ever passed from a team's own page), unplayed rows show
+   * a tentative predicted margin instead of just "Scheduled". */
+  ageGroups?: Record<string, AgeGroupRatings>
 }
 
-export function ScheduleList({ games, startOpen = false, perspectiveTeam, homeLevelLabel }: ScheduleListProps) {
+export function ScheduleList({
+  games,
+  startOpen = false,
+  perspectiveTeam,
+  homeLevelLabel,
+  ageGroups,
+}: ScheduleListProps) {
   const [open, setOpen] = useState(startOpen)
   const [resultFilter, setResultFilter] = useState<ResultFilter>('all')
 
@@ -111,7 +132,7 @@ export function ScheduleList({ games, startOpen = false, perspectiveTeam, homeLe
                   <td className={game.home === perspectiveTeam ? 'schedule-table__me' : undefined}>
                     <Link to={teamRoute(game, game.home)}>{game.home}</Link>
                   </td>
-                  <td>{scoreLabel(game)}</td>
+                  <td>{scoreLabel(game, perspectiveTeam, ageGroups, !isCrossLevel)}</td>
                   <td>{game.type}</td>
                   <td className={isCrossLevel ? 'schedule-table__cross-level' : undefined}>
                     {game.ageLabel} {game.levelLabel}

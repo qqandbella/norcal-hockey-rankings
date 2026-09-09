@@ -49,6 +49,36 @@ that row use that game's own division rather than the team's home one.
 See `scripts/ratings.py` for the implementation and `scripts/test_ratings.py`
 for a regression fixture built from real results.
 
+### Cross-division predictor
+
+Each division's rating is centered to that division's own mean, so a B
+team's +2 and a BB team's +2 aren't directly comparable on their own.
+Cross-division test games (a B team's game filed under BB, or vice versa —
+see above) are real bridges between those otherwise-separate scales. For
+each age group (10U, 12U, ...), `compute_age_group_ratings` in
+`scripts/scrape.py` pools every division's played games (bridges included)
+and runs the same rating model once over the combined graph, giving one
+unified, cross-division-comparable rating per team, plus a `componentId`
+(union-find over the same graph) marking which teams are actually
+bridge-connected this season versus not.
+
+- **Predict page** (`/predict/<age>`, linked from the nav and from each
+  team's own page): pick any two teams in an age group, even across
+  divisions, and see the predicted goal differential.
+- **Inline on team pages**: every scheduled-but-unplayed game on a team's own
+  schedule shows a tentative predicted margin the same way.
+- Confidence is always shown: `direct` (same division), `bridged`
+  (different division, same component — real evidence ties the scales
+  together), or `unbridged` (different component — no bridge game has been
+  played yet, so the comparison silently assumes the two divisions' average
+  teams are equal; still shown, but flagged).
+
+Only *played* cross-division games count as bridges — a merely scheduled one
+doesn't connect anything until it's actually played and scraped, so
+`unbridged` pairs naturally flip to `bridged` as the season's test games
+happen. See `compute_components` in `scripts/ratings.py` and
+`compute_age_group_ratings` in `scripts/scrape.py`.
+
 ## Data source
 
 Data comes from `www.norcalyouthhockey.org` (the NorCal Youth Hockey

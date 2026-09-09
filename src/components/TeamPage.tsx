@@ -63,7 +63,13 @@ export function TeamPage({ data, homeDivision }: { data: RankingsData; homeDivis
         </Link>
       </p>
       <h2>
-        {teamName}
+        {teamName}{' '}
+        <Link
+          className="team-page__predict-link"
+          to={`/predict/${encodeURIComponent(homeDivision.ageLabel)}?a=${encodeURIComponent(teamName)}`}
+        >
+          (predict vs...)
+        </Link>
         {ttsLink && (
           <>
             {' '}
@@ -112,6 +118,7 @@ export function TeamPage({ data, homeDivision }: { data: RankingsData; homeDivis
         startOpen
         perspectiveTeam={teamName}
         homeLevelLabel={homeDivision.levelLabel}
+        ageGroups={data.ageGroups}
       />
     </section>
   )

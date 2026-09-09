@@ -19,7 +19,7 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
-from ratings import Game, compute_ratings, compute_team_stats
+from ratings import Game, compute_components, compute_ratings, compute_team_stats
 
 BASE_URL = "https://www.norcalyouthhockey.org"
 SCHEDULES_URL = f"{BASE_URL}/Schedules.php"
@@ -269,6 +269,43 @@ def build_division_payload(
     }
 
 
+def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
+    """One unified rating per team, spanning every division within an age
+    group (10U, 12U, ...), not just its own division.
+
+    A division-scoped rating (ratingsByType) can't be compared across
+    divisions -- each is centered to its own division's mean. This pools
+    every division's played games for the age group, played cross-division
+    "bridge" games included, and runs the same rating model once over the
+    combined graph so the numbers land on one shared scale. `componentId`
+    flags whether two teams are actually connected by any such bridge (same
+    id) or the comparison rests entirely on the assumption that two
+    divisions' average teams are equal (different id) -- see compute_components.
+    """
+    games_by_age: dict[str, dict[str, Game]] = {}
+    for division in payload_divisions:
+        bucket = games_by_age.setdefault(division["ageLabel"], {})
+        for g in division["games"]:
+            if not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
+                continue
+            bucket[g["gameId"]] = Game(
+                home=g["home"], away=g["away"], home_goals=g["homeGoals"], away_goals=g["awayGoals"]
+            )
+
+    age_groups = {}
+    for age_label, games_by_id in games_by_age.items():
+        games = list(games_by_id.values())
+        ratings = compute_ratings(games)
+        components = compute_components(games)
+        age_groups[age_label] = {
+            "teams": {
+                r.name: {"rating": r.rating, "gamesPlayed": r.games_played, "componentId": components[r.name]}
+                for r in ratings
+            }
+        }
+    return age_groups
+
+
 def main() -> int:
     session = _session()
     divisions = discover_divisions(session)
@@ -285,10 +322,15 @@ def main() -> int:
         payload_divisions.append(build_division_payload(level_id, label, games, team_ids))
         print(f"  {label} (level={level_id}): {len(games)} games", file=sys.stderr)
 
+    age_groups = compute_age_group_ratings(payload_divisions)
+    for age_label, group in age_groups.items():
+        print(f"  {age_label} unified rating: {len(group['teams'])} teams", file=sys.stderr)
+
     payload = {
         "scraped_at": datetime.datetime.now(datetime.timezone.utc).isoformat(timespec="seconds"),
         "source": FEED_URL,
         "divisions": payload_divisions,
+        "ageGroups": age_groups,
     }
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(payload, indent=2))

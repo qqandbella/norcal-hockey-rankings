@@ -113,7 +113,13 @@ const SAMPLE: RankingsData = {
       ageLabel: '10U',
       levelLabel: 'BB',
       ratingsByType: {
-        All: { teams: [], unratedTeams: ['Santa Clara Blackhawks 10-1', 'Fresno Jr Monsters 10-1'] },
+        All: {
+          teams: [
+            team({ name: 'Capital Thunder 10-1', rating: 1.5, rank: 1, tier: 'top', gamesPlayed: 1, wins: 1 }),
+            team({ name: 'Lake Tahoe Grizzlies 10-1', rating: -1.5, rank: 2, tier: 'low', gamesPlayed: 1, losses: 1 }),
+          ],
+          unratedTeams: ['Santa Clara Blackhawks 10-1', 'Fresno Jr Monsters 10-1'],
+        },
       },
       teamLinks: {},
       games: [
@@ -135,9 +141,42 @@ const SAMPLE: RankingsData = {
           ageLabel: '10U',
           levelLabel: 'BB',
         },
+        {
+          // A separate, already-played BB game unconnected to the B
+          // division -- keeps BB in a different rating component than B in
+          // this fixture, so the predictor's "unbridged" path is testable.
+          gameId: '5',
+          date: 'Sat Sep 5',
+          day: 'Sat',
+          time: '1:00 PM',
+          rink: 'Capital',
+          type: 'Preseason',
+          away: 'Capital Thunder 10-1',
+          home: 'Lake Tahoe Grizzlies 10-1',
+          awayGoals: 4,
+          homeGoals: 1,
+          played: true,
+          ageLabel: '10U',
+          levelLabel: 'BB',
+        },
       ],
     },
   ],
+  ageGroups: {
+    '10U': {
+      teams: {
+        'Fresno Jr Monsters 10-1': { rating: 3.5, gamesPlayed: 3, componentId: 0 },
+        'Vacaville Jets 10-2': { rating: -3.1, gamesPlayed: 3, componentId: 0 },
+        'Santa Clara Blackhawks 10-2': { rating: 0.5, gamesPlayed: 1, componentId: 0 },
+        'Lake Tahoe Grizzlies 10-2': { rating: -0.2, gamesPlayed: 1, componentId: 0 },
+        // Unconnected component -- no bridge game between B and BB has been
+        // played in this fixture (game 4 above is still just scheduled).
+        'Capital Thunder 10-1': { rating: 1.5, gamesPlayed: 1, componentId: 1 },
+        'Lake Tahoe Grizzlies 10-1': { rating: -1.5, gamesPlayed: 1, componentId: 1 },
+        'Santa Clara Blackhawks 10-1': { rating: 1.0, gamesPlayed: 1, componentId: 1 },
+      },
+    },
+  },
 }
 
 beforeEach(() => {
@@ -269,5 +308,59 @@ describe('App', () => {
     expect(screen.getByText('Fri Sep 4')).toBeInTheDocument()
     expect(screen.queryByText('Sat Sep 5')).not.toBeInTheDocument()
     expect(screen.queryByText('Sun Sep 6')).not.toBeInTheDocument()
+  })
+
+  it('predicts a same-division matchup as direct confidence', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByText('Fresno Jr Monsters 10-1')
+
+    await user.click(screen.getByRole('link', { name: 'Predict' }))
+    await screen.findByRole('heading', { name: '10U Predictor' })
+
+    await user.selectOptions(screen.getByLabelText('Team A'), 'Fresno Jr Monsters 10-1')
+    await user.selectOptions(screen.getByLabelText('Team B'), 'Vacaville Jets 10-2')
+
+    expect(await screen.findByText(/favored by/)).toBeInTheDocument()
+    expect(screen.getByText('Same division')).toBeInTheDocument()
+  })
+
+  it('predicts a cross-division matchup as unbridged when no bridge game has been played', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByText('Fresno Jr Monsters 10-1')
+
+    await user.click(screen.getByRole('link', { name: 'Predict' }))
+    await screen.findByRole('heading', { name: '10U Predictor' })
+
+    await user.selectOptions(screen.getByLabelText('Team A'), 'Fresno Jr Monsters 10-1')
+    await user.selectOptions(screen.getByLabelText('Team B'), 'Capital Thunder 10-1')
+
+    expect(await screen.findByText(/favored by/)).toBeInTheDocument()
+    expect(screen.getByText(/No bridge games yet/)).toBeInTheDocument()
+  })
+
+  it('prefills the predictor from a team page\'s "predict vs..." link', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
+    await user.click(teamLink)
+    await screen.findByRole('heading', { name: /Fresno Jr Monsters 10-1/ })
+
+    await user.click(screen.getByRole('link', { name: /predict vs/i }))
+    await screen.findByRole('heading', { name: '10U Predictor' })
+
+    expect(screen.getByLabelText('Team A')).toHaveValue('Fresno Jr Monsters 10-1')
+  })
+
+  it("shows a tentative predicted margin on a team's unplayed cross-division game", async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
+    await user.click(teamLink)
+    await screen.findByRole('heading', { name: /Fresno Jr Monsters 10-1/ })
+
+    const crossLevelRow = screen.getByText('Sat Sep 12').closest('tr')
+    expect(crossLevelRow).toHaveTextContent(/Predicted:/)
   })
 })

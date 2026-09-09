@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { HashRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { DivisionNav } from './components/DivisionNav'
+import { PredictPage } from './components/PredictPage'
 import { RankingsTable } from './components/RankingsTable'
 import { StatusBar } from './components/StatusBar'
 import { ScheduleList } from './components/ScheduleList'
@@ -77,6 +78,7 @@ export default function App() {
                 <Route path="/" element={<Overview data={data} />} />
                 <Route path="/:age/:level" element={<DivisionPage data={data} />} />
                 <Route path="/:age/:level/team/:team" element={<TeamPageRoute data={data} />} />
+                <Route path="/predict/:age" element={<PredictPage data={data} />} />
               </Routes>
             </main>
           </div>

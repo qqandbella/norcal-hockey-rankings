@@ -1,4 +1,4 @@
-from ratings import Game, GOAL_CAP, compute_ratings, compute_team_stats
+from ratings import Game, GOAL_CAP, compute_components, compute_ratings, compute_team_stats
 
 # Real 10U B preseason results (Labor Day weekend 2026), used as a regression
 # fixture. Home/away order matches how they were originally recorded; only
@@ -106,3 +106,29 @@ def test_team_stats_uncapped_unlike_rating():
     # not the +/-7 capped version.
     stats = compute_team_stats([Game("A", "B", 20, 0)])
     assert stats["A"].goal_diff == 20
+
+
+def test_components_same_division_share_one_component():
+    components = compute_components(TEN_U_B_GAMES)
+    assert len(set(components.values())) == 1
+
+
+def test_components_bridge_game_merges_two_divisions():
+    division_b = [Game("B1", "B2", 5, 2), Game("B2", "B3", 3, 1)]
+    division_bb = [Game("BB1", "BB2", 4, 1), Game("BB2", "BB3", 2, 2)]
+    # B1 also plays a cross-division test game against BB1 -- the bridge.
+    bridge = [Game("B1", "BB1", 6, 3)]
+
+    without_bridge = compute_components(division_b + division_bb)
+    assert without_bridge["B1"] != without_bridge["BB1"]
+
+    with_bridge = compute_components(division_b + division_bb + bridge)
+    assert with_bridge["B1"] == with_bridge["BB1"] == with_bridge["B3"] == with_bridge["BB3"]
+
+
+def test_components_fully_disconnected_divisions_stay_separate():
+    games = [Game("X1", "X2", 3, 1), Game("Y1", "Y2", 4, 2)]
+    components = compute_components(games)
+    assert components["X1"] == components["X2"]
+    assert components["Y1"] == components["Y2"]
+    assert components["X1"] != components["Y1"]
