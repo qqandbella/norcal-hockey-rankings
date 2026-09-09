@@ -14,20 +14,8 @@ const RESULT_FILTER_LABEL: Record<ResultFilter, string> = {
   winOrTie: 'Win or tie',
 }
 
-function scoreLabel(
-  game: GameRecord,
-  perspectiveTeam: string | undefined,
-  ageGroups: Record<string, AgeGroupRatings> | undefined,
-  sameDivision: boolean,
-): string {
-  if (game.played && game.awayGoals !== null && game.homeGoals !== null) {
-    return `${game.awayGoals} - ${game.homeGoals}`
-  }
-  if (!ageGroups || !perspectiveTeam) return 'Scheduled'
-  const opponent = game.home === perspectiveTeam ? game.away : game.home
-  const prediction = predictMatchup(ageGroups, game.ageLabel, perspectiveTeam, opponent, sameDivision)
-  if (!prediction) return 'Scheduled'
-  return `Predicted: ${prediction.marginText}`
+function predictRoute(game: GameRecord): string {
+  return `/predict/${encodeURIComponent(game.ageLabel)}?a=${encodeURIComponent(game.away)}&b=${encodeURIComponent(game.home)}`
 }
 
 /** Outcome for `perspectiveTeam` in this game, or null if unplayed / team isn't in it. */
@@ -122,6 +110,17 @@ export function ScheduleList({
                 .filter(Boolean)
                 .join(' ')
               const isCrossLevel = homeLevelLabel !== undefined && game.levelLabel !== homeLevelLabel
+              const hasScore = game.played && game.awayGoals !== null && game.homeGoals !== null
+              const prediction =
+                !hasScore && ageGroups && perspectiveTeam
+                  ? predictMatchup(
+                      ageGroups,
+                      game.ageLabel,
+                      game.away,
+                      game.home,
+                      !isCrossLevel,
+                    )
+                  : null
               return (
                 <tr key={game.gameId} className={rowClass || undefined}>
                   <td>{game.date}</td>
@@ -132,7 +131,15 @@ export function ScheduleList({
                   <td className={game.home === perspectiveTeam ? 'schedule-table__me' : undefined}>
                     <Link to={teamRoute(game, game.home)}>{game.home}</Link>
                   </td>
-                  <td>{scoreLabel(game, perspectiveTeam, ageGroups, !isCrossLevel)}</td>
+                  <td>
+                    {hasScore ? (
+                      `${game.awayGoals} - ${game.homeGoals}`
+                    ) : prediction ? (
+                      <Link to={predictRoute(game)}>Predicted: {prediction.marginText}</Link>
+                    ) : (
+                      'Scheduled'
+                    )}
+                  </td>
                   <td>{game.type}</td>
                   <td className={isCrossLevel ? 'schedule-table__cross-level' : undefined}>
                     {game.ageLabel} {game.levelLabel}

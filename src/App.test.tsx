@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import App from './App'
@@ -362,5 +362,13 @@ describe('App', () => {
 
     const crossLevelRow = screen.getByText('Sat Sep 12').closest('tr')
     expect(crossLevelRow).toHaveTextContent(/Predicted:/)
+
+    // The prediction itself links to the predictor page with both this
+    // game's away and home teams pre-selected.
+    const predictionLink = within(crossLevelRow!).getByRole('link', { name: /Predicted:/ })
+    expect(predictionLink).toHaveAttribute(
+      'href',
+      '#/predict/10U?a=Santa%20Clara%20Blackhawks%2010-1&b=Fresno%20Jr%20Monsters%2010-1',
+    )
   })
 })
