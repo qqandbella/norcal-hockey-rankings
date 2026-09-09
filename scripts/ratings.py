@@ -145,6 +145,21 @@ def _adjacent_pair(t1: str, t2: str) -> tuple[str, str] | None:
     return (t1, t2) if i1 < i2 else (t2, t1)
 
 
+def compute_primary_tiers(within_ratings_by_tier: dict[str, list[TeamRating]]) -> dict[str, str]:
+    """Each team's primary tier -- whichever tier it has the most games in
+    (almost always its only tier). Shared by compute_tier_offsets and
+    anything else (e.g. the backtest) that needs to know which tier a team
+    is really "from" as of a given set of within-division ratings."""
+    primary_tier: dict[str, str] = {}
+    most_games: dict[str, int] = {}
+    for tier, rows in within_ratings_by_tier.items():
+        for r in rows:
+            if r.games_played > most_games.get(r.name, -1):
+                most_games[r.name] = r.games_played
+                primary_tier[r.name] = tier
+    return primary_tier
+
+
 def compute_tier_offsets(
     within_ratings_by_tier: dict[str, list[TeamRating]],
     bridge_games: list[tuple[str, str, int, str]],
@@ -174,14 +189,7 @@ def compute_tier_offsets(
     rating_by_tier_name: dict[str, dict[str, float]] = {
         tier: {r.name: r.rating for r in rows} for tier, rows in within_ratings_by_tier.items() if rows
     }
-
-    primary_tier: dict[str, str] = {}
-    most_games: dict[str, int] = {}
-    for tier, rows in within_ratings_by_tier.items():
-        for r in rows:
-            if r.games_played > most_games.get(r.name, -1):
-                most_games[r.name] = r.games_played
-                primary_tier[r.name] = tier
+    primary_tier = compute_primary_tiers(within_ratings_by_tier)
 
     # (higher_tier, lower_tier) -> list of evidence dicts, each carrying
     # enough detail to explain the observation on its own (which two teams,

@@ -91,6 +91,28 @@ one doesn't connect anything until it's actually played and scraped, so
 happen. See `compute_tier_offsets` in `scripts/ratings.py` and
 `compute_age_group_ratings` in `scripts/scrape.py`.
 
+### Validating the model: walk-forward backtest
+
+With ~3-4 games per team, this is fundamentally a low-data pairwise-ranking
+problem (the same regime Elo/TrueSkill were built for), not a big-data one —
+the honest way to check whether the model is any good is **walk-forward
+validation**: for every played game, in chronological order, refit using
+*only* games strictly before it, predict that game's margin, and compare to
+what actually happened.
+
+```bash
+python3 scripts/backtest.py   # reads public/data/latest.json, no network calls
+```
+
+Reports MAE against a naive "predict an even game" baseline and directional
+accuracy (did it pick the right favorite), broken out by within-division vs.
+cross-division games, so an "it looks plausible" model can't hide behind a
+few cherry-picked examples. See `scripts/backtest.py` and
+`scripts/test_backtest.py` (the latter tests the *harness* itself — no data
+leakage from a held-out game's own result or from games that happen after
+it — not prediction accuracy, which is what running the script itself
+reports).
+
 ## Data source
 
 Data comes from `www.norcalyouthhockey.org` (the NorCal Youth Hockey
