@@ -39,6 +39,13 @@ schedule rows are color-coded by result (green win / red loss / yellow tie)
 from that team's perspective, its own name is bolded, and there's a result
 filter (win only / lose only / win-or-tie).
 
+A team's schedule is aggregated **across every division on the site**, not
+just its "home" one — teams sometimes play a cross-level test game that TTS
+files under a different division entirely (e.g. a B team's game against a BB
+opponent gets filed under BB, not B), or move levels mid-season. Each game
+row is tagged with the division it's actually filed under, and links from
+that row use that game's own division rather than the team's home one.
+
 See `scripts/ratings.py` for the implementation and `scripts/test_ratings.py`
 for a regression fixture built from real results.
 

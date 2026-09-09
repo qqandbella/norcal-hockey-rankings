@@ -231,22 +231,33 @@ def build_division_payload(
             [g for g in raw_games if g["type"] == game_type],
         )
 
-    games = [
-        {
-            "gameId": g["game_id"],
-            "date": g["date"],
-            "day": g["day"],
-            "time": g["time"],
-            "rink": g["rink"],
-            "type": g["type"],
-            "away": g["away"],
-            "home": g["home"],
-            "awayGoals": g["away_goals"],
-            "homeGoals": g["home_goals"],
-            "played": g["played"],
-        }
-        for g in raw_games
-    ]
+    games = []
+    for g in raw_games:
+        # The feed's own Division column for this specific game row, which
+        # can differ from the level we queried -- a team's B-level squad
+        # sometimes plays a cross-division test game filed under BB (or vice
+        # versa). Carry it through so a team's full schedule (aggregated
+        # across every division on the site) can still link/label each game
+        # correctly rather than only ever showing games filed under this
+        # team's "home" level.
+        game_age_label, game_level_label = split_age_level(g["division"]) if g["division"] else (age_label, level_label)
+        games.append(
+            {
+                "gameId": g["game_id"],
+                "date": g["date"],
+                "day": g["day"],
+                "time": g["time"],
+                "rink": g["rink"],
+                "type": g["type"],
+                "away": g["away"],
+                "home": g["home"],
+                "awayGoals": g["away_goals"],
+                "homeGoals": g["home_goals"],
+                "played": g["played"],
+                "ageLabel": game_age_label,
+                "levelLabel": game_level_label,
+            }
+        )
     all_team_names = {g["home"] for g in raw_games} | {g["away"] for g in raw_games}
     return {
         "levelId": level_id,

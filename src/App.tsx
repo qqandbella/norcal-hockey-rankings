@@ -31,7 +31,7 @@ function DivisionPage({ data }: { data: RankingsData }) {
         {division.ageLabel} {division.levelLabel}
       </h2>
       <RankingsTable division={division} selectedType={selectedType} onSelectedTypeChange={setSelectedType} />
-      <ScheduleList games={division.games} division={division} />
+      <ScheduleList games={division.games} homeLevelLabel={division.levelLabel} />
     </section>
   )
 }
@@ -42,7 +42,7 @@ function TeamPageRoute({ data }: { data: RankingsData }) {
   if (!division) {
     return <p className="empty-state">No data for {age} {level}.</p>
   }
-  return <TeamPage division={division} />
+  return <TeamPage data={data} homeDivision={division} />
 }
 
 function Overview({ data }: { data: RankingsData }) {

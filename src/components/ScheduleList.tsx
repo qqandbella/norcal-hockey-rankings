@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { teamRoute } from '../lib/grouping'
-import type { Division, GameRecord } from '../lib/types'
+import type { GameRecord } from '../lib/types'
 
 type Outcome = 'win' | 'lose' | 'tie'
 type ResultFilter = 'all' | 'win' | 'lose' | 'winOrTie'
@@ -41,13 +41,15 @@ function matchesFilter(outcome: Outcome | null, filter: ResultFilter): boolean {
 
 interface ScheduleListProps {
   games: GameRecord[]
-  division: Pick<Division, 'ageLabel' | 'levelLabel'>
   startOpen?: boolean
   /** When set, highlights this team's name and color-codes each row by its result. */
   perspectiveTeam?: string
+  /** The division the page itself is being viewed from -- if a game's own
+   * division differs (a cross-level test game), that's flagged inline. */
+  homeLevelLabel?: string
 }
 
-export function ScheduleList({ games, division, startOpen = false, perspectiveTeam }: ScheduleListProps) {
+export function ScheduleList({ games, startOpen = false, perspectiveTeam, homeLevelLabel }: ScheduleListProps) {
   const [open, setOpen] = useState(startOpen)
   const [resultFilter, setResultFilter] = useState<ResultFilter>('all')
 
@@ -86,6 +88,7 @@ export function ScheduleList({ games, division, startOpen = false, perspectiveTe
               <th>Home</th>
               <th>Score</th>
               <th>Type</th>
+              <th>Level</th>
             </tr>
           </thead>
           <tbody>
@@ -97,18 +100,22 @@ export function ScheduleList({ games, division, startOpen = false, perspectiveTe
               ]
                 .filter(Boolean)
                 .join(' ')
+              const isCrossLevel = homeLevelLabel !== undefined && game.levelLabel !== homeLevelLabel
               return (
                 <tr key={game.gameId} className={rowClass || undefined}>
                   <td>{game.date}</td>
                   <td>{game.time}</td>
                   <td className={game.away === perspectiveTeam ? 'schedule-table__me' : undefined}>
-                    <Link to={teamRoute(division, game.away)}>{game.away}</Link>
+                    <Link to={teamRoute(game, game.away)}>{game.away}</Link>
                   </td>
                   <td className={game.home === perspectiveTeam ? 'schedule-table__me' : undefined}>
-                    <Link to={teamRoute(division, game.home)}>{game.home}</Link>
+                    <Link to={teamRoute(game, game.home)}>{game.home}</Link>
                   </td>
                   <td>{scoreLabel(game)}</td>
                   <td>{game.type}</td>
+                  <td className={isCrossLevel ? 'schedule-table__cross-level' : undefined}>
+                    {game.ageLabel} {game.levelLabel}
+                  </td>
                 </tr>
               )
             })}

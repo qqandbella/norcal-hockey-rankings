@@ -73,6 +73,8 @@ const SAMPLE: RankingsData = {
           awayGoals: 2,
           homeGoals: 8,
           played: true,
+          ageLabel: '10U',
+          levelLabel: 'B',
         },
         {
           gameId: '2',
@@ -86,6 +88,8 @@ const SAMPLE: RankingsData = {
           awayGoals: 5,
           homeGoals: 1,
           played: true,
+          ageLabel: '10U',
+          levelLabel: 'B',
         },
         {
           gameId: '3',
@@ -99,6 +103,37 @@ const SAMPLE: RankingsData = {
           awayGoals: 3,
           homeGoals: 3,
           played: true,
+          ageLabel: '10U',
+          levelLabel: 'B',
+        },
+      ],
+    },
+    {
+      levelId: 55,
+      ageLabel: '10U',
+      levelLabel: 'BB',
+      ratingsByType: {
+        All: { teams: [], unratedTeams: ['Santa Clara Blackhawks 10-1', 'Fresno Jr Monsters 10-1'] },
+      },
+      teamLinks: {},
+      games: [
+        {
+          // Fresno's B-team playing a cross-division test game filed under
+          // BB -- this only shows up when scraping level=55, never level=3,
+          // so a team page has to aggregate across all divisions to see it.
+          gameId: '4',
+          date: 'Sat Sep 12',
+          day: 'Sat',
+          time: '3:15 PM',
+          rink: 'Fresno',
+          type: 'Preseason',
+          away: 'Santa Clara Blackhawks 10-1',
+          home: 'Fresno Jr Monsters 10-1',
+          awayGoals: null,
+          homeGoals: null,
+          played: false,
+          ageLabel: '10U',
+          levelLabel: 'BB',
         },
       ],
     },
@@ -197,6 +232,25 @@ describe('App', () => {
     // of whether it's listed as home or away.
     const fresnoCells = winRow!.querySelectorAll('.schedule-table__me')
     expect(fresnoCells.length).toBe(1)
+  })
+
+  it("includes a team's cross-division games (filed under a different level) in its schedule", async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    const teamLink = await screen.findByRole('link', { name: 'Fresno Jr Monsters 10-1' })
+    await user.click(teamLink)
+    await screen.findByRole('heading', { name: /Fresno Jr Monsters 10-1/ })
+
+    // Game 4 is filed under 10U BB, not this team's home division (10U B),
+    // but it's still Fresno's game and must show up.
+    expect(screen.getByText('Sat Sep 12')).toBeInTheDocument()
+    const crossLevelRow = screen.getByText('Sat Sep 12').closest('tr')
+    expect(crossLevelRow).toHaveTextContent('10U BB')
+
+    // The opponent from that cross-division game links using ITS own
+    // division (BB), not Fresno's home division (B).
+    const opponentLink = screen.getByRole('link', { name: 'Santa Clara Blackhawks 10-1' })
+    expect(opponentLink).toHaveAttribute('href', '#/10U/BB/team/Santa%20Clara%20Blackhawks%2010-1')
   })
 
   it('filters a team schedule by result', async () => {

@@ -32,6 +32,11 @@ export interface GameRecord {
   awayGoals: number | null
   homeGoals: number | null
   played: boolean
+  /** The division this specific game is filed under -- can differ from a
+   * team's "home" division (cross-level test games, or a team that moved
+   * levels mid-season). */
+  ageLabel: string
+  levelLabel: string
 }
 
 export interface Division {

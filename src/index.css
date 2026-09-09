@@ -214,6 +214,11 @@ body {
   color: var(--lose);
 }
 
+.schedule-table__cross-level {
+  font-weight: 700;
+  font-style: italic;
+}
+
 .schedule-table__row--win {
   background: color-mix(in srgb, var(--win) 18%, transparent);
 }
