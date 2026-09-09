@@ -76,6 +76,9 @@ const SAMPLE: RankingsData = {
 }
 
 beforeEach(() => {
+  // HashRouter reads/writes the real jsdom location, which otherwise carries
+  // over between tests in this file (e.g. after a test clicks a team link).
+  window.location.hash = ''
   vi.stubGlobal(
     'fetch',
     vi.fn().mockResolvedValue({
@@ -113,5 +116,16 @@ describe('App', () => {
     await user.click(teamLink)
     expect(await screen.findByRole('heading', { name: 'Fresno Jr Monsters 10-1' })).toBeInTheDocument()
     expect(screen.getByText(/3-0-0/)).toBeInTheDocument()
+  })
+
+  it('links team names inside the schedule table too', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByText('Fresno Jr Monsters 10-1')
+
+    await user.click(screen.getByRole('button', { name: /show schedule/i }))
+
+    const scheduleLinks = screen.getAllByRole('link', { name: 'Vacaville Jets 10-2' })
+    expect(scheduleLinks.length).toBeGreaterThan(0)
   })
 })

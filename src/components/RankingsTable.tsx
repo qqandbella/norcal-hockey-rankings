@@ -85,7 +85,13 @@ export function RankingsTable({ division, selectedType, onSelectedTypeChange }: 
           </table>
           {bucket.unratedTeams.length > 0 && (
             <p className="rankings-table__unrated">
-              No games of this type yet: {bucket.unratedTeams.join(', ')}
+              No games of this type yet:{' '}
+              {bucket.unratedTeams.map((name, i) => (
+                <span key={name}>
+                  {i > 0 && ', '}
+                  <Link to={teamRoute(division, name)}>{name}</Link>
+                </span>
+              ))}
             </p>
           )}
         </div>

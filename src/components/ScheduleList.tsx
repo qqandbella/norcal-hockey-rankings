@@ -1,12 +1,20 @@
 import { useState } from 'react'
-import type { GameRecord } from '../lib/types'
+import { Link } from 'react-router-dom'
+import { teamRoute } from '../lib/grouping'
+import type { Division, GameRecord } from '../lib/types'
 
 function scoreLabel(game: GameRecord): string {
   if (!game.played || game.awayGoals === null || game.homeGoals === null) return 'Scheduled'
   return `${game.awayGoals} - ${game.homeGoals}`
 }
 
-export function ScheduleList({ games, startOpen = false }: { games: GameRecord[]; startOpen?: boolean }) {
+interface ScheduleListProps {
+  games: GameRecord[]
+  division: Pick<Division, 'ageLabel' | 'levelLabel'>
+  startOpen?: boolean
+}
+
+export function ScheduleList({ games, division, startOpen = false }: ScheduleListProps) {
   const [open, setOpen] = useState(startOpen)
   const played = games.filter((g) => g.played)
   const upcoming = games.filter((g) => !g.played)
@@ -33,8 +41,12 @@ export function ScheduleList({ games, startOpen = false }: { games: GameRecord[]
               <tr key={game.gameId} className={game.played ? undefined : 'schedule-table__upcoming'}>
                 <td>{game.date}</td>
                 <td>{game.time}</td>
-                <td>{game.away}</td>
-                <td>{game.home}</td>
+                <td>
+                  <Link to={teamRoute(division, game.away)}>{game.away}</Link>
+                </td>
+                <td>
+                  <Link to={teamRoute(division, game.home)}>{game.home}</Link>
+                </td>
                 <td>{scoreLabel(game)}</td>
                 <td>{game.type}</td>
               </tr>

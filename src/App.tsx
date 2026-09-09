@@ -31,7 +31,7 @@ function DivisionPage({ data }: { data: RankingsData }) {
         {division.ageLabel} {division.levelLabel}
       </h2>
       <RankingsTable division={division} selectedType={selectedType} onSelectedTypeChange={setSelectedType} />
-      <ScheduleList games={division.games} />
+      <ScheduleList games={division.games} division={division} />
     </section>
   )
 }
