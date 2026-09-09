@@ -27,34 +27,49 @@ body {
   max-width: 60ch;
 }
 
-.refresh-bar {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
+.status-bar {
   margin: 1rem 0;
 }
 
-.refresh-bar__timestamp {
+.status-bar__timestamp {
   opacity: 0.7;
   font-size: 0.9rem;
 }
 
-.refresh-bar__button {
-  padding: 0.4rem 0.9rem;
-  border-radius: 6px;
-  border: 1px solid var(--border);
-  background: transparent;
-  cursor: pointer;
-  font: inherit;
-}
-
-.refresh-bar__button:disabled {
-  opacity: 0.5;
-  cursor: default;
-}
-
 .error-banner {
   color: var(--low);
+}
+
+.rankings-filter {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.rankings-filter select {
+  font: inherit;
+  padding: 0.2rem 0.4rem;
+}
+
+.team-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.5rem;
+  margin: 1rem 0 1.5rem;
+}
+
+.team-stats dt {
+  font-size: 0.75rem;
+  opacity: 0.65;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.team-stats dd {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
 }
 
 .app__body {

@@ -6,8 +6,8 @@ function scoreLabel(game: GameRecord): string {
   return `${game.awayGoals} - ${game.homeGoals}`
 }
 
-export function ScheduleList({ games }: { games: GameRecord[] }) {
-  const [open, setOpen] = useState(false)
+export function ScheduleList({ games, startOpen = false }: { games: GameRecord[]; startOpen?: boolean }) {
+  const [open, setOpen] = useState(startOpen)
   const played = games.filter((g) => g.played)
   const upcoming = games.filter((g) => !g.played)
 

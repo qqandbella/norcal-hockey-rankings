@@ -18,12 +18,18 @@ rating system, not a heuristic average.
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 GOAL_CAP = 7
 SHRINKAGE_K = 3.0
 MAX_ITERS = 300
 CONVERGENCE_EPS = 1e-9
+
+# Standard hockey points: win=2, tie=1, loss=0. The source feed carries no
+# OT/shootout marker, so ties are recorded as plain ties rather than OTL.
+POINTS_WIN = 2
+POINTS_TIE = 1
+POINTS_LOSS = 0
 
 
 @dataclass
@@ -41,6 +47,21 @@ class TeamRating:
     games_played: int
     rank: int = 0
     tier: str = "mid"
+
+
+@dataclass
+class TeamStats:
+    name: str
+    wins: int = 0
+    losses: int = 0
+    ties: int = 0
+    points: int = 0
+    goals_for: int = 0
+    goals_against: int = 0
+
+    @property
+    def goal_diff(self) -> int:
+        return self.goals_for - self.goals_against
 
 
 def _capped_margin(home_goals: int, away_goals: int) -> int:
@@ -98,3 +119,39 @@ def compute_ratings(games: list[Game], k: float = SHRINKAGE_K) -> list[TeamRatin
             )
         )
     return results
+
+
+def compute_team_stats(games: list[Game]) -> dict[str, TeamStats]:
+    """Traditional W-L-T / points / GF / GA, uncalibrated -- the official-style
+    counting stats, independent of the rating model above."""
+    stats: dict[str, TeamStats] = {}
+
+    def _get(name: str) -> TeamStats:
+        if name not in stats:
+            stats[name] = TeamStats(name=name)
+        return stats[name]
+
+    for g in games:
+        home, away = _get(g.home), _get(g.away)
+        home.goals_for += g.home_goals
+        home.goals_against += g.away_goals
+        away.goals_for += g.away_goals
+        away.goals_against += g.home_goals
+
+        if g.home_goals > g.away_goals:
+            home.wins += 1
+            home.points += POINTS_WIN
+            away.losses += 1
+            away.points += POINTS_LOSS
+        elif g.home_goals < g.away_goals:
+            away.wins += 1
+            away.points += POINTS_WIN
+            home.losses += 1
+            home.points += POINTS_LOSS
+        else:
+            home.ties += 1
+            away.ties += 1
+            home.points += POINTS_TIE
+            away.points += POINTS_TIE
+
+    return stats

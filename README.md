@@ -21,6 +21,20 @@ family as MyHockeyRankings:
   proportion to how few games it has played, so a single lopsided result with
   a 2-3 game sample doesn't swing the rating as if it were a full season.
 
+Traditional counting stats (W-L-T, points, GF/GA/GD) are also shown alongside
+the rating — those use standard hockey scoring (win=2, tie=1, loss=0) and the
+real, uncapped goal differential, independent of the rating model above. See
+`compute_team_stats` in `scripts/ratings.py`.
+
+Each division has a **game-type filter** (All / Preseason / Regular / ... —
+whatever types are actually present in that division's schedule, discovered
+from the source data rather than a fixed list). Ratings and stats are
+precomputed server-side for each type plus an "All" bucket, so switching the
+filter doesn't require running anything client-side.
+
+Every team name links to a **team page** showing that team's full schedule
+and stats.
+
 See `scripts/ratings.py` for the implementation and `scripts/test_ratings.py`
 for a regression fixture built from real results.
 
@@ -29,15 +43,25 @@ for a regression fixture built from real results.
 Data comes from `www.norcalyouthhockey.org` (the NorCal Youth Hockey
 Association's own site), specifically the same `load-tts-schedule.php`
 endpoint its own `Schedules.php` page calls via AJAX on every page load.
-`scripts/scrape.py` runs on a schedule via GitHub Actions
+`scripts/scrape.py` runs every 12h via GitHub Actions
 (`.github/workflows/scrape.yml`), writes `public/data/latest.json`, and
 commits it back to `main`, which triggers a rebuild/redeploy
 (`.github/workflows/deploy.yml`).
 
-The site itself never talks to any upstream data source directly — it only
-ever reads its own committed `public/data/latest.json`. The **Refresh**
-button re-fetches that file with a cache-busting query param; it does not
-trigger a live scrape.
+The site itself never talks to any upstream data source directly, and there
+is currently no live/on-demand refresh from the public site — the "Data as
+of" line just reflects whatever `scrape.yml` last committed. A repository
+collaborator with write access can force an out-of-cycle scrape any time via
+the Actions tab (**Scrape rankings data** → **Run workflow**), or:
+
+```bash
+gh workflow run scrape.yml --repo qqandbella/norcal-hockey-rankings
+```
+
+(A client-triggered on-demand refresh was considered but requires holding a
+credential somewhere — either exposed in the public site's JS, or in a small
+backend proxy that doesn't exist yet. Revisit if that tradeoff becomes worth
+it.)
 
 ## Development
 

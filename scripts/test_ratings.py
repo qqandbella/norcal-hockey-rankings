@@ -1,4 +1,4 @@
-from ratings import Game, GOAL_CAP, compute_ratings
+from ratings import Game, GOAL_CAP, compute_ratings, compute_team_stats
 
 # Real 10U B preseason results (Labor Day weekend 2026), used as a regression
 # fixture. Home/away order matches how they were originally recorded; only
@@ -81,3 +81,28 @@ def test_games_played_counted_correctly():
     by_name = ratings_by_name(TEN_U_B_GAMES)
     assert by_name["Fresno Jr Monsters 10-1"].games_played == 3
     assert by_name["Stockton Colts 10-1"].games_played == 3
+
+
+def test_team_stats_win_loss_tie_and_points():
+    stats = compute_team_stats(TEN_U_B_GAMES)
+    fresno = stats["Fresno Jr Monsters 10-1"]
+    # 3 wins, 0 losses, 0 ties: 8-1, 11-2, 13-0.
+    assert (fresno.wins, fresno.losses, fresno.ties) == (3, 0, 0)
+    assert fresno.points == 6
+    assert fresno.goals_for == 32
+    assert fresno.goals_against == 3
+    assert fresno.goal_diff == 29
+
+
+def test_team_stats_tie_splits_points():
+    stats = compute_team_stats([Game("A", "B", 3, 3)])
+    assert stats["A"].ties == stats["B"].ties == 1
+    assert stats["A"].points == stats["B"].points == 1
+    assert stats["A"].wins == stats["A"].losses == 0
+
+
+def test_team_stats_uncapped_unlike_rating():
+    # Unlike the rating model, official stats use the real goal differential,
+    # not the +/-7 capped version.
+    stats = compute_team_stats([Game("A", "B", 20, 0)])
+    assert stats["A"].goal_diff == 20

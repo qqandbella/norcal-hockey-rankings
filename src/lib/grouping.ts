@@ -34,3 +34,7 @@ export function groupByAge(divisions: Division[]): AgeGroup[] {
 export function divisionRoute(div: Pick<Division, 'ageLabel' | 'levelLabel'>): string {
   return `/${encodeURIComponent(div.ageLabel)}/${encodeURIComponent(div.levelLabel)}`
 }
+
+export function teamRoute(div: Pick<Division, 'ageLabel' | 'levelLabel'>, teamName: string): string {
+  return `${divisionRoute(div)}/team/${encodeURIComponent(teamName)}`
+}

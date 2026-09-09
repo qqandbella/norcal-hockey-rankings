@@ -19,7 +19,7 @@ from pathlib import Path
 import requests
 from bs4 import BeautifulSoup
 
-from ratings import Game, compute_ratings
+from ratings import Game, compute_ratings, compute_team_stats
 
 BASE_URL = "https://www.norcalyouthhockey.org"
 SCHEDULES_URL = f"{BASE_URL}/Schedules.php"
@@ -147,25 +147,67 @@ def split_age_level(label: str) -> tuple[str, str]:
     return label, ""
 
 
-def build_division_payload(level_id: int, label: str, raw_games: list[dict]) -> dict:
-    age_label, level_label = split_age_level(label)
-    rating_games = [
+def _rating_games(raw_games: list[dict]) -> list[Game]:
+    return [
         Game(home=g["home"], away=g["away"], home_goals=g["home_goals"], away_goals=g["away_goals"])
         for g in raw_games
         if g["played"]
     ]
+
+
+def _build_team_rows(played_of_type: list[dict], roster_of_type: list[dict]) -> dict:
+    """Ratings + traditional stats for one type-filtered slice of games.
+
+    `roster_of_type` includes scheduled-but-not-yet-played games of this type
+    too, so a team that's only scheduled (no results yet) still shows up as
+    "unrated" rather than silently disappearing from this type's view.
+    """
+    rating_games = _rating_games(played_of_type)
     ratings = compute_ratings(rating_games)
-    rating_by_name = {r.name: r for r in ratings}
-    teams = [
-        {
-            "name": r.name,
-            "rating": r.rating,
-            "rank": r.rank,
-            "tier": r.tier,
-            "gamesPlayed": r.games_played,
-        }
-        for r in sorted(ratings, key=lambda r: r.rank)
-    ]
+    stats_by_name = compute_team_stats(rating_games)
+    rows = []
+    for r in sorted(ratings, key=lambda r: r.rank):
+        s = stats_by_name.get(r.name)
+        rows.append(
+            {
+                "name": r.name,
+                "rating": r.rating,
+                "rank": r.rank,
+                "tier": r.tier,
+                "gamesPlayed": r.games_played,
+                "wins": s.wins if s else 0,
+                "losses": s.losses if s else 0,
+                "ties": s.ties if s else 0,
+                "points": s.points if s else 0,
+                "goalsFor": s.goals_for if s else 0,
+                "goalsAgainst": s.goals_against if s else 0,
+                "goalDiff": s.goal_diff if s else 0,
+            }
+        )
+    unrated = sorted(
+        ({g["home"] for g in roster_of_type} | {g["away"] for g in roster_of_type})
+        - {r["name"] for r in rows}
+    )
+    return {"teams": rows, "unratedTeams": unrated}
+
+
+def build_division_payload(level_id: int, label: str, raw_games: list[dict]) -> dict:
+    age_label, level_label = split_age_level(label)
+
+    # Precompute one ratings+stats table per distinct game type actually
+    # present in this division, plus a synthetic "All" bucket covering every
+    # played game regardless of type. The type filter on the site is a
+    # single-select, so this is a small, bounded set (never all 2^n
+    # combinations) -- no need to run the rating algorithm client-side.
+    played_games = [g for g in raw_games if g["played"]]
+    types_present = sorted({g["type"] for g in raw_games if g["type"]})
+    ratings_by_type = {"All": _build_team_rows(played_games, raw_games)}
+    for game_type in types_present:
+        ratings_by_type[game_type] = _build_team_rows(
+            [g for g in played_games if g["type"] == game_type],
+            [g for g in raw_games if g["type"] == game_type],
+        )
+
     games = [
         {
             "gameId": g["game_id"],
@@ -186,15 +228,8 @@ def build_division_payload(level_id: int, label: str, raw_games: list[dict]) -> 
         "levelId": level_id,
         "ageLabel": age_label,
         "levelLabel": level_label,
-        "teams": teams,
+        "ratingsByType": ratings_by_type,
         "games": games,
-        # Teams present in the schedule but with zero played games don't get a
-        # rating (nothing to compute from yet); surface them separately so
-        # the site can still show "no games played" rather than omit them.
-        "unratedTeams": sorted(
-            ({g["home"] for g in raw_games} | {g["away"] for g in raw_games})
-            - set(rating_by_name)
-        ),
     }
 
 

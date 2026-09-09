@@ -1,11 +1,23 @@
 export type Tier = 'top' | 'mid' | 'low'
 
-export interface TeamRating {
+export interface TeamRow {
   name: string
   rating: number
   rank: number
   tier: Tier
   gamesPlayed: number
+  wins: number
+  losses: number
+  ties: number
+  points: number
+  goalsFor: number
+  goalsAgainst: number
+  goalDiff: number
+}
+
+export interface RatingsBucket {
+  teams: TeamRow[]
+  unratedTeams: string[]
 }
 
 export interface GameRecord {
@@ -26,9 +38,9 @@ export interface Division {
   levelId: number
   ageLabel: string
   levelLabel: string
-  teams: TeamRating[]
+  /** Keyed by game type ("Preseason", "Regular", ...), plus a synthetic "All" bucket. */
+  ratingsByType: Record<string, RatingsBucket>
   games: GameRecord[]
-  unratedTeams: string[]
 }
 
 export interface RankingsData {
@@ -36,3 +48,5 @@ export interface RankingsData {
   source: string
   divisions: Division[]
 }
+
+export const ALL_TYPES = 'All'

@@ -1,25 +1,26 @@
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { RankingsData } from './types'
 
 interface RankingsState {
   data: RankingsData | null
   loading: boolean
   error: string | null
-  refresh: () => void
 }
 
 const DATA_URL = `${import.meta.env.BASE_URL}data/latest.json`
 
+/**
+ * Loads the last committed rankings snapshot once per page load. Data itself
+ * only ever updates via the scheduled scrape.yml GitHub Action (see README) --
+ * there's no live/on-demand re-scrape from the site.
+ */
 export function useRankingsData(): RankingsState {
   const [data, setData] = useState<RankingsData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
-  const load = useCallback((bustCache: boolean) => {
-    setLoading(true)
-    setError(null)
-    const url = bustCache ? `${DATA_URL}?cb=${Date.now()}` : DATA_URL
-    fetch(url, { cache: bustCache ? 'no-store' : 'default' })
+  useEffect(() => {
+    fetch(DATA_URL)
       .then((res) => {
         if (!res.ok) throw new Error(`Failed to load rankings data (${res.status})`)
         return res.json() as Promise<RankingsData>
@@ -29,11 +30,5 @@ export function useRankingsData(): RankingsState {
       .finally(() => setLoading(false))
   }, [])
 
-  useEffect(() => {
-    load(false)
-  }, [load])
-
-  const refresh = useCallback(() => load(true), [load])
-
-  return { data, loading, error, refresh }
+  return { data, loading, error }
 }
