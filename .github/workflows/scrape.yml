@@ -1,0 +1,38 @@
+name: Scrape rankings data
+
+on:
+  schedule:
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# Don't let overlapping scrapes race on the data commit.
+concurrency:
+  group: scrape
+  cancel-in-progress: false
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r scripts/requirements.txt
+      # Gate on the rating-algorithm tests before trusting this run's output.
+      - run: pytest scripts/
+      - run: python scripts/scrape.py
+      - name: Commit data if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet -- public/data/latest.json; then
+            echo "No data changes, skipping commit."
+            exit 0
+          fi
+          git add public/data/latest.json
+          git commit -m "Update rankings data ($(date -u +%Y-%m-%dT%H:%MZ))"
+          git push

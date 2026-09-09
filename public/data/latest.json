@@ -1,0 +1,2964 @@
+{
+  "scraped_at": "2026-09-09T16:11:38+00:00",
+  "source": "https://www.norcalyouthhockey.org/load-tts-schedule.php",
+  "divisions": [
+    {
+      "levelId": 2,
+      "ageLabel": "10U",
+      "levelLabel": "A",
+      "teams": [
+        {
+          "name": "San Jose Jr Sharks 2016 10-1",
+          "rating": 3.108,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks 2016 10-2",
+          "rating": 0.746,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Cupertino Cougars 10-1",
+          "rating": 0.671,
+          "rank": 3,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Tri Valley Blue Devils 10-1",
+          "rating": -1.442,
+          "rank": 4,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Mateo Black Stars 10-1",
+          "rating": -1.504,
+          "rank": 5,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Tri Valley Blue Devils 10-2",
+          "rating": -1.579,
+          "rank": 6,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "57111",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "9:45AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Oakland Bears 10-1",
+          "home": "San Jose Jr Sharks 2016 10-2",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "58391",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "10:45AM",
+          "rink": "Vallco",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 10-1",
+          "home": "Cupertino Cougars 10-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57056",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "4:15PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2016 10-1",
+          "home": "Tri Valley Blue Devils 10-2",
+          "awayGoals": 13,
+          "homeGoals": 3,
+          "played": true
+        },
+        {
+          "gameId": "57083",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "3:30PM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2016 10-2",
+          "home": "Tri Valley Blue Devils 10-1",
+          "awayGoals": 5,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57035",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "3:15PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 10-1",
+          "home": "San Mateo Black Stars 10-1",
+          "awayGoals": 8,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57027",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "6:15PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 10-1",
+          "home": "San Jose Jr Sharks 2016 10-2",
+          "awayGoals": 4,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57024",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "6:15PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2016 10-1",
+          "home": "Tri Valley Blue Devils 10-1",
+          "awayGoals": 12,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57017",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "5:15PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 10-2",
+          "home": "Cupertino Cougars 10-1",
+          "awayGoals": 7,
+          "homeGoals": 11,
+          "played": true
+        },
+        {
+          "gameId": "57004",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "11:45AM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2016 10-2",
+          "home": "Tri Valley Blue Devils 10-2",
+          "awayGoals": 8,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "56978",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "6:45PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 10-1",
+          "home": "San Mateo Black Stars 10-1",
+          "awayGoals": 3,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "56973",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "5:00PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 10-1",
+          "home": "San Jose Jr Sharks 2016 10-1",
+          "awayGoals": 2,
+          "homeGoals": 10,
+          "played": true
+        }
+      ],
+      "unratedTeams": [
+        "Oakland Bears 10-1",
+        "San Francisco Sabercats 10-1"
+      ]
+    },
+    {
+      "levelId": 3,
+      "ageLabel": "10U",
+      "levelLabel": "B",
+      "teams": [
+        {
+          "name": "Fresno Jr Monsters 10-1",
+          "rating": 3.543,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Tri Valley Lady Blue Devils 10G-1",
+          "rating": 3.017,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Stockton Colts 10-1",
+          "rating": 2.689,
+          "rank": 3,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks 10-6 2017 10-3(6)",
+          "rating": 2.329,
+          "rank": 4,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Mateo Black Stars 10-2",
+          "rating": 1.518,
+          "rank": 5,
+          "tier": "top",
+          "gamesPlayed": 1
+        },
+        {
+          "name": "Santa Clara Blackhawks 10-2",
+          "rating": 1.266,
+          "rank": 6,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks 10-5 2017 10-2(5)",
+          "rating": 1.038,
+          "rank": 7,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Lake Tahoe Grizzlies 10-2",
+          "rating": 0.033,
+          "rank": 8,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Francisco Sabercats 10-2",
+          "rating": -0.672,
+          "rank": 9,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Capital Thunder 10-2",
+          "rating": -0.676,
+          "rank": 10,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks Girls 10G-1",
+          "rating": -0.927,
+          "rank": 11,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Stockton Colts Girls 10G-1",
+          "rating": -1.019,
+          "rank": 12,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Rosa Flyers 10-2",
+          "rating": -1.04,
+          "rank": 13,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Oakland Bears 10-2",
+          "rating": -1.262,
+          "rank": 14,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Tri Valley Blue Devils 10-3",
+          "rating": -1.278,
+          "rank": 15,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Mateo Black Stars 10-3",
+          "rating": -2.675,
+          "rank": 16,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Fresno Jr Monsters Girls 10G-1",
+          "rating": -2.77,
+          "rank": 17,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Vacaville Jets 10-2",
+          "rating": -3.113,
+          "rank": 18,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "57359",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "9:30AM",
+          "rink": "Stockton",
+          "type": "Preseason",
+          "away": "Vacaville Jets 10-1",
+          "home": "Stockton Colts 10-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57338",
+          "date": "09/19/26",
+          "day": "Sat",
+          "time": "10:45AM",
+          "rink": "Lake Tahoe",
+          "type": "Preseason",
+          "away": "Vacaville Jets 10-2",
+          "home": "Lake Tahoe Grizzlies 10-2",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57065",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "4:00PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks Girls 10G-1",
+          "home": "San Mateo Black Stars 10-2",
+          "awayGoals": 0,
+          "homeGoals": 9,
+          "played": true
+        },
+        {
+          "gameId": "57081",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "12:30PM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 10-3",
+          "home": "Fresno Jr Monsters Girls 10G-1",
+          "awayGoals": 3,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57033",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "12:15PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Fresno Jr Monsters 10-1",
+          "home": "Lake Tahoe Grizzlies 10-2",
+          "awayGoals": 13,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57071",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "11:15AM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Tri Valley Lady Blue Devils 10G-1",
+          "home": "Capital Thunder 10-2",
+          "awayGoals": 7,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57080",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "11:00AM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 10-2",
+          "home": "San Jose Jr Sharks 10-6 2017 10-3(6)",
+          "awayGoals": 1,
+          "homeGoals": 7,
+          "played": true
+        },
+        {
+          "gameId": "57042",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "10:00AM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Vacaville Jets 10-2",
+          "home": "San Jose Jr Sharks 10-5 2017 10-2(5)",
+          "awayGoals": 1,
+          "homeGoals": 12,
+          "played": true
+        },
+        {
+          "gameId": "57079",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "9:30AM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 10-3",
+          "home": "Santa Clara Blackhawks 10-2",
+          "awayGoals": 3,
+          "homeGoals": 9,
+          "played": true
+        },
+        {
+          "gameId": "57031",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "9:15AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 10-2",
+          "home": "Stockton Colts Girls 10G-1",
+          "awayGoals": 9,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57060",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "8:00AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Oakland Bears 10-2",
+          "home": "Stockton Colts 10-1",
+          "awayGoals": 3,
+          "homeGoals": 14,
+          "played": true
+        },
+        {
+          "gameId": "57001",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "5:30PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Fresno Jr Monsters 10-1",
+          "home": "Santa Rosa Flyers 10-2",
+          "awayGoals": 11,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57023",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "4:45PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks Girls 10G-1",
+          "home": "Fresno Jr Monsters Girls 10G-1",
+          "awayGoals": 11,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "57016",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "3:45PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Tri Valley Lady Blue Devils 10G-1",
+          "home": "Oakland Bears 10-2",
+          "awayGoals": 12,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57022",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "3:15PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Capital Thunder 10-2",
+          "home": "San Jose Jr Sharks 10-5 2017 10-2(5)",
+          "awayGoals": 2,
+          "homeGoals": 7,
+          "played": true
+        },
+        {
+          "gameId": "57006",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "3:15PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Lake Tahoe Grizzlies 10-2",
+          "home": "San Mateo Black Stars 10-3",
+          "awayGoals": 14,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "56988",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "12:00PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 10-3",
+          "home": "San Francisco Sabercats 10-2",
+          "awayGoals": 3,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "56997",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "11:30AM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Fresno Jr Monsters Girls 10G-1",
+          "home": "Stockton Colts Girls 10G-1",
+          "awayGoals": 3,
+          "homeGoals": 13,
+          "played": true
+        },
+        {
+          "gameId": "56996",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "10:00AM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 10-6 2017 10-3(6)",
+          "home": "Lake Tahoe Grizzlies 10-2",
+          "awayGoals": 7,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57012",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "9:30AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 10-2",
+          "home": "Fresno Jr Monsters 10-1",
+          "awayGoals": 1,
+          "homeGoals": 8,
+          "played": true
+        },
+        {
+          "gameId": "56986",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "9:00AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Vacaville Jets 10-2",
+          "home": "Capital Thunder 10-2",
+          "awayGoals": 4,
+          "homeGoals": 11,
+          "played": true
+        },
+        {
+          "gameId": "57521",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "8:30AM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 10-3",
+          "home": "Stockton Colts 10-1",
+          "awayGoals": 0,
+          "homeGoals": 13,
+          "played": true
+        },
+        {
+          "gameId": "56985",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "7:30AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 10-5 2017 10-2(5)",
+          "home": "Tri Valley Lady Blue Devils 10G-1",
+          "awayGoals": 0,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "56966",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "7:45PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 10-2",
+          "home": "Vacaville Jets 10-2",
+          "awayGoals": 12,
+          "homeGoals": 8,
+          "played": true
+        },
+        {
+          "gameId": "56982",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "6:30PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Stockton Colts Girls 10G-1",
+          "home": "San Jose Jr Sharks 10-6 2017 10-3(6)",
+          "awayGoals": 1,
+          "homeGoals": 11,
+          "played": true
+        },
+        {
+          "gameId": "56974",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "6:30PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 10-2",
+          "home": "Santa Clara Blackhawks 10-2",
+          "awayGoals": 1,
+          "homeGoals": 11,
+          "played": true
+        },
+        {
+          "gameId": "56970",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "6:15PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Oakland Bears 10-2",
+          "home": "Tri Valley Blue Devils 10-3",
+          "awayGoals": 5,
+          "homeGoals": 3,
+          "played": true
+        },
+        {
+          "gameId": "56965",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "6:15PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Stockton Colts 10-1",
+          "home": "San Jose Jr Sharks Girls 10G-1",
+          "awayGoals": 12,
+          "homeGoals": 1,
+          "played": true
+        }
+      ],
+      "unratedTeams": [
+        "Vacaville Jets 10-1"
+      ]
+    },
+    {
+      "levelId": 4,
+      "ageLabel": "12U",
+      "levelLabel": "A",
+      "teams": [
+        {
+          "name": "San Jose Jr Sharks 2015 10-1(3)",
+          "rating": 1.97,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 2
+        },
+        {
+          "name": "San Jose Jr Sharks 2015 10-2(4)",
+          "rating": 1.489,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Cupertino Cougars 12-2",
+          "rating": 1.083,
+          "rank": 3,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Clara Blackhawks 12-1",
+          "rating": 0.522,
+          "rank": 4,
+          "tier": "mid",
+          "gamesPlayed": 1
+        },
+        {
+          "name": "Tri Valley Blue Devils 12-3",
+          "rating": -0.912,
+          "rank": 5,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Rosa Flyers 12-1",
+          "rating": -2.076,
+          "rank": 6,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Fresno Jr Monsters 12-1",
+          "rating": -2.076,
+          "rank": 7,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "56486",
+          "date": "09/12/26",
+          "day": "Sat",
+          "time": "5:00PM",
+          "rink": "Fresno",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 12-2",
+          "home": "Fresno Jr Monsters 12-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57110",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "8:00AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 12-2",
+          "home": "Santa Clara Blackhawks 12-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56807",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "8:15AM",
+          "rink": "Vacaville Davis",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2015 10-2(4)",
+          "home": "Vacaville Jets 12-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56885",
+          "date": "09/19/26",
+          "day": "Sat",
+          "time": "3:30PM",
+          "rink": "Reno Ice",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 12-3",
+          "home": "Reno Ice 12-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56887",
+          "date": "09/20/26",
+          "day": "Sun",
+          "time": "7:45AM",
+          "rink": "Reno Ice",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 12-3",
+          "home": "Reno Ice 12-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57093",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "2:45PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 12-1",
+          "home": "Tri Valley Blue Devils 12-3",
+          "awayGoals": 5,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57104",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "1:30PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2015 10-2(4)",
+          "home": "Santa Rosa Flyers 12-1",
+          "awayGoals": 8,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57103",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "11:45AM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Fresno Jr Monsters 12-1",
+          "home": "Cupertino Cougars 12-2",
+          "awayGoals": 0,
+          "homeGoals": 7,
+          "played": true
+        },
+        {
+          "gameId": "57075",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "6:00PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 12-1",
+          "home": "Tri Valley Blue Devils 12-3",
+          "awayGoals": 3,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57047",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "6:00PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 12-2",
+          "home": "San Jose Jr Sharks 2015 10-2(4)",
+          "awayGoals": 1,
+          "homeGoals": 3,
+          "played": true
+        },
+        {
+          "gameId": "57049",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "2:30PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Fresno Jr Monsters 12-1",
+          "home": "San Jose Jr Sharks 2015 10-1(3)",
+          "awayGoals": 1,
+          "homeGoals": 17,
+          "played": true
+        },
+        {
+          "gameId": "57028",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "7:00PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2015 10-2(4)",
+          "home": "Fresno Jr Monsters 12-1",
+          "awayGoals": 6,
+          "homeGoals": 3,
+          "played": true
+        },
+        {
+          "gameId": "57527",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "4:30PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 12-3",
+          "home": "Cupertino Cougars 12-2",
+          "awayGoals": 2,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "56990",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "3:00PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2015 10-1(3)",
+          "home": "Santa Rosa Flyers 12-1",
+          "awayGoals": 12,
+          "homeGoals": 0,
+          "played": true
+        }
+      ],
+      "unratedTeams": [
+        "Reno Ice 12-1",
+        "Santa Clara Blackhawks 12-2",
+        "Vacaville Jets 12-1"
+      ]
+    },
+    {
+      "levelId": 5,
+      "ageLabel": "12U",
+      "levelLabel": "B",
+      "teams": [
+        {
+          "name": "Capital Thunder 12-1",
+          "rating": 2.165,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks 12-5",
+          "rating": 1.186,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Oakland Bears 12-2",
+          "rating": 0.208,
+          "rank": 3,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Vacaville Jets 12-2",
+          "rating": -0.407,
+          "rank": 4,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Rosa Flyers 12-2",
+          "rating": -1.512,
+          "rank": 5,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Francisco Sabercats 12-2",
+          "rating": -1.64,
+          "rank": 6,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "57108",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "10:15AM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 12-2",
+          "home": "Santa Rosa Flyers 12-2",
+          "awayGoals": 3,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57107",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "8:45AM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "Oakland Bears 12-2",
+          "home": "Vacaville Jets 12-2",
+          "awayGoals": 3,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57095",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "8:45AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 12-5",
+          "home": "Capital Thunder 12-1",
+          "awayGoals": 1,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "57037",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "6:15PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Oakland Bears 12-2",
+          "home": "Capital Thunder 12-1",
+          "awayGoals": 4,
+          "homeGoals": 14,
+          "played": true
+        },
+        {
+          "gameId": "57061",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "9:30AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Vacaville Jets 12-2",
+          "home": "San Jose Jr Sharks 12-5",
+          "awayGoals": 5,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57025",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "7:45PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 12-2",
+          "home": "Oakland Bears 12-2",
+          "awayGoals": 1,
+          "homeGoals": 11,
+          "played": true
+        },
+        {
+          "gameId": "57002",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "7:30PM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "Capital Thunder 12-1",
+          "home": "Vacaville Jets 12-2",
+          "awayGoals": 8,
+          "homeGoals": 3,
+          "played": true
+        },
+        {
+          "gameId": "57018",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "6:45PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 12-5",
+          "home": "San Francisco Sabercats 12-2",
+          "awayGoals": 17,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "56983",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "8:00PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 12-2",
+          "home": "Santa Rosa Flyers 12-2",
+          "awayGoals": 3,
+          "homeGoals": 5,
+          "played": true
+        }
+      ],
+      "unratedTeams": []
+    },
+    {
+      "levelId": 6,
+      "ageLabel": "12U",
+      "levelLabel": "AA",
+      "teams": [
+        {
+          "name": "Tri Valley Blue Devils 12-1",
+          "rating": 2.184,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks 2015 10-1(3)",
+          "rating": 1.055,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 1
+        },
+        {
+          "name": "San Jose Jr Sharks 2014 12-1",
+          "rating": 0.765,
+          "rank": 3,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Cupertino Cougars 12-1",
+          "rating": 0.22,
+          "rank": 4,
+          "tier": "mid",
+          "gamesPlayed": 6
+        },
+        {
+          "name": "San Jose Jr Sharks 2014 12-2",
+          "rating": -0.044,
+          "rank": 5,
+          "tier": "mid",
+          "gamesPlayed": 4
+        },
+        {
+          "name": "Reno Ice 12-1",
+          "rating": -0.428,
+          "rank": 6,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Tri Valley Blue Devils 12-2",
+          "rating": -0.542,
+          "rank": 7,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Clara Blackhawks 12-1",
+          "rating": -3.209,
+          "rank": 8,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "57422",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "5:00PM",
+          "rink": "Dublin",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2015 10-1(3)",
+          "home": "Tri Valley Blue Devils 12-2",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57069",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "7:30PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 12-1",
+          "home": "San Jose Jr Sharks 2015 10-1(3)",
+          "awayGoals": 4,
+          "homeGoals": 8,
+          "played": true
+        },
+        {
+          "gameId": "57073",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "2:30PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 12-2",
+          "home": "Reno Ice 12-1",
+          "awayGoals": 2,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "57044",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "1:15PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 12-1",
+          "home": "San Jose Jr Sharks 2014 12-2",
+          "awayGoals": 5,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57070",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "9:45AM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2014 12-1",
+          "home": "Tri Valley Blue Devils 12-1",
+          "awayGoals": 3,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57003",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "8:30PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Reno Ice 12-1",
+          "home": "Tri Valley Blue Devils 12-1",
+          "awayGoals": 1,
+          "homeGoals": 11,
+          "played": true
+        },
+        {
+          "gameId": "57007",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "4:45PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2014 12-2",
+          "home": "Santa Clara Blackhawks 12-1",
+          "awayGoals": 7,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "57014",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "12:30PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 12-1",
+          "home": "Tri Valley Blue Devils 12-2",
+          "awayGoals": 4,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57013",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "11:00AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 12-1",
+          "home": "Reno Ice 12-1",
+          "awayGoals": 2,
+          "homeGoals": 12,
+          "played": true
+        },
+        {
+          "gameId": "56987",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "10:30AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 12-1",
+          "home": "San Jose Jr Sharks 2014 12-1",
+          "awayGoals": 5,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "56994",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "7:00AM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 12-2",
+          "home": "San Jose Jr Sharks 2014 12-2",
+          "awayGoals": 3,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "56971",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "7:45PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2014 12-1",
+          "home": "Cupertino Cougars 12-1",
+          "awayGoals": 9,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "58961",
+          "date": "08/30/26",
+          "day": "Sun",
+          "time": "8:45AM",
+          "rink": "Fremont",
+          "type": "Regular",
+          "away": "Cupertino Cougars 12-1",
+          "home": "Santa Clara Blackhawks 12-1",
+          "awayGoals": 7,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "56739",
+          "date": "08/22/26",
+          "day": "Sat",
+          "time": "2:45PM",
+          "rink": "San Jose Black",
+          "type": "Exhibition 2",
+          "away": "Cupertino Cougars 12-1",
+          "home": "San Jose Jr Sharks 2014 12-2",
+          "awayGoals": 6,
+          "homeGoals": 4,
+          "played": true
+        }
+      ],
+      "unratedTeams": []
+    },
+    {
+      "levelId": 9,
+      "ageLabel": "14U",
+      "levelLabel": "A",
+      "teams": [
+        {
+          "name": "San Jose Jr Sharks 14-1",
+          "rating": 1.228,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Oakland Bears 14-1",
+          "rating": 1.029,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Stockton Colts 14-1",
+          "rating": 0.954,
+          "rank": 3,
+          "tier": "top",
+          "gamesPlayed": 1
+        },
+        {
+          "name": "Tri Valley Blue Devils 14-1",
+          "rating": 0.901,
+          "rank": 4,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Capital Thunder 14-1",
+          "rating": 0.815,
+          "rank": 5,
+          "tier": "mid",
+          "gamesPlayed": 4
+        },
+        {
+          "name": "Reno Ice 14-1",
+          "rating": 0.693,
+          "rank": 6,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Rosa Flyers 14-1",
+          "rating": -0.103,
+          "rank": 7,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Vacaville Jets 14-1",
+          "rating": -2.376,
+          "rank": 8,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Lake Tahoe Grizzlies 14-1",
+          "rating": -3.141,
+          "rank": 9,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "56354",
+          "date": "09/12/26",
+          "day": "Sat",
+          "time": "5:30PM",
+          "rink": "Santa Rosa",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 14-2",
+          "home": "Santa Rosa Flyers 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57358",
+          "date": "09/12/26",
+          "day": "Sat",
+          "time": "6:15PM",
+          "rink": "Stockton",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 14-1",
+          "home": "Stockton Colts 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56808",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "10:00AM",
+          "rink": "Vacaville Davis",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 14-1",
+          "home": "Vacaville Jets 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57112",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "11:30AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Oakland Bears 14-1",
+          "home": "San Jose Jr Sharks 14-2",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57351",
+          "date": "09/19/26",
+          "day": "Sat",
+          "time": "5:15PM",
+          "rink": "Lake Tahoe",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 14-2",
+          "home": "Lake Tahoe Grizzlies 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57341",
+          "date": "09/20/26",
+          "day": "Sun",
+          "time": "10:45AM",
+          "rink": "Lake Tahoe",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 14-2",
+          "home": "Lake Tahoe Grizzlies 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57098",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "2:15PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 14-1",
+          "home": "Vacaville Jets 14-1",
+          "awayGoals": 3,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "57089",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "1:00PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Lake Tahoe Grizzlies 14-1",
+          "home": "Oakland Bears 14-1",
+          "awayGoals": 1,
+          "homeGoals": 15,
+          "played": true
+        },
+        {
+          "gameId": "57092",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "12:30PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 14-1",
+          "home": "Capital Thunder 14-1",
+          "awayGoals": 6,
+          "homeGoals": 3,
+          "played": true
+        },
+        {
+          "gameId": "57097",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "12:00PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 14-1",
+          "home": "Reno Ice 14-1",
+          "awayGoals": 5,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57038",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "7:45PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 14-1",
+          "home": "Lake Tahoe Grizzlies 14-1",
+          "awayGoals": 9,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57063",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "12:45PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Reno Ice 14-1",
+          "home": "Oakland Bears 14-1",
+          "awayGoals": 5,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57053",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "11:30AM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Vacaville Jets 14-1",
+          "home": "Capital Thunder 14-1",
+          "awayGoals": 0,
+          "homeGoals": 7,
+          "played": true
+        },
+        {
+          "gameId": "57020",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "9:15PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 14-1",
+          "home": "Reno Ice 14-1",
+          "awayGoals": 5,
+          "homeGoals": 6,
+          "played": true
+        },
+        {
+          "gameId": "57019",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "8:15PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Oakland Bears 14-1",
+          "home": "Vacaville Jets 14-1",
+          "awayGoals": 10,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "56993",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "7:45PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Capital Thunder 14-1",
+          "home": "Tri Valley Blue Devils 14-1",
+          "awayGoals": 8,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57015",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "2:00PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Lake Tahoe Grizzlies 14-1",
+          "home": "San Jose Jr Sharks 14-1",
+          "awayGoals": 0,
+          "homeGoals": 15,
+          "played": true
+        },
+        {
+          "gameId": "56984",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "9:30PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 14-1",
+          "home": "Santa Rosa Flyers 14-1",
+          "awayGoals": 5,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57690",
+          "date": "08/30/26",
+          "day": "Sun",
+          "time": "9:15AM",
+          "rink": "Roseville #1",
+          "type": "Exhibition 2",
+          "away": "Reno Ice 14-1",
+          "home": "Capital Thunder 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57525",
+          "date": "08/29/26",
+          "day": "Sat",
+          "time": "5:45PM",
+          "rink": "Stockton",
+          "type": "Exhibition 2",
+          "away": "Capital Thunder 14-1",
+          "home": "Stockton Colts 14-1",
+          "awayGoals": 3,
+          "homeGoals": 6,
+          "played": true
+        }
+      ],
+      "unratedTeams": [
+        "San Francisco Sabercats 14-1",
+        "San Jose Jr Sharks 14-2",
+        "Tri Valley Blue Devils 14-2"
+      ]
+    },
+    {
+      "levelId": 10,
+      "ageLabel": "14U",
+      "levelLabel": "B",
+      "teams": [
+        {
+          "name": "Fresno Jr Monsters 14-1",
+          "rating": 1.455,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Clara Blackhawks 14-1",
+          "rating": 1.054,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Oakland Bears 14-2",
+          "rating": 0.78,
+          "rank": 3,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Tri Valley Blue Devils 14-2",
+          "rating": 0.763,
+          "rank": 4,
+          "tier": "mid",
+          "gamesPlayed": 1
+        },
+        {
+          "name": "Santa Rosa Flyers 14-2",
+          "rating": -0.831,
+          "rank": 5,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Francisco Sabercats 14-2",
+          "rating": -3.22,
+          "rank": 6,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "57528",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "3:00PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 14-1",
+          "home": "Tri Valley Blue Devils 14-2",
+          "awayGoals": 4,
+          "homeGoals": 6,
+          "played": true
+        },
+        {
+          "gameId": "57109",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "11:45AM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "Oakland Bears 14-2",
+          "home": "Santa Rosa Flyers 14-2",
+          "awayGoals": 10,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57087",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "9:30AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Fresno Jr Monsters 14-1",
+          "home": "San Francisco Sabercats 14-2",
+          "awayGoals": 10,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "57066",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "5:30PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Oakland Bears 14-2",
+          "home": "Fresno Jr Monsters 14-1",
+          "awayGoals": 4,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57074",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "4:15PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 14-2",
+          "home": "San Francisco Sabercats 14-2",
+          "awayGoals": 10,
+          "homeGoals": 3,
+          "played": true
+        },
+        {
+          "gameId": "57062",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "11:00AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Fresno Jr Monsters 14-1",
+          "home": "Santa Rosa Flyers 14-2",
+          "awayGoals": 8,
+          "homeGoals": 3,
+          "played": true
+        },
+        {
+          "gameId": "57052",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "9:45AM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 14-2",
+          "home": "Santa Clara Blackhawks 14-1",
+          "awayGoals": 2,
+          "homeGoals": 10,
+          "played": true
+        },
+        {
+          "gameId": "56967",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "9:15PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 14-1",
+          "home": "Oakland Bears 14-2",
+          "awayGoals": 11,
+          "homeGoals": 8,
+          "played": true
+        }
+      ],
+      "unratedTeams": []
+    },
+    {
+      "levelId": 13,
+      "ageLabel": "16U",
+      "levelLabel": "A",
+      "teams": [],
+      "games": [
+        {
+          "gameId": "57157",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "8:45AM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 16A-2",
+          "home": "Santa Clara Blackhawks 16A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56809",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "11:45AM",
+          "rink": "Vacaville Davis",
+          "type": "Preseason",
+          "away": "Reno Ice 16A",
+          "home": "Vacaville Jets 16A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "58393",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "2:15PM",
+          "rink": "Vallco",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 16A",
+          "home": "Cupertino Cougars 16A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57118",
+          "date": "09/19/26",
+          "day": "Sat",
+          "time": "5:45PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 16A",
+          "home": "San Jose Jr Sharks 16A-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56686",
+          "date": "09/19/26",
+          "day": "Sat",
+          "time": "7:15PM",
+          "rink": "Yerba Buena",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 16A",
+          "home": "San Francisco Sabercats 16A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57123",
+          "date": "09/20/26",
+          "day": "Sun",
+          "time": "3:00PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Vacaville Jets 16A",
+          "home": "San Jose Jr Sharks 16A-2",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57124",
+          "date": "09/20/26",
+          "day": "Sun",
+          "time": "4:45PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 16A",
+          "home": "San Jose Jr Sharks 16A-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57693",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "10:15AM",
+          "rink": "Reno Ice",
+          "type": "Exhibition 2",
+          "away": "Capital Thunder HS JVA",
+          "home": "Reno Ice 16A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57692",
+          "date": "08/30/26",
+          "day": "Sun",
+          "time": "9:15AM",
+          "rink": "Reno Ice",
+          "type": "Exhibition 2",
+          "away": "Sonoma County Flyers JVA",
+          "home": "Reno Ice 16A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57691",
+          "date": "08/29/26",
+          "day": "Sat",
+          "time": "4:00PM",
+          "rink": "Reno Ice",
+          "type": "Exhibition 2",
+          "away": "Sonoma County Flyers JVA",
+          "home": "Reno Ice 16A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        }
+      ],
+      "unratedTeams": [
+        "Capital Thunder HS JVA",
+        "Cupertino Cougars 16A",
+        "Reno Ice 16A",
+        "San Francisco Sabercats 16A",
+        "San Jose Jr Sharks 16A-1",
+        "San Jose Jr Sharks 16A-2",
+        "Santa Clara Blackhawks 16A",
+        "Sonoma County Flyers JVA",
+        "Vacaville Jets 16A"
+      ]
+    },
+    {
+      "levelId": 54,
+      "ageLabel": "12U",
+      "levelLabel": "BB",
+      "teams": [
+        {
+          "name": "Vacaville Jets 12-1",
+          "rating": 2.796,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks Girls 12AAA",
+          "rating": 1.559,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Oakland Bears 12-1",
+          "rating": 1.517,
+          "rank": 3,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Lake Tahoe Grizzlies 12-1",
+          "rating": 1.363,
+          "rank": 4,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Stockton Colts 12-1",
+          "rating": -0.348,
+          "rank": 5,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Francisco Sabercats 12-1",
+          "rating": -0.97,
+          "rank": 6,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Mateo Black Stars 12-1",
+          "rating": -1.125,
+          "rank": 7,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Clara Blackhawks 12-2",
+          "rating": -1.144,
+          "rank": 8,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Delta Knights 12G-1",
+          "rating": -1.348,
+          "rank": 9,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Tri Valley Blue Devils 12-4",
+          "rating": -2.298,
+          "rank": 10,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "57357",
+          "date": "09/12/26",
+          "day": "Sat",
+          "time": "4:30PM",
+          "rink": "Stockton",
+          "type": "Preseason",
+          "away": "Capital Thunder 12-1",
+          "home": "Stockton Colts 12-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56597",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "11:45AM",
+          "rink": "Bridgepointe",
+          "type": "Preseason",
+          "away": "Oakland Bears 12-2",
+          "home": "San Mateo Black Stars 12-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57421",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "3:15PM",
+          "rink": "Dublin",
+          "type": "Preseason",
+          "away": "Oakland Bears 12-1",
+          "home": "Tri Valley Blue Devils 12-4",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57335",
+          "date": "09/20/26",
+          "day": "Sun",
+          "time": "9:00AM",
+          "rink": "Lake Tahoe",
+          "type": "Preseason",
+          "away": "Vacaville Jets 12-1",
+          "home": "Lake Tahoe Grizzlies 12-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57055",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "2:45PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Delta Knights 12G-1",
+          "home": "San Francisco Sabercats 12-1",
+          "awayGoals": 1,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57045",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "2:45PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Stockton Colts 12-1",
+          "home": "Oakland Bears 12-1",
+          "awayGoals": 2,
+          "homeGoals": 9,
+          "played": true
+        },
+        {
+          "gameId": "57082",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "2:00PM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 12-4",
+          "home": "Santa Clara Blackhawks 12-2",
+          "awayGoals": 3,
+          "homeGoals": 6,
+          "played": true
+        },
+        {
+          "gameId": "57034",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "1:45PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 12-1",
+          "home": "Lake Tahoe Grizzlies 12-1",
+          "awayGoals": 0,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57054",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "1:15PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Vacaville Jets 12-1",
+          "home": "San Jose Jr Sharks Girls 12AAA",
+          "awayGoals": 5,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "57523",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "7:45AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Lake Tahoe Grizzlies 12-1",
+          "home": "Stockton Colts 12-1",
+          "awayGoals": 8,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57009",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "7:45PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 12-1",
+          "home": "San Mateo Black Stars 12-1",
+          "awayGoals": 4,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57008",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "6:00PM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "Vacaville Jets 12-1",
+          "home": "Oakland Bears 12-1",
+          "awayGoals": 5,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "57000",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "4:00PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Delta Knights 12G-1",
+          "home": "Lake Tahoe Grizzlies 12-1",
+          "awayGoals": 2,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "56999",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "2:30PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 12-1",
+          "home": "Santa Clara Blackhawks 12-2",
+          "awayGoals": 8,
+          "homeGoals": 7,
+          "played": true
+        },
+        {
+          "gameId": "57021",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "1:45PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks Girls 12AAA",
+          "home": "Tri Valley Blue Devils 12-4",
+          "awayGoals": 14,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "56998",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "1:00PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Stockton Colts 12-1",
+          "home": "San Francisco Sabercats 12-1",
+          "awayGoals": 8,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "56972",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "9:15PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Oakland Bears 12-1",
+          "home": "Delta Knights 12G-1",
+          "awayGoals": 7,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "56979",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "8:15PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 12-4",
+          "home": "Vacaville Jets 12-1",
+          "awayGoals": 0,
+          "homeGoals": 17,
+          "played": true
+        },
+        {
+          "gameId": "56975",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "8:00PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 12-2",
+          "home": "San Jose Jr Sharks Girls 12AAA",
+          "awayGoals": 0,
+          "homeGoals": 12,
+          "played": true
+        }
+      ],
+      "unratedTeams": [
+        "Capital Thunder 12-1",
+        "Oakland Bears 12-2"
+      ]
+    },
+    {
+      "levelId": 55,
+      "ageLabel": "10U",
+      "levelLabel": "BB",
+      "teams": [
+        {
+          "name": "Oakland Bears 10-1",
+          "rating": 3.139,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Rosa Flyers 10-1",
+          "rating": 1.877,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Reno Ice 10-1",
+          "rating": 1.412,
+          "rank": 3,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks 2017 10-1(4)",
+          "rating": 0.536,
+          "rank": 4,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Francisco Sabercats 10-1",
+          "rating": 0.525,
+          "rank": 5,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Capital Thunder 10-1",
+          "rating": 0.475,
+          "rank": 6,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks 2016 10-3",
+          "rating": 0.251,
+          "rank": 7,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Santa Clara Blackhawks 10-1",
+          "rating": 0.01,
+          "rank": 8,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Vacaville Jets 10-1",
+          "rating": -0.072,
+          "rank": 9,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Lake Tahoe Grizzlies 10-1",
+          "rating": -1.165,
+          "rank": 10,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Cupertino Cougars 10-2",
+          "rating": -3.383,
+          "rank": 11,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Mateo Black Stars 10-2",
+          "rating": -3.605,
+          "rank": 12,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "56485",
+          "date": "09/12/26",
+          "day": "Sat",
+          "time": "3:15PM",
+          "rink": "Fresno",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 10-1",
+          "home": "Fresno Jr Monsters 10-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56353",
+          "date": "09/12/26",
+          "day": "Sat",
+          "time": "3:45PM",
+          "rink": "Santa Rosa",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 10-1",
+          "home": "Santa Rosa Flyers 10-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "58392",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "12:30PM",
+          "rink": "Vallco",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 10-2",
+          "home": "Cupertino Cougars 10-2",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57420",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "1:30PM",
+          "rink": "Dublin",
+          "type": "Preseason",
+          "away": "Capital Thunder 10-1",
+          "home": "Tri Valley Lady Blue Devils 10G-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57332",
+          "date": "09/19/26",
+          "day": "Sat",
+          "time": "9:00AM",
+          "rink": "Lake Tahoe",
+          "type": "Preseason",
+          "away": "Capital Thunder 10-2",
+          "home": "Lake Tahoe Grizzlies 10-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57345",
+          "date": "09/19/26",
+          "day": "Sat",
+          "time": "3:30PM",
+          "rink": "Lake Tahoe",
+          "type": "Preseason",
+          "away": "Capital Thunder 10-2",
+          "home": "Lake Tahoe Grizzlies 10-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57101",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "8:30AM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 10-1",
+          "home": "San Jose Jr Sharks 2017 10-1(4)",
+          "awayGoals": 7,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57099",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "8:15AM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Vacaville Jets 10-1",
+          "home": "Reno Ice 10-1",
+          "awayGoals": 3,
+          "homeGoals": 7,
+          "played": true
+        },
+        {
+          "gameId": "57085",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "8:00AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 10-2",
+          "home": "San Francisco Sabercats 10-1",
+          "awayGoals": 5,
+          "homeGoals": 14,
+          "played": true
+        },
+        {
+          "gameId": "57106",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "7:15AM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2016 10-3",
+          "home": "Santa Clara Blackhawks 10-1",
+          "awayGoals": 5,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57094",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "7:15AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 10-2",
+          "home": "Lake Tahoe Grizzlies 10-1",
+          "awayGoals": 0,
+          "homeGoals": 13,
+          "played": true
+        },
+        {
+          "gameId": "57100",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "7:00AM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Oakland Bears 10-1",
+          "home": "Capital Thunder 10-1",
+          "awayGoals": 7,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57084",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "5:00PM",
+          "rink": "Fremont",
+          "type": "Preseason",
+          "away": "Reno Ice 10-1",
+          "home": "San Jose Jr Sharks 2017 10-1(4)",
+          "awayGoals": 5,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57036",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "4:45PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Santa Rosa Flyers 10-1",
+          "home": "Capital Thunder 10-1",
+          "awayGoals": 7,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57032",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "10:45AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 10-1",
+          "home": "Reno Ice 10-1",
+          "awayGoals": 2,
+          "homeGoals": 6,
+          "played": true
+        },
+        {
+          "gameId": "57041",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "8:30AM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Capital Thunder 10-1",
+          "home": "Lake Tahoe Grizzlies 10-1",
+          "awayGoals": 11,
+          "homeGoals": 1,
+          "played": true
+        },
+        {
+          "gameId": "57051",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "8:15AM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "Vacaville Jets 10-1",
+          "home": "Cupertino Cougars 10-2",
+          "awayGoals": 12,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57005",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "1:30PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2016 10-3",
+          "home": "Santa Rosa Flyers 10-1",
+          "awayGoals": 4,
+          "homeGoals": 9,
+          "played": true
+        },
+        {
+          "gameId": "56989",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "1:30PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Lake Tahoe Grizzlies 10-1",
+          "home": "Oakland Bears 10-1",
+          "awayGoals": 0,
+          "homeGoals": 10,
+          "played": true
+        },
+        {
+          "gameId": "57011",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "8:00AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 10-1",
+          "home": "San Mateo Black Stars 10-2",
+          "awayGoals": 14,
+          "homeGoals": 0,
+          "played": true
+        },
+        {
+          "gameId": "56977",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "5:15PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 10-2",
+          "home": "San Jose Jr Sharks 2016 10-3",
+          "awayGoals": 1,
+          "homeGoals": 9,
+          "played": true
+        },
+        {
+          "gameId": "56981",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "5:00PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 10-2",
+          "home": "Santa Clara Blackhawks 10-1",
+          "awayGoals": 1,
+          "homeGoals": 13,
+          "played": true
+        },
+        {
+          "gameId": "56969",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "4:45PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 2017 10-1(4)",
+          "home": "Vacaville Jets 10-1",
+          "awayGoals": 6,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "56964",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "4:45PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Oakland Bears 10-1",
+          "home": "San Francisco Sabercats 10-1",
+          "awayGoals": 10,
+          "homeGoals": 3,
+          "played": true
+        }
+      ],
+      "unratedTeams": [
+        "Capital Thunder 10-2",
+        "Fresno Jr Monsters 10-1",
+        "Santa Clara Blackhawks 10-2",
+        "Tri Valley Blue Devils 10-1",
+        "Tri Valley Lady Blue Devils 10G-1"
+      ]
+    },
+    {
+      "levelId": 68,
+      "ageLabel": "14U",
+      "levelLabel": "BB",
+      "teams": [
+        {
+          "name": "Stockton Colts 14-1",
+          "rating": 3.025,
+          "rank": 1,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Francisco Sabercats 14-1",
+          "rating": 1.4,
+          "rank": 2,
+          "tier": "top",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Jose Jr Sharks 14-2",
+          "rating": -0.225,
+          "rank": 3,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Tri Valley Blue Devils 14-2",
+          "rating": -1.025,
+          "rank": 4,
+          "tier": "mid",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "San Mateo Black Stars 14-1",
+          "rating": -1.4,
+          "rank": 5,
+          "tier": "low",
+          "gamesPlayed": 3
+        },
+        {
+          "name": "Cupertino Cougars 14-1",
+          "rating": -1.775,
+          "rank": 6,
+          "tier": "low",
+          "gamesPlayed": 3
+        }
+      ],
+      "games": [
+        {
+          "gameId": "56494",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "12:00PM",
+          "rink": "Roseville #2",
+          "type": "Preseason",
+          "away": "Stockton Colts 14-1",
+          "home": "Capital Thunder 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "56598",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "1:15PM",
+          "rink": "Bridgepointe",
+          "type": "Preseason",
+          "away": "Fresno Jr Monsters 14-1",
+          "home": "San Mateo Black Stars 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "60424",
+          "date": "09/13/26",
+          "day": "Sun",
+          "time": "5:45PM",
+          "rink": "Vallco",
+          "type": "Preseason",
+          "away": "Santa Clara Blackhawks 14-1",
+          "home": "Cupertino Cougars 14-1",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false
+        },
+        {
+          "gameId": "57088",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "11:15AM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 14-1",
+          "home": "San Jose Jr Sharks 14-2",
+          "awayGoals": 1,
+          "homeGoals": 13,
+          "played": true
+        },
+        {
+          "gameId": "57096",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "10:15AM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 14-1",
+          "home": "Tri Valley Blue Devils 14-2",
+          "awayGoals": 3,
+          "homeGoals": 5,
+          "played": true
+        },
+        {
+          "gameId": "57102",
+          "date": "09/07/26",
+          "day": "Mon",
+          "time": "10:00AM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 14-1",
+          "home": "Stockton Colts 14-1",
+          "awayGoals": 3,
+          "homeGoals": 7,
+          "played": true
+        },
+        {
+          "gameId": "57048",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "7:45PM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "San Jose Jr Sharks 14-2",
+          "home": "Stockton Colts 14-1",
+          "awayGoals": 3,
+          "homeGoals": 10,
+          "played": true
+        },
+        {
+          "gameId": "57067",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "7:15PM",
+          "rink": "San Jose Orange",
+          "type": "Preseason",
+          "away": "Tri Valley Blue Devils 14-2",
+          "home": "Cupertino Cougars 14-1",
+          "awayGoals": 3,
+          "homeGoals": 4,
+          "played": true
+        },
+        {
+          "gameId": "57072",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "12:45PM",
+          "rink": "San Jose Black",
+          "type": "Preseason",
+          "away": "Stockton Colts 14-1",
+          "home": "Tri Valley Blue Devils 14-2",
+          "awayGoals": 12,
+          "homeGoals": 2,
+          "played": true
+        },
+        {
+          "gameId": "57043",
+          "date": "09/06/26",
+          "day": "Sun",
+          "time": "11:30AM",
+          "rink": "San Jose Tech CU",
+          "type": "Preseason",
+          "away": "Cupertino Cougars 14-1",
+          "home": "San Mateo Black Stars 14-1",
+          "awayGoals": 7,
+          "homeGoals": 9,
+          "played": true
+        },
+        {
+          "gameId": "56992",
+          "date": "09/05/26",
+          "day": "Sat",
+          "time": "6:00PM",
+          "rink": "San Jose Grey",
+          "type": "Preseason",
+          "away": "San Mateo Black Stars 14-1",
+          "home": "San Francisco Sabercats 14-1",
+          "awayGoals": 1,
+          "homeGoals": 11,
+          "played": true
+        },
+        {
+          "gameId": "56980",
+          "date": "09/04/26",
+          "day": "Fri",
+          "time": "9:30PM",
+          "rink": "San Jose Sharks",
+          "type": "Preseason",
+          "away": "San Francisco Sabercats 14-1",
+          "home": "San Jose Jr Sharks 14-2",
+          "awayGoals": 7,
+          "homeGoals": 3,
+          "played": true
+        }
+      ],
+      "unratedTeams": [
+        "Capital Thunder 14-1",
+        "Fresno Jr Monsters 14-1",
+        "Santa Clara Blackhawks 14-1"
+      ]
+    }
+  ]
+}
