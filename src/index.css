@@ -121,6 +121,47 @@ body {
   min-width: 0;
 }
 
+/* Below this width (portrait phones), a fixed 160px sidebar eats too much of
+ * the viewport for the ranking tables next to it. Reflow the nav into a
+ * compact wrapped row instead of a tall vertical sidebar. */
+@media (max-width: 700px) {
+  body {
+    padding: 0 0.85rem 2rem;
+  }
+
+  .app__body {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+
+  .division-nav {
+    flex: 1 1 auto;
+    width: 100%;
+    position: static;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    column-gap: 1.25rem;
+    row-gap: 0.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .division-nav__group {
+    margin-bottom: 0;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+
+  .division-nav__levels {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 0.3rem;
+  }
+}
+
 .rankings-table-wrap {
   overflow-x: auto;
 }
