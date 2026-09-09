@@ -84,15 +84,24 @@ a simple manual cross-check.
 The fix (`compute_tier_offsets` in `scripts/ratings.py`): decompose a team's
 unified rating into `(within-division rating) + (tier offset)`. Each
 adjacent tier-pair's offset defaults to the empirical rule of thumb "a
-tier's bottom is on par with the tier above's top" — computed from each
-division's own **2nd-best/2nd-worst** rating, not the literal extremes
-(needs at least 3 teams per side to trim; falls back to the plain extreme
-below that). Checked against a full historical completed season (900+
-games, `scripts/historical_tier_gap.py`): even with a whole season of data,
-literal extremes still swing 5.5-8.2 across age groups, while the trimmed
-version clusters much tighter at 4.2-5.4 — one outlier team distorts the
-raw max/min regardless of sample size, so trimming is the fix, not just
-more data. This then blends toward real evidence in proportion to how much
+tier's bottom is on par with the tier above's top", sourced from a
+**pooled, multi-age-group historical constant** (`HISTORICAL_TIER_GAP`) —
+the trimmed (2nd-best/2nd-worst, not literal extremes) gap averaged across
+all age groups in a full completed past season
+(`scripts/historical_tier_gap.py`), rather than derived from the *current*
+season's own 3-games-per-team sample. That in-season derivation was tried
+first and is still the fallback when no historical value exists for a tier
+pair, but it broke once variance-aware shrinkage (below) correctly widened
+a division's spread: with two genuinely distinct top-of-division teams both
+now legitimately extreme, the trim's "2nd-best" landed on the *other*
+outlier instead of a representative typical-top-team, inflating one
+division's offset well past what any real evidence supported (concretely:
+BB's offset briefly hit +11.98, correctly identified as implausible from a
+specific Capital Thunder 10-1 vs LBD prediction) — a fixed historical
+constant isn't vulnerable to this because it doesn't move with a single
+season's noisy extremes at all.
+
+This then blends toward real evidence in proportion to how much
 exists — each team's *primary* tier (wherever it
 has the most games) anchors it, and a game only becomes bridge evidence when
 the two sides' primary tiers actually differ, so a cross-tested team's

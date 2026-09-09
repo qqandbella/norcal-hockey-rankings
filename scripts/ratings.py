@@ -50,12 +50,29 @@ REFERENCE_VARIANCE = (2 * GOAL_CAP) ** 2 / 12
 # sync if this list changes.
 DIVISION_HIERARCHY = ["AA", "A", "BB", "B"]
 
-# Pseudo-observation weight for the "a tier's bottom is roughly on par with
-# the tier above's top" prior when blending it with real cross-division
-# evidence (see compute_tier_offsets). ~5 independent bridge-game
-# observations are needed to meaningfully override the prior; one or two
-# noisy games barely move it.
+# Pseudo-observation weight for the tier-gap prior when blending it with
+# real cross-division evidence (see compute_tier_offsets). ~5 independent
+# bridge-game observations are needed to meaningfully override the prior;
+# one or two noisy games barely move it.
 W_PRIOR = 5.0
+
+# The prior itself: pooled average trimmed (2nd-best/2nd-worst) gap from a
+# full completed season (season 31, Fall 2025 -- scripts/historical_tier_gap.py),
+# pooled across age groups sharing the same tier-pair pattern. Deliberately
+# NOT derived from this season's own preseason extremes: even trimmed, a
+# 3-game sample is too volatile to anchor a cross-division scale -- verified
+# directly (10U's B's top two teams both legitimately extreme after the
+# variance-aware shrinkage fix pushed the "2nd-best of B" prior anchor to
+# 11.85, versus 3.5-7 from a full historical season using the same
+# algorithm). A full season smooths out exactly the kind of individual
+# extreme results that make a 3-game sample untrustworthy as a calibration
+# anchor, even though those same extremes are legitimate signal for the
+# *within-division* rating of the specific team that earned them.
+HISTORICAL_TIER_GAP: dict[tuple[str, str], float] = {
+    ("A", "BB"): 6.09,
+    ("BB", "B"): 5.65,
+    ("AA", "A"): 3.48,  # only 1 historical sample (n=4 AA teams) -- noisier than the others
+}
 
 # Standard hockey points: win=2, tie=1, loss=0. The source feed carries no
 # OT/shootout marker, so ties are recorded as plain ties rather than OTL.
@@ -277,25 +294,30 @@ def compute_tier_offsets(
         higher, lower = tiers_present[i], tiers_present[i + 1]
         low_rows = within_ratings_by_tier[lower]
         high_rows = within_ratings_by_tier[higher]
-        # 2nd-best of the lower tier / 2nd-worst of the higher tier, not the
-        # literal extremes: checked against a full historical season
-        # (900+ games), the trimmed version was both lower *and* far more
-        # stable (e.g. 4.2-5.4 vs 5.5-8.2 spread across age groups) -- a
-        # single outlier team, even across a whole season, still visibly
-        # distorts the literal max/min. Needs at least 3 teams to trim --
-        # with only 2, "excluding one" just leaves the *other* extreme,
-        # which flips the sign of the gap rather than stabilizing it, so
-        # fall back to the plain extreme itself below that.
-        low_top = sorted(low_rows, key=lambda r: r.rating)[-2 if len(low_rows) >= 3 else -1]
-        high_bottom = sorted(high_rows, key=lambda r: r.rating)[1 if len(high_rows) >= 3 else 0]
-        prior_gap = low_top.rating - high_bottom.rating
-        prior_anchor = {
-            "lowTeam": low_top.name,
-            "lowRating": low_top.rating,
-            "highTeam": high_bottom.name,
-            "highRating": high_bottom.rating,
-            "gap": round(prior_gap, 3),
-        }
+        historical_gap = HISTORICAL_TIER_GAP.get((higher, lower))
+        if historical_gap is not None:
+            prior_gap = historical_gap
+            prior_anchor = {"source": "historical", "gap": round(prior_gap, 3)}
+        else:
+            # No historical reference for this tier pair -- fall back to
+            # this season's own 2nd-best/2nd-worst as a last resort. Known
+            # to be noisy on a 3-game preseason sample (a single legitimately
+            # extreme team, or two, can distort even the trimmed statistic —
+            # confirmed directly: 10U's own "2nd-best of B" anchor hit 11.85
+            # this way, versus 3.5-7 from a full historical season using the
+            # same rating algorithm) -- only used when there's truly nothing
+            # better to go on.
+            low_top = sorted(low_rows, key=lambda r: r.rating)[-2 if len(low_rows) >= 3 else -1]
+            high_bottom = sorted(high_rows, key=lambda r: r.rating)[1 if len(high_rows) >= 3 else 0]
+            prior_gap = low_top.rating - high_bottom.rating
+            prior_anchor = {
+                "source": "inSeason",
+                "lowTeam": low_top.name,
+                "lowRating": low_top.rating,
+                "highTeam": high_bottom.name,
+                "highRating": high_bottom.rating,
+                "gap": round(prior_gap, 3),
+            }
         bridges = evidence.get((higher, lower), [])
         blended = (w_prior * prior_gap + sum(b["impliedGap"] for b in bridges)) / (w_prior + len(bridges))
         offsets[higher] = {

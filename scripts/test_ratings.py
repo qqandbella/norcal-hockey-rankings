@@ -132,19 +132,33 @@ def _b_bb_setup():
     return {"B": b_ratings, "BB": bb_ratings}
 
 
-def test_tier_offsets_prior_only_when_no_bridge_evidence():
+def test_tier_offsets_uses_historical_prior_by_default():
     within = _b_bb_setup()
     offsets = compute_tier_offsets(within, bridge_games=[])
     assert offsets["B"]["offset"] == 0.0
     assert offsets["B"]["evidenceCount"] == 0
+    # Historical, not this-season-derived: HISTORICAL_TIER_GAP[("BB","B")].
+    from ratings import HISTORICAL_TIER_GAP
+
+    expected_gap = HISTORICAL_TIER_GAP[("BB", "B")]
+    assert offsets["BB"]["offset"] == expected_gap
+    assert offsets["BB"]["evidenceCount"] == 0
+    assert offsets["BB"]["bridgeGames"] == []
+    assert offsets["BB"]["priorAnchor"] == {"source": "historical", "gap": expected_gap}
+
+
+def test_tier_offsets_falls_back_to_in_season_trim_when_no_historical_data(monkeypatch):
+    import ratings
+
+    monkeypatch.setattr(ratings, "HISTORICAL_TIER_GAP", {})
+    within = _b_bb_setup()
+    offsets = compute_tier_offsets(within, bridge_games=[])
     # B has 3 teams (>=3, trimmed): 2nd-best = B_mid (0.0), not B_top (5.0).
     # BB only has 2 teams (<3, falls back to the plain extreme): BB_bottom (-4.0).
     # prior_gap = 0.0 - (-4.0) = 4.0
     assert offsets["BB"]["offset"] == 4.0
-    assert offsets["BB"]["evidenceCount"] == 0
-    assert offsets["BB"]["bridgeGames"] == []
-    # The prior anchor names exactly which two teams justify the default gap.
     assert offsets["BB"]["priorAnchor"] == {
+        "source": "inSeason",
         "lowTeam": "B_mid",
         "lowRating": 0.0,
         "highTeam": "BB_bottom",
@@ -153,7 +167,10 @@ def test_tier_offsets_prior_only_when_no_bridge_evidence():
     }
 
 
-def test_tier_offsets_trimming_needs_at_least_three_teams_per_side():
+def test_tier_offsets_trimming_needs_at_least_three_teams_per_side(monkeypatch):
+    import ratings
+
+    monkeypatch.setattr(ratings, "HISTORICAL_TIER_GAP", {})
     # With exactly 2 teams, "trimming one" just leaves the *other* extreme
     # (flipping the gap's sign), which is worse than not trimming at all --
     # confirm the 2-team fallback still uses the plain extreme, not that.
@@ -168,6 +185,8 @@ def test_tier_offsets_trimming_needs_at_least_three_teams_per_side():
 
 
 def test_tier_offsets_one_bridge_game_nudges_toward_its_implied_gap():
+    from ratings import HISTORICAL_TIER_GAP
+
     within = _b_bb_setup()
     # B_top (native B, rating 5.0 there) plays one game filed under BB,
     # against BB_bottom (native BB, rating -4.0) -- B_top loses by 2. B_top
@@ -176,7 +195,7 @@ def test_tier_offsets_one_bridge_game_nudges_toward_its_implied_gap():
     bridge_games = [("BB_bottom", "B_top", 2, "BB")]  # home=BB_bottom, away=B_top, margin=home-away=2
 
     offsets = compute_tier_offsets(within, bridge_games)
-    prior_gap = 4.0  # see test_tier_offsets_prior_only_when_no_bridge_evidence
+    prior_gap = HISTORICAL_TIER_GAP[("BB", "B")]
     # unified(B_top) - unified(BB_bottom) = -margin = -2
     # (5.0 + offset[B]) - (-4.0 + offset[BB]) = -2  =>  offset[BB]-offset[B] = 2 + 5.0 + 4.0 = 11.0
     implied_gap = 11.0
@@ -222,7 +241,10 @@ def test_tier_offsets_ordinary_game_between_two_native_teams_is_not_evidence():
     assert offsets["BB"]["evidenceCount"] == 0
 
 
-def test_tier_offsets_chain_three_tiers():
+def test_tier_offsets_chain_three_tiers(monkeypatch):
+    import ratings
+
+    monkeypatch.setattr(ratings, "HISTORICAL_TIER_GAP", {})  # isolate the chaining logic itself
     within = {
         "A": [TeamRating("A_top", rating=3.0, games_played=3), TeamRating("A_bottom", rating=-3.0, games_played=3)],
         "BB": [TeamRating("BB_top", rating=2.0, games_played=3), TeamRating("BB_bottom", rating=-2.0, games_played=3)],

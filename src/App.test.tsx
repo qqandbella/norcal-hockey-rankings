@@ -209,6 +209,7 @@ const SAMPLE: RankingsData = {
           offset: 4.0,
           evidenceCount: 0,
           priorAnchor: {
+            source: 'inSeason',
             lowTeam: 'Fresno Jr Monsters 10-1',
             lowRating: 3.5,
             highTeam: 'Lake Tahoe Grizzlies 10-1',
