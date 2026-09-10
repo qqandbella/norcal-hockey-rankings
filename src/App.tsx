@@ -1,6 +1,7 @@
 import { useState } from 'react'
-import { HashRouter, Navigate, Route, Routes, useParams } from 'react-router-dom'
+import { HashRouter, Link, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { DivisionNav } from './components/DivisionNav'
+import { HelpPage } from './components/HelpPage'
 import { PredictPage } from './components/PredictPage'
 import { RankingsTable } from './components/RankingsTable'
 import { StatusBar } from './components/StatusBar'
@@ -59,10 +60,16 @@ export default function App() {
     <HashRouter>
       <div className="app">
         <header className="app__header">
-          <h1>NorCal Hockey Rankings</h1>
+          <div className="app__title-row">
+            <h1>NorCal Hockey Rankings</h1>
+            <Link to="/help" className="app__help-link">
+              Help / FAQ
+            </Link>
+          </div>
           <p className="app__subtitle">
             Calibrated ratings from results, computed with a capped, shrinkage-regularized
-            iterative model (MHR-style), alongside traditional W-L-T stats.
+            iterative model (MHR-style), alongside traditional W-L-T stats. New here? See{' '}
+            <Link to="/help">how ratings and predictions are calculated</Link>.
           </p>
           <StatusBar scrapedAt={data?.scraped_at ?? null} />
         </header>
@@ -79,6 +86,7 @@ export default function App() {
                 <Route path="/:age/:level" element={<DivisionPage data={data} />} />
                 <Route path="/:age/:level/team/:team" element={<TeamPageRoute data={data} />} />
                 <Route path="/predict/:age" element={<PredictPage data={data} />} />
+                <Route path="/help" element={<HelpPage />} />
               </Routes>
             </main>
           </div>

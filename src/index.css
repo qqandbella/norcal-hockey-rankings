@@ -368,3 +368,32 @@ body {
   opacity: 0.5;
   font-size: 0.75rem;
 }
+
+.app__title-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.app__help-link {
+  font-size: 0.9rem;
+  white-space: nowrap;
+}
+
+.help {
+  max-width: 70ch;
+}
+
+.help__intro {
+  opacity: 0.75;
+}
+
+.help h3 {
+  margin-top: 2rem;
+}
+
+.help li {
+  margin-bottom: 0.5rem;
+}
