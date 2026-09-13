@@ -98,6 +98,8 @@ export function ScheduleList({
               <th>Score</th>
               <th>Type</th>
               <th>Level</th>
+              <th>Scorecard</th>
+              <th>Live</th>
             </tr>
           </thead>
           <tbody>
@@ -142,6 +144,24 @@ export function ScheduleList({
                   <td>{game.type}</td>
                   <td className={isCrossLevel ? 'schedule-table__cross-level' : undefined}>
                     {game.ageLabel} {game.levelLabel}
+                  </td>
+                  <td>
+                    <a
+                      href={`https://stats.caha.timetoscore.com/generate-scorecard.php?game_id=${game.gameId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Scorecard
+                    </a>
+                  </td>
+                  <td>
+                    <a
+                      href={`https://live.caha.timetoscore.com/?game_id=${game.gameId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      Live
+                    </a>
                   </td>
                 </tr>
               )
