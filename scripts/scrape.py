@@ -372,7 +372,7 @@ def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
                     key = (row["name"], tier)
                     if key in corrected_local:
                         row["rating"] = corrected_local[key]
-                rerank_and_tier(all_rows)
+                division["ratingsByType"]["All"]["teams"] = rerank_and_tier(all_rows)
 
         age_groups[age_label] = {"teams": teams, "tierOffsets": offsets}
 

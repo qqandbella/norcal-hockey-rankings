@@ -149,3 +149,7 @@ def test_age_group_ratings_patches_cross_tested_teams_displayed_rating():
     # Rank/tier re-derived from the corrected ratings, not stale.
     assert b1_row["rank"] in (1, 2, 3)
     assert b1_row["tier"] in ("top", "mid", "low")
+    # The row ARRAY ORDER itself must match rank, not just the rank field --
+    # a frontend table renders rows in array order, doesn't re-sort by rank.
+    assert [row["name"] for row in bb_all] == [row["name"] for row in sorted(bb_all, key=lambda r: r["rank"])]
+    assert [row["rating"] for row in bb_all] == sorted((row["rating"] for row in bb_all), reverse=True)
