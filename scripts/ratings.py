@@ -35,6 +35,18 @@ SHRINKAGE_K = 3.0
 MAX_ITERS = 300
 CONVERGENCE_EPS = 1e-9
 
+# Shrinkage for compute_offense_defense_ratings -- deliberately NOT the same
+# as SHRINKAGE_K above. Each side (offense, defense) is estimated from a
+# narrower signal (goals-for or goals-against alone) than the combined net
+# margin the single-scalar model uses, and empirically needs much lighter
+# shrinkage to actually help: grid-searched via
+# scripts/backtest_offense_defense.py (walk-forward, within-division games),
+# k=3.0 (matching SHRINKAGE_K) made the split strictly worse than the
+# single-scalar model (MAE 3.84 vs 3.47); k=0.2 beat it clearly (MAE 3.20,
+# directional accuracy 77.9% vs 72.1%). MAE was flat across k=0.15-0.30, so
+# this isn't a knife's-edge fit to noise.
+OFFENSE_DEFENSE_SHRINKAGE_K = 0.2
+
 # Variance of a uniform margin over [-GOAL_CAP, GOAL_CAP] -- the reference
 # point for "typical, uninformative" game-to-game spread. A team whose own
 # implied-value variance sits well below this is unusually consistent
@@ -109,6 +121,14 @@ class TeamRating:
     games_played: int
     rank: int = 0
     tier: str = "mid"
+
+
+@dataclass
+class OffenseDefenseRating:
+    name: str
+    offense: float
+    defense: float
+    games_played: int
 
 
 @dataclass
@@ -205,6 +225,90 @@ def compute_ratings(games: list[Game], k: float = SHRINKAGE_K) -> list[TeamRatin
             )
         )
     return results
+
+
+def compute_offense_defense_ratings(
+    games: list[Game], k: float = OFFENSE_DEFENSE_SHRINKAGE_K
+) -> list[OffenseDefenseRating]:
+    """Split each team's single net-margin rating into separate offense and
+    defense components, in the same family as attack/defense ratings used
+    elsewhere in sports analytics (e.g. the Dixon-Coles model in soccer).
+
+    Why: a single net-margin rating can't distinguish "got outscored because
+    it couldn't generate any offense" from "got outscored despite real
+    offensive output, because of a leaky defense" -- the same goal
+    differential either way. That distinction matters for prediction,
+    because it's matchup-dependent: a team with strong offense but weak
+    defense may get its weakness punished by a skilled opponent but not by
+    a weaker one, while its offense should show up against either. A single
+    scalar rating can't express that; two separate ratings can.
+
+    Model: team T's goals in a given game are explained as
+    `offense[T] - defense[opponent]`, and its opponent's goals as
+    `offense[opponent] - defense[T]`. Solved the same way as compute_ratings
+    -- Jacobi iteration, ridge shrinkage toward 0 by games played -- just
+    with two interacting quantities instead of one. Each team's own
+    goals-for is capped at +/-GOAL_CAP first, for the same reason margins
+    are capped in compute_ratings: beyond that, extra goals mostly reflect
+    lineup/ice-time decisions late in a blowout, not additional signal.
+
+    Deliberately simpler than compute_ratings in one respect: no
+    variance-aware shrinkage here (yet) -- adding that on top of an
+    already-new model would confound whether any backtest improvement (or
+    regression) comes from the offense/defense split itself or from the
+    extra shrinkage machinery. Worth adding later if the basic split's own
+    win holds up under more data.
+
+    Validated via scripts/backtest_offense_defense.py, within-division
+    games only (see OFFENSE_DEFENSE_SHRINKAGE_K for the tuning result):
+    beats the single-scalar compute_ratings model on both MAE and
+    directional accuracy on this season's data so far. NOT YET used
+    anywhere in the live site -- cross-division tier offsets
+    (compute_tier_offsets, compute_unified_ratings) still assume a single
+    scalar rating per team throughout, and extending that machinery to a
+    two-sided rating is real, separate scope (see GitHub issue #6).
+    """
+    teams = sorted({g.home for g in games} | {g.away for g in games})
+    if not teams:
+        return []
+
+    # For each team, list of (opponent, capped_goals_for, capped_goals_against).
+    adjacency: dict[str, list[tuple[str, int, int]]] = {t: [] for t in teams}
+    for g in games:
+        home_for = max(0, min(GOAL_CAP, g.home_goals))
+        away_for = max(0, min(GOAL_CAP, g.away_goals))
+        adjacency[g.home].append((g.away, home_for, away_for))
+        adjacency[g.away].append((g.home, away_for, home_for))
+
+    offense = {t: 0.0 for t in teams}
+    defense = {t: 0.0 for t in teams}
+    for _ in range(MAX_ITERS):
+        new_offense: dict[str, float] = {}
+        new_defense: dict[str, float] = {}
+        max_delta = 0.0
+        for t in teams:
+            opp_games = adjacency[t]
+            n = len(opp_games)
+            implied_offense = [defense[opp] + goals_for for opp, goals_for, _ in opp_games]
+            implied_defense = [offense[opp] - goals_against for opp, _, goals_against in opp_games]
+            new_offense[t] = sum(implied_offense) / (n + k)
+            new_defense[t] = sum(implied_defense) / (n + k)
+            max_delta = max(max_delta, abs(new_offense[t] - offense[t]), abs(new_defense[t] - defense[t]))
+        offense, defense = new_offense, new_defense
+        if max_delta < CONVERGENCE_EPS:
+            break
+
+    offense_mean = sum(offense.values()) / len(offense)
+    defense_mean = sum(defense.values()) / len(defense)
+    return [
+        OffenseDefenseRating(
+            name=t,
+            offense=round(offense[t] - offense_mean, 3),
+            defense=round(defense[t] - defense_mean, 3),
+            games_played=len(adjacency[t]),
+        )
+        for t in teams
+    ]
 
 
 def _adjacent_pair(t1: str, t2: str) -> tuple[str, str] | None:

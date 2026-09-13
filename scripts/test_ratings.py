@@ -5,6 +5,7 @@ from ratings import (
     W_PRIOR,
     _assign_tiers,
     SHRINKAGE_K,
+    compute_offense_defense_ratings,
     compute_ratings,
     compute_team_stats,
     compute_tier_offsets,
@@ -349,3 +350,72 @@ def test_unified_ratings_secondary_tier_correction_matches_hand_derivation():
     expected_bb_estimate = corrected_local + 0.0
     expected_unified = (3 * primary_estimate + 1 * expected_bb_estimate) / 4
     assert teams["X"]["rating"] == round(expected_unified, 3)
+
+
+def _od_by_name(games):
+    return {r.name: r for r in compute_offense_defense_ratings(games)}
+
+
+def test_offense_defense_high_scoring_team_rates_high_offense():
+    # A scores a lot against everyone; ratings should reflect strong offense,
+    # not just a strong overall rating.
+    games = [
+        Game("A", "X", 6, 1),
+        Game("A", "Y", 7, 2),
+        Game("A", "Z", 6, 0),
+    ]
+    by_name = _od_by_name(games)
+    assert by_name["A"].offense > 0
+    # A also allowed few goals, so defense should look decent too here --
+    # this fixture alone doesn't isolate offense from defense; see the next
+    # test for that.
+
+
+def test_offense_defense_separates_leaky_defense_from_no_offense():
+    # Same goal differential (-6) for both B and C, but very different
+    # underlying profiles: B loses 5-11 (real offense, leaky D), C loses
+    # 0-6 (no offense at all, same opponent).
+    games = [
+        Game("Opp1", "B", 11, 5),
+        Game("Opp2", "C", 6, 0),
+    ]
+    by_name = _od_by_name(games)
+    # B's offense should clearly exceed C's -- same net margin, very
+    # different offensive output.
+    assert by_name["B"].offense > by_name["C"].offense
+
+
+def test_offense_defense_capped_at_goal_cap():
+    # A 20-0 win shouldn't credit more offense than a (cap)-0 win -- same
+    # rationale as compute_ratings' margin cap, applied per-side here.
+    capped = _od_by_name([Game("A", "B", GOAL_CAP, 0)])
+    blowout = _od_by_name([Game("A", "B", 20, 0)])
+    assert capped["A"].offense == blowout["A"].offense
+    assert capped["B"].defense == blowout["B"].defense
+
+
+def test_offense_defense_low_sample_shrinks_toward_zero():
+    ratings = _od_by_name([Game("A", "B", 7, 0)])
+    assert 0 < ratings["A"].offense < GOAL_CAP
+    assert 0 < ratings["A"].defense < GOAL_CAP
+
+
+def test_offense_defense_centered_at_zero():
+    games = [
+        Game("A", "B", 6, 2),
+        Game("B", "C", 3, 4),
+        Game("C", "A", 1, 5),
+    ]
+    ratings = compute_offense_defense_ratings(games)
+    offense_mean = sum(r.offense for r in ratings) / len(ratings)
+    defense_mean = sum(r.defense for r in ratings) / len(ratings)
+    assert abs(offense_mean) < 1e-3
+    assert abs(defense_mean) < 1e-3
+
+
+def test_offense_defense_games_played_counted_correctly():
+    games = [Game("A", "B", 3, 2), Game("A", "C", 4, 1), Game("B", "C", 2, 2)]
+    by_name = _od_by_name(games)
+    assert by_name["A"].games_played == 2
+    assert by_name["B"].games_played == 2
+    assert by_name["C"].games_played == 2
