@@ -1,4 +1,3 @@
-import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { teamRoute } from '../lib/grouping'
 import type { Division, RatingsBucket, TeamRow } from '../lib/types'
@@ -10,16 +9,16 @@ const TIER_LABEL: Record<TeamRow['tier'], string> = {
   low: 'Low',
 }
 
-type RatingMode = 'classic' | 'experimental'
+export type RatingMode = 'classic' | 'experimental'
 
 interface RankingsTableProps {
   division: Division
   selectedType: string
   onSelectedTypeChange: (type: string) => void
+  ratingMode: RatingMode
 }
 
-export function RankingsTable({ division, selectedType, onSelectedTypeChange }: RankingsTableProps) {
-  const [ratingMode, setRatingMode] = useState<RatingMode>('classic')
+export function RankingsTable({ division, selectedType, onSelectedTypeChange, ratingMode }: RankingsTableProps) {
   const availableTypes = [ALL_TYPES, ...Object.keys(division.ratingsByType).filter((t) => t !== ALL_TYPES)]
   const bucket: RatingsBucket | undefined =
     division.ratingsByType[selectedType] ?? division.ratingsByType[ALL_TYPES]
@@ -45,33 +44,7 @@ export function RankingsTable({ division, selectedType, onSelectedTypeChange }: 
             </option>
           ))}
         </select>
-        <div className="rankings-filter__rating-toggle" role="group" aria-label="Rating model">
-          <button
-            type="button"
-            className={!experimental ? 'rankings-filter__toggle-btn rankings-filter__toggle-btn--active' : 'rankings-filter__toggle-btn'}
-            onClick={() => setRatingMode('classic')}
-          >
-            Classic rating
-          </button>
-          <button
-            type="button"
-            className={experimental ? 'rankings-filter__toggle-btn rankings-filter__toggle-btn--active' : 'rankings-filter__toggle-btn'}
-            onClick={() => setRatingMode('experimental')}
-          >
-            Try experimental rating
-          </button>
-        </div>
       </div>
-
-      {experimental && (
-        <p className="rankings-table__experimental-note">
-          <strong>Experimental:</strong> splits each team's rating into separate offense and defense
-          components instead of one combined number -- backtest-validated to predict held-out games
-          better than the classic rating within a division (see <Link to="/help">Help</Link> for how).
-          Within-division only for now: cross-division comparisons and the Predict page still use the
-          classic rating.
-        </p>
-      )}
 
       {!bucket || bucket.teams.length === 0 ? (
         <p className="empty-state">No games of this type played yet.</p>

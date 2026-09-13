@@ -4,6 +4,7 @@ import { DivisionNav } from './components/DivisionNav'
 import { HelpPage } from './components/HelpPage'
 import { PredictPage } from './components/PredictPage'
 import { RankingsTable } from './components/RankingsTable'
+import type { RatingMode } from './components/RankingsTable'
 import { StatusBar } from './components/StatusBar'
 import { ScheduleList } from './components/ScheduleList'
 import { TeamPage } from './components/TeamPage'
@@ -18,7 +19,7 @@ function findDivision(data: RankingsData, age: string | undefined, level: string
   return data.divisions.find((d) => d.ageLabel === age && d.levelLabel === level)
 }
 
-function DivisionPage({ data }: { data: RankingsData }) {
+function DivisionPage({ data, ratingMode }: { data: RankingsData; ratingMode: RatingMode }) {
   const { age, level } = useParams()
   const [selectedType, setSelectedType] = useState(ALL_TYPES)
   const division = findDivision(data, age, level)
@@ -32,7 +33,12 @@ function DivisionPage({ data }: { data: RankingsData }) {
       <h2>
         {division.ageLabel} {division.levelLabel}
       </h2>
-      <RankingsTable division={division} selectedType={selectedType} onSelectedTypeChange={setSelectedType} />
+      <RankingsTable
+        division={division}
+        selectedType={selectedType}
+        onSelectedTypeChange={setSelectedType}
+        ratingMode={ratingMode}
+      />
       <ScheduleList games={division.games} homeLevelLabel={division.levelLabel} />
     </section>
   )
@@ -55,6 +61,8 @@ function Overview({ data }: { data: RankingsData }) {
 
 export default function App() {
   const { data, loading, error } = useRankingsData()
+  const [ratingMode, setRatingMode] = useState<RatingMode>('classic')
+  const experimental = ratingMode === 'experimental'
 
   return (
     <HashRouter>
@@ -71,6 +79,39 @@ export default function App() {
             iterative model (MHR-style), alongside traditional W-L-T stats. New here? See{' '}
             <Link to="/help">how ratings and predictions are calculated</Link>.
           </p>
+          <div className="rankings-filter__rating-toggle" role="group" aria-label="Rating model">
+            <button
+              type="button"
+              className={
+                !experimental
+                  ? 'rankings-filter__toggle-btn rankings-filter__toggle-btn--active'
+                  : 'rankings-filter__toggle-btn'
+              }
+              onClick={() => setRatingMode('classic')}
+            >
+              Classic rating
+            </button>
+            <button
+              type="button"
+              className={
+                experimental
+                  ? 'rankings-filter__toggle-btn rankings-filter__toggle-btn--active'
+                  : 'rankings-filter__toggle-btn'
+              }
+              onClick={() => setRatingMode('experimental')}
+            >
+              Try experimental rating
+            </button>
+          </div>
+          {experimental && (
+            <p className="rankings-table__experimental-note">
+              <strong>Experimental:</strong> splits each team's rating into separate offense and defense
+              components instead of one combined number -- backtest-validated to predict held-out games
+              better than the classic rating within a division (see <Link to="/help">Help</Link> for how).
+              Within-division only for now: cross-division comparisons and the Predict page still use the
+              classic rating.
+            </p>
+          )}
           <StatusBar scrapedAt={data?.scraped_at ?? null} />
         </header>
 
@@ -83,7 +124,7 @@ export default function App() {
             <main className="app__main">
               <Routes>
                 <Route path="/" element={<Overview data={data} />} />
-                <Route path="/:age/:level" element={<DivisionPage data={data} />} />
+                <Route path="/:age/:level" element={<DivisionPage data={data} ratingMode={ratingMode} />} />
                 <Route path="/:age/:level/team/:team" element={<TeamPageRoute data={data} />} />
                 <Route path="/predict/:age" element={<PredictPage data={data} />} />
                 <Route path="/help" element={<HelpPage />} />

@@ -280,6 +280,26 @@ describe('App', () => {
     expect(screen.getByText('+3.5')).toBeInTheDocument()
   })
 
+  it('keeps the rating mode toggle site-wide when navigating between divisions', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByText('Fresno Jr Monsters 10-1')
+
+    await user.click(screen.getByRole('button', { name: /try experimental rating/i }))
+    expect(screen.getByText('Offense')).toBeInTheDocument()
+
+    // Only one site-wide toggle should exist, not one per division.
+    expect(screen.getAllByRole('button', { name: /try experimental rating/i })).toHaveLength(1)
+
+    await user.click(screen.getByRole('link', { name: 'BB' }))
+    await screen.findByRole('heading', { name: '10U BB' })
+    // Still experimental after navigating to a different division.
+    expect(screen.getByText('Offense')).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /try experimental rating/i })).toHaveClass(
+      'rankings-filter__toggle-btn--active',
+    )
+  })
+
   it('links each team to its team page', async () => {
     const user = userEvent.setup()
     render(<App />)
