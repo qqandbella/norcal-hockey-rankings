@@ -258,6 +258,24 @@ def test_assign_tiers_too_few_teams_falls_back_to_mid():
     assert _assign_tiers([]) == []
 
 
+def test_assign_tiers_avoids_degenerate_split_from_a_lone_bottom_outlier():
+    # Real-data regression: 10U BB's experimental (offense+defense)
+    # ratings had their single biggest gap near the very bottom (one
+    # extreme outlier team) and their second-biggest gap also fairly low
+    # -- picking just the two largest adjacent gaps put 10 of 13 teams in
+    # "top". Natural-breaks partitioning should produce a much more
+    # sensible, non-degenerate split instead.
+    ratings_desc = [
+        4.308, 3.372, 2.810, 2.395, 1.540, 0.965, 0.849,
+        -0.587, -0.838, -1.039, -2.592, -3.618, -7.568,
+    ]
+    tiers = _assign_tiers(ratings_desc)
+    assert tiers.count("top") < 10
+    # The lone extreme outlier at the very bottom should still land alone.
+    assert tiers[-1] == "low"
+    assert tiers.count("low") <= 2
+
+
 def test_variance_aware_shrinkage_trusts_consistent_records_more():
     # C beats three different (otherwise-neutral, single-game) opponents by
     # the same margin each time -- a consistent, low-variance profile.

@@ -152,16 +152,69 @@ def capped_margin(home_goals: int, away_goals: int) -> int:
 
 
 def _assign_tiers(ratings_desc: list[float]) -> list[str]:
-    """top/mid/low based on the two largest natural gaps in the sorted
-    ratings, not a fixed exact-rank-thirds split. A team just past an
-    arbitrary rank cutoff but barely different in rating from the tier
-    above it (e.g. a tightly-clustered mid-pack) shouldn't be labeled a
-    full tier lower than a team it's rated almost identically to."""
+    """top/mid/low via optimal 1D 3-way partitioning (natural breaks /
+    Fisher-Jenks: the split into 3 contiguous groups that minimizes total
+    within-group variance), not a fixed exact-rank-thirds split and not
+    the two single largest adjacent gaps.
+
+    A team just past an arbitrary rank cutoff but barely different in
+    rating from the tier above it (e.g. a tightly-clustered mid-pack)
+    shouldn't be labeled a full tier lower than a team it's rated almost
+    identically to -- that's what rules out fixed thirds.
+
+    "Two largest adjacent gaps" (the original approach here) was a weaker
+    proxy for the same goal, and has a real failure mode: it only looks at
+    one pair of adjacent differences per cut, so if the single biggest gap
+    in the whole division happens to sit near the bottom (e.g. one or two
+    extreme outlier teams pulling away from everyone else), the
+    second-biggest gap can *also* end up positioned low, degenerately
+    lumping most of the division into "top" even though most of those
+    teams aren't meaningfully different from each other. Confirmed on real
+    data: 10U BB's experimental (offense+defense) ratings put 10 of 13
+    teams in "top" this way, flagged by eye as clearly wrong. Natural
+    breaks doesn't have this failure mode because it jointly considers
+    every possible split, not just the two biggest gaps in isolation.
+    """
     n = len(ratings_desc)
     if n <= 2:
         return ["mid"] * n
-    gaps = [(ratings_desc[i] - ratings_desc[i + 1], i) for i in range(n - 1)]
-    cut_after = sorted(i for _, i in sorted(gaps, key=lambda g: -g[0])[:2])
+
+    prefix_sum = [0.0] * (n + 1)
+    prefix_sq = [0.0] * (n + 1)
+    for i, v in enumerate(ratings_desc):
+        prefix_sum[i + 1] = prefix_sum[i] + v
+        prefix_sq[i + 1] = prefix_sq[i] + v * v
+
+    def cost(i: int, j: int) -> float:
+        """Sum of squared deviations from the mean, for ratings_desc[i:j]."""
+        if j <= i:
+            return 0.0
+        s = prefix_sum[j] - prefix_sum[i]
+        sq = prefix_sq[j] - prefix_sq[i]
+        return sq - s * s / (j - i)
+
+    # dp[k][i] = min total cost partitioning ratings_desc[:i] into k
+    # contiguous, non-empty groups. split_at[k][i] = the start of the
+    # k-th (last) group in that optimal partition.
+    dp = [[float("inf")] * (n + 1) for _ in range(4)]
+    split_at = [[0] * (n + 1) for _ in range(4)]
+    dp[0][0] = 0.0
+    for k in range(1, 4):
+        for i in range(k, n + 1):
+            for j in range(k - 1, i):
+                c = dp[k - 1][j] + cost(j, i)
+                if c < dp[k][i]:
+                    dp[k][i] = c
+                    split_at[k][i] = j
+
+    boundaries = []
+    i, k = n, 3
+    while k > 0:
+        j = split_at[k][i]
+        boundaries.append(j)
+        i, k = j, k - 1
+    cut_after = sorted(b - 1 for b in boundaries if 0 < b < n)
+
     tier_names = ["top", "mid", "low"]
     tiers = []
     tier_idx = 0
