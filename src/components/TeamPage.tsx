@@ -64,7 +64,15 @@ function findTeamLink(data: RankingsData, teamName: string): string | undefined 
   return undefined
 }
 
-export function TeamPage({ data, homeDivision }: { data: RankingsData; homeDivision: Division }) {
+export function TeamPage({
+  data,
+  homeDivision,
+  ratingMode,
+}: {
+  data: RankingsData
+  homeDivision: Division
+  ratingMode: 'classic' | 'experimental'
+}) {
   const { team: encodedTeam } = useParams()
   const teamName = encodedTeam ? decodeURIComponent(encodedTeam) : ''
   const teamGames = collectTeamGames(data, teamName)
@@ -102,12 +110,22 @@ export function TeamPage({ data, homeDivision }: { data: RankingsData; homeDivis
               <dt>
                 Rating (<Link to={divisionRoute(division)}>{division.ageLabel} {division.levelLabel}</Link>)
               </dt>
-              <dd>{row.rating > 0 ? `+${row.rating}` : row.rating}</dd>
+              <dd>
+                {ratingMode === 'experimental'
+                  ? row.experimentalRating > 0
+                    ? `+${row.experimentalRating}`
+                    : row.experimentalRating
+                  : row.rating > 0
+                    ? `+${row.rating}`
+                    : row.rating}
+              </dd>
             </div>
             <div>
               <dt>Rank</dt>
               <dd>
-                #{row.rank} ({row.tier})
+                {ratingMode === 'experimental'
+                  ? `#${row.experimentalRank} (${row.experimentalTier})`
+                  : `#${row.rank} (${row.tier})`}
               </dd>
             </div>
             <div>
@@ -138,6 +156,7 @@ export function TeamPage({ data, homeDivision }: { data: RankingsData; homeDivis
         perspectiveTeam={teamName}
         homeLevelLabel={homeDivision.levelLabel}
         ageGroups={data.ageGroups}
+        ratingMode={ratingMode}
       />
     </section>
   )

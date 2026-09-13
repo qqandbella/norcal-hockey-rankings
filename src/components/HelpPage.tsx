@@ -158,22 +158,25 @@ export function HelpPage() {
 
       <h3>Experimental rating (offense/defense split)</h3>
       <p>
-        Each division&apos;s rankings table has a <strong>Classic rating / Try experimental rating</strong>{' '}
-        toggle. The classic rating is a single number: how much better or worse than average a team is,
-        overall. The experimental rating splits that into two separate numbers -- <strong>offense</strong>{' '}
-        (how many goals a team scores above what an average team would against the same opponents) and{' '}
-        <strong>defense</strong> (how many goals below average it allows). A team can have real offense but
-        a leaky defense, or vice versa -- the same overall record either way, but a different reason for it,
-        and a different question about how it&apos;ll do against a tougher or weaker opponent than usual.
+        The header has a site-wide <strong>Classic rating / Try experimental rating</strong> toggle
+        (applies everywhere -- rankings tables, team pages, and the Predict page). The classic rating is a
+        single number: how much better or worse than average a team is, overall. The experimental rating
+        splits that into two separate numbers -- <strong>offense</strong> (how many goals a team scores
+        above what an average team would against the same opponents) and <strong>defense</strong> (how
+        many goals below average it allows). A team can have real offense but a leaky defense, or vice
+        versa -- the same overall record either way, but a different reason for it, and a different
+        question about how it&apos;ll do against a tougher or weaker opponent than usual.
       </p>
       <p>
         This isn&apos;t a guess -- it&apos;s backtest-validated the same way as everything else on this
         page: on this season&apos;s games so far, the offense/defense split predicts held-out games more
         accurately than the classic rating (lower average error, and picks the correct favorite more
-        often). It&apos;s still opt-in and within-division only, though: cross-division comparisons and the
-        Predict page don&apos;t use it yet, since that would need extending the whole cross-division scale
-        (tier offsets, described above) to work with two numbers instead of one -- a bigger change that
-        hasn&apos;t been built yet.
+        often). That validation is within-division only, though. Cross-division comparisons and the
+        Predict page do use the experimental rating when the toggle is on, but they get there by reusing
+        the classic model&apos;s cross-division machinery (tier offsets, described above) on the
+        experimental number as-is -- a lower-risk, lighter-weight choice than building a full two-sided
+        (offense-gap / defense-gap) cross-division model, but this specific reuse hasn&apos;t been
+        separately validated, since there&apos;s no cross-division ground truth to check it against yet.
       </p>
     </section>
   )

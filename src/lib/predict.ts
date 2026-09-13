@@ -48,10 +48,13 @@ export function predictMatchup(
   tierA: string,
   teamB: string,
   tierB: string,
+  ratingMode: 'classic' | 'experimental' = 'classic',
 ): Prediction | null {
   const group = ageGroups[ageLabel]
-  const ratingA = group?.teams[teamA]
-  const ratingB = group?.teams[teamB]
+  const teams = ratingMode === 'experimental' ? group?.experimentalTeams : group?.teams
+  const tierOffsets = ratingMode === 'experimental' ? group?.experimentalTierOffsets : group?.tierOffsets
+  const ratingA = teams?.[teamA]
+  const ratingB = teams?.[teamB]
   if (!ratingA || !ratingB) return null
 
   const margin = Math.round((ratingA.rating - ratingB.rating) * 100) / 100
@@ -62,7 +65,7 @@ export function predictMatchup(
     return { margin, marginText, confidence: 'direct', hops: [] }
   }
 
-  const hops = hopsBetween(group.tierOffsets, tierA, tierB)
+  const hops = hopsBetween(tierOffsets ?? {}, tierA, tierB)
   const minEvidence = hops.length > 0 ? Math.min(...hops.map((h) => h.evidenceCount)) : 0
   const confidence: Confidence = minEvidence > 0 ? 'bridged' : 'prior'
 

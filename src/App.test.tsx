@@ -222,6 +222,27 @@ const SAMPLE: RankingsData = {
           bridgeGames: [],
         },
       },
+      // Deliberately different from the classic ratings above (not just a
+      // copy) so a test can confirm the Predict page actually switches
+      // rating sets rather than always reading the classic one.
+      experimentalTeams: {
+        'Fresno Jr Monsters 10-1': { rating: 2.0, gamesPlayed: 3 },
+        'Vacaville Jets 10-2': { rating: -1.0, gamesPlayed: 3 },
+        'Santa Clara Blackhawks 10-2': { rating: 0.5, gamesPlayed: 1 },
+        'Lake Tahoe Grizzlies 10-2': { rating: -0.2, gamesPlayed: 1 },
+        'Capital Thunder 10-1': { rating: 5.5, gamesPlayed: 1 },
+        'Lake Tahoe Grizzlies 10-1': { rating: 2.5, gamesPlayed: 1 },
+        'Santa Clara Blackhawks 10-1': { rating: 5.0, gamesPlayed: 1 },
+      },
+      experimentalTierOffsets: {
+        B: { offset: 0, evidenceCount: 0, priorAnchor: null, bridgeGames: [] },
+        BB: {
+          offset: 4.0,
+          evidenceCount: 0,
+          priorAnchor: { source: 'historical', gap: 5.0 },
+          bridgeGames: [],
+        },
+      },
     },
   },
 }
@@ -410,6 +431,25 @@ describe('App', () => {
 
     expect(await screen.findByText(/favored by/)).toBeInTheDocument()
     expect(screen.getByText('Same division')).toBeInTheDocument()
+  })
+
+  it('uses the experimental rating for predictions when the site-wide toggle is on', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByText('Fresno Jr Monsters 10-1')
+
+    await user.click(screen.getByRole('link', { name: 'Predict' }))
+    await screen.findByRole('heading', { name: '10U Predictor' })
+    await user.selectOptions(screen.getByLabelText('Home team'), 'Fresno Jr Monsters 10-1')
+    await user.selectOptions(screen.getByLabelText('Away team'), 'Vacaville Jets 10-2')
+
+    // Classic: 3.5 - (-3.1) = 6.6.
+    expect(await screen.findByText(/favored by 6.6/)).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /try experimental rating/i }))
+    // Experimental: 2.0 - (-1.0) = 3.0, and its own caveat note shown.
+    expect(await screen.findByText(/favored by 3/)).toBeInTheDocument()
+    expect(screen.getByText(/reuses the classic model's tier-offset machinery/)).toBeInTheDocument()
   })
 
   it('predicts a cross-division matchup as resting on the prior when no bridge game has been played, and explains it', async () => {

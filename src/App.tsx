@@ -44,13 +44,13 @@ function DivisionPage({ data, ratingMode }: { data: RankingsData; ratingMode: Ra
   )
 }
 
-function TeamPageRoute({ data }: { data: RankingsData }) {
+function TeamPageRoute({ data, ratingMode }: { data: RankingsData; ratingMode: RatingMode }) {
   const { age, level } = useParams()
   const division = findDivision(data, age, level)
   if (!division) {
     return <p className="empty-state">No data for {age} {level}.</p>
   }
-  return <TeamPage data={data} homeDivision={division} />
+  return <TeamPage data={data} homeDivision={division} ratingMode={ratingMode} />
 }
 
 function Overview({ data }: { data: RankingsData }) {
@@ -108,8 +108,8 @@ export default function App() {
               <strong>Experimental:</strong> splits each team's rating into separate offense and defense
               components instead of one combined number -- backtest-validated to predict held-out games
               better than the classic rating within a division (see <Link to="/help">Help</Link> for how).
-              Within-division only for now: cross-division comparisons and the Predict page still use the
-              classic rating.
+              Cross-division comparisons and the Predict page reuse the classic model's tier-offset
+              machinery on this rating, which hasn't been separately validated the same way.
             </p>
           )}
           <StatusBar scrapedAt={data?.scraped_at ?? null} />
@@ -125,8 +125,11 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Overview data={data} />} />
                 <Route path="/:age/:level" element={<DivisionPage data={data} ratingMode={ratingMode} />} />
-                <Route path="/:age/:level/team/:team" element={<TeamPageRoute data={data} />} />
-                <Route path="/predict/:age" element={<PredictPage data={data} />} />
+                <Route
+                  path="/:age/:level/team/:team"
+                  element={<TeamPageRoute data={data} ratingMode={ratingMode} />}
+                />
+                <Route path="/predict/:age" element={<PredictPage data={data} ratingMode={ratingMode} />} />
                 <Route path="/help" element={<HelpPage />} />
               </Routes>
             </main>

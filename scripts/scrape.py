@@ -316,18 +316,102 @@ def build_division_payload(
     }
 
 
-def _team_ratings_from_bucket(bucket: dict) -> list[TeamRating]:
+def _team_ratings_from_bucket(
+    bucket: dict, rating_field: str = "rating", rank_field: str = "rank", tier_field: str = "tier"
+) -> list[TeamRating]:
     return [
         TeamRating(
-            name=t["name"], rating=t["rating"], games_played=t["gamesPlayed"], rank=t["rank"], tier=t["tier"]
+            name=t["name"],
+            rating=t[rating_field],
+            games_played=t["gamesPlayed"],
+            rank=t[rank_field],
+            tier=t[tier_field],
         )
         for t in bucket["teams"]
     ]
 
 
+def _compute_unified_and_patch(
+    divisions: list[dict], rating_field: str, rank_field: str, tier_field: str
+) -> tuple[dict[str, dict], dict]:
+    """One age group's cross-division-comparable ratings for a given rating
+    type (classic: rating/rank/tier, or experimental:
+    experimentalRating/experimentalRank/experimentalTier) -- shared by both
+    so the tier-offset/unified-rating/corrected-local-display pipeline
+    isn't duplicated per rating type. See compute_age_group_ratings for the
+    overall rationale.
+
+    The experimental cross-division extension reuses this same,
+    already-validated machinery wholesale (tier offsets, bridge-game
+    evidence, the historical prior) rather than a separate design -- a
+    deliberate, lower-risk choice over building a full two-sided
+    (offense-gap/defense-gap) cross-division model. Caveat: only the
+    WITHIN-division offense/defense split has been walk-forward
+    backtest-validated (scripts/backtest_offense_defense.py); this
+    specific cross-division reuse has not been separately validated, since
+    there's no cross-division experimental-mode ground truth to validate
+    against yet.
+    """
+    within_ratings_by_tier: dict[str, list[TeamRating]] = {}
+    for division in divisions:
+        tier = tier_of(division["levelLabel"])
+        if tier is None:
+            continue
+        within_ratings_by_tier.setdefault(tier, []).extend(
+            _team_ratings_from_bucket(division["ratingsByType"]["All"], rating_field, rank_field, tier_field)
+        )
+
+    bridge_games: list[tuple[str, str, int, str]] = []
+    seen_game_ids: set[str] = set()
+    for division in divisions:
+        for g in division["games"]:
+            if g["gameId"] in seen_game_ids:
+                continue
+            seen_game_ids.add(g["gameId"])
+            if not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
+                continue
+            game_tier = tier_of(g["levelLabel"])
+            if game_tier is None:
+                continue
+            bridge_games.append((g["home"], g["away"], capped_margin(g["homeGoals"], g["awayGoals"]), game_tier))
+
+    offsets = compute_tier_offsets(within_ratings_by_tier, bridge_games)
+    if not offsets:
+        return {}, {}
+
+    teams = compute_unified_ratings(within_ratings_by_tier, offsets)
+
+    # A cross-tested team's raw, displayed within-division rating in a
+    # tier it barely plays undersells it -- see
+    # compute_corrected_local_ratings. Patch the same correction back
+    # into that division's own "All" bucket, so a division's own
+    # rankings table and a team's own per-division rating block on its
+    # team page show the corrected number too, not a stale, too-low
+    # raw one that contradicts the unified rating shown elsewhere. Only
+    # "All" is patched -- offsets/bridge evidence are themselves only
+    # ever computed from "All", so per-game-type buckets are outside
+    # this correction's scope.
+    corrected_local = compute_corrected_local_ratings(within_ratings_by_tier, offsets)
+    for division in divisions:
+        tier = tier_of(division["levelLabel"])
+        if tier is None:
+            continue
+        all_rows = division["ratingsByType"]["All"]["teams"]
+        if any((row["name"], tier) in corrected_local for row in all_rows):
+            for row in all_rows:
+                key = (row["name"], tier)
+                if key in corrected_local:
+                    row[rating_field] = corrected_local[key]
+            division["ratingsByType"]["All"]["teams"] = rerank_and_tier(all_rows, rating_field, rank_field, tier_field)
+
+    return teams, offsets
+
+
 def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
     """One unified, cross-division-comparable rating per team, spanning every
     division within an age group (10U, 12U, ...) -- not just its own.
+    Computed for both the classic rating and the experimental
+    offense/defense-derived rating (see _compute_unified_and_patch).
 
     A division-scoped rating (ratingsByType) can't be compared across
     divisions on its own -- each is centered to its own division's mean,
@@ -343,61 +427,19 @@ def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
 
     age_groups: dict[str, dict] = {}
     for age_label, divisions in divisions_by_age.items():
-        within_ratings_by_tier: dict[str, list[TeamRating]] = {}
-        for division in divisions:
-            tier = tier_of(division["levelLabel"])
-            if tier is None:
-                continue
-            within_ratings_by_tier.setdefault(tier, []).extend(
-                _team_ratings_from_bucket(division["ratingsByType"]["All"])
-            )
-
-        bridge_games: list[tuple[str, str, int, str]] = []
-        seen_game_ids: set[str] = set()
-        for division in divisions:
-            for g in division["games"]:
-                if g["gameId"] in seen_game_ids:
-                    continue
-                seen_game_ids.add(g["gameId"])
-                if not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
-                    continue
-                game_tier = tier_of(g["levelLabel"])
-                if game_tier is None:
-                    continue
-                bridge_games.append(
-                    (g["home"], g["away"], capped_margin(g["homeGoals"], g["awayGoals"]), game_tier)
-                )
-
-        offsets = compute_tier_offsets(within_ratings_by_tier, bridge_games)
+        teams, offsets = _compute_unified_and_patch(divisions, "rating", "rank", "tier")
         if not offsets:
             continue
+        experimental_teams, experimental_offsets = _compute_unified_and_patch(
+            divisions, "experimentalRating", "experimentalRank", "experimentalTier"
+        )
 
-        teams = compute_unified_ratings(within_ratings_by_tier, offsets)
-
-        # A cross-tested team's raw, displayed within-division rating in a
-        # tier it barely plays undersells it -- see
-        # compute_corrected_local_ratings. Patch the same correction back
-        # into that division's own "All" bucket, so a division's own
-        # rankings table and a team's own per-division rating block on its
-        # team page show the corrected number too, not a stale, too-low
-        # raw one that contradicts the unified rating shown elsewhere. Only
-        # "All" is patched -- offsets/bridge evidence are themselves only
-        # ever computed from "All", so per-game-type buckets are outside
-        # this correction's scope.
-        corrected_local = compute_corrected_local_ratings(within_ratings_by_tier, offsets)
-        for division in divisions:
-            tier = tier_of(division["levelLabel"])
-            if tier is None:
-                continue
-            all_rows = division["ratingsByType"]["All"]["teams"]
-            if any((row["name"], tier) in corrected_local for row in all_rows):
-                for row in all_rows:
-                    key = (row["name"], tier)
-                    if key in corrected_local:
-                        row["rating"] = corrected_local[key]
-                division["ratingsByType"]["All"]["teams"] = rerank_and_tier(all_rows)
-
-        age_groups[age_label] = {"teams": teams, "tierOffsets": offsets}
+        age_groups[age_label] = {
+            "teams": teams,
+            "tierOffsets": offsets,
+            "experimentalTeams": experimental_teams,
+            "experimentalTierOffsets": experimental_offsets,
+        }
 
     return age_groups
 

@@ -50,6 +50,7 @@ interface ScheduleListProps {
   /** When set (only ever passed from a team's own page), unplayed rows show
    * a tentative predicted margin instead of just "Scheduled". */
   ageGroups?: Record<string, AgeGroupRatings>
+  ratingMode?: 'classic' | 'experimental'
 }
 
 export function ScheduleList({
@@ -58,6 +59,7 @@ export function ScheduleList({
   perspectiveTeam,
   homeLevelLabel,
   ageGroups,
+  ratingMode = 'classic',
 }: ScheduleListProps) {
   const [open, setOpen] = useState(startOpen)
   const [resultFilter, setResultFilter] = useState<ResultFilter>('all')
@@ -120,7 +122,7 @@ export function ScheduleList({
               const homeTier = game.home === perspectiveTeam ? (homeLevelLabel ?? game.levelLabel) : game.levelLabel
               const prediction =
                 !hasScore && ageGroups && perspectiveTeam
-                  ? predictMatchup(ageGroups, game.ageLabel, game.away, awayTier, game.home, homeTier)
+                  ? predictMatchup(ageGroups, game.ageLabel, game.away, awayTier, game.home, homeTier, ratingMode)
                   : null
               return (
                 <tr key={game.gameId} className={rowClass || undefined}>

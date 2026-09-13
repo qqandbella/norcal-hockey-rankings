@@ -474,17 +474,24 @@ def compute_unified_ratings(
     return teams
 
 
-def rerank_and_tier(rows: list[dict]) -> list[dict]:
+def rerank_and_tier(
+    rows: list[dict], rating_field: str = "rating", rank_field: str = "rank", tier_field: str = "tier"
+) -> list[dict]:
     """Re-derive rank + tier for a list of team-row dicts after any of their
-    'rating' values changed post-hoc (e.g. a cross-tested team's displayed
+    rating values changed post-hoc (e.g. a cross-tested team's displayed
     within-division rating corrected by compute_corrected_local_ratings) --
     same gap-based tier assignment compute_ratings itself uses, just
-    applied to already-computed ratings instead of raw games."""
-    ordered = sorted(rows, key=lambda row: -row["rating"])
-    tiers = _assign_tiers([row["rating"] for row in ordered])
+    applied to already-computed ratings instead of raw games.
+
+    Field names are parameterized so this same function re-ranks/re-tiers
+    the classic (rating/rank/tier) and experimental
+    (experimentalRating/experimentalRank/experimentalTier) rating sets
+    identically, rather than duplicating this logic per rating type."""
+    ordered = sorted(rows, key=lambda row: -row[rating_field])
+    tiers = _assign_tiers([row[rating_field] for row in ordered])
     for i, row in enumerate(ordered):
-        row["rank"] = i + 1
-        row["tier"] = tiers[i]
+        row[rank_field] = i + 1
+        row[tier_field] = tiers[i]
     return ordered
 
 

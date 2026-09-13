@@ -182,16 +182,16 @@ reports).
 
 ### Experimental: offense/defense split
 
-Each division's rankings table has a **Classic rating / Try experimental
-rating** toggle. The classic rating is one number per team; the
-experimental rating (`compute_offense_defense_ratings` in
-`scripts/ratings.py`) splits it into separate **offense** and **defense**
-components instead, so a team with real offensive output but a leaky
-defense (or vice versa) doesn't collapse into a single number that looks
-identical to a team that's just uniformly weaker. Combined into a single
-sortable "experimental rating" = offense + defense (predicted margin
-against a league-average opponent), tiered the same gap-based way as the
-classic model.
+The header has a **site-wide Classic rating / Try experimental rating**
+toggle (rankings tables, team pages, and the Predict page all respect it).
+The classic rating is one number per team; the experimental rating
+(`compute_offense_defense_ratings` in `scripts/ratings.py`) splits it into
+separate **offense** and **defense** components instead, so a team with
+real offensive output but a leaky defense (or vice versa) doesn't collapse
+into a single number that looks identical to a team that's just uniformly
+weaker. Combined into a single sortable "experimental rating" = offense +
+defense (predicted margin against a league-average opponent), tiered via
+the same natural-breaks partitioning the classic model uses (see below).
 
 Backtest-validated via `scripts/backtest_offense_defense.py`
 (walk-forward, within-division games only): naively reusing the classic
@@ -204,12 +204,34 @@ is retuned specifically for it. Grid-searching found a real win at
 Deliberately shipped as an **opt-in toggle, not a replacement** — this is
 industry-standard practice for a validated-but-newer model (an
 "experimental" label a user can switch to and back from), rather than
-silently swapping the model everyone already trusts. It's also
-within-division only for now: cross-division tier offsets
-(`compute_tier_offsets`, `compute_unified_ratings`) still assume a single
-scalar rating per team throughout, so the Predict page and cross-division
-comparisons keep using the classic rating until that's extended (tracked
-in [issue #6](https://github.com/qqandbella/norcal-hockey-rankings/issues/6)).
+silently swapping the model everyone already trusts.
+
+**Cross-division reach**: rather than build a full two-sided (offense-gap
+and defense-gap tracked separately across tiers) cross-division model, the
+experimental rating's combined offense+defense scalar is run through the
+exact same `compute_tier_offsets`/`compute_unified_ratings` pipeline the
+classic rating already uses (`_compute_unified_and_patch` in
+`scripts/scrape.py`, called once per rating type). Lower-risk, 100% code
+reuse — but only the within-division split itself has been walk-forward
+backtest-validated; this specific cross-division reuse hasn't been,
+since there's no cross-division experimental-mode ground truth to check it
+against yet. The Predict page and cross-division rankings both surface an
+inline note about this when experimental mode is on. Tracked in
+[issue #6](https://github.com/qqandbella/norcal-hockey-rankings/issues/6).
+
+### Tier labels: natural-breaks partitioning
+
+Top/mid/low tier labels (both classic and experimental) come from a 3-way
+contiguous partition of a division's sorted ratings that minimizes total
+within-tier variance (`_assign_tiers` in `scripts/ratings.py`, "natural
+breaks" / Fisher-Jenks, solved via a small DP) — not a fixed exact-thirds
+split, and not just the two largest adjacent gaps (tried first, and has a
+real degenerate failure mode: if the single biggest gap in a division
+happens to sit near the bottom, e.g. one or two extreme outlier teams, the
+second-biggest gap can also end up positioned low, lumping most of the
+division into "top" even though most of those teams aren't meaningfully
+different from each other — confirmed on real data, 10U BB's experimental
+ratings put 10 of 13 teams in "top" this way before the fix).
 
 ## Data source
 

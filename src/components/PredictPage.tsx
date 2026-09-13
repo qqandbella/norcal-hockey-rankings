@@ -91,7 +91,13 @@ function HopExplanation({ hop }: { hop: TierOffset }) {
   )
 }
 
-export function PredictPage({ data }: { data: RankingsData }) {
+export function PredictPage({
+  data,
+  ratingMode,
+}: {
+  data: RankingsData
+  ratingMode: 'classic' | 'experimental'
+}) {
   const { age } = useParams()
   const [searchParams] = useSearchParams()
   const ageLabel = age ?? ''
@@ -106,7 +112,7 @@ export function PredictPage({ data }: { data: RankingsData }) {
   const levelB = teamB ? findLevel(teamB) : undefined
   const prediction =
     teamA && teamB && teamA !== teamB && levelA && levelB
-      ? predictMatchup(data.ageGroups, ageLabel, teamA, levelA, teamB, levelB)
+      ? predictMatchup(data.ageGroups, ageLabel, teamA, levelA, teamB, levelB, ratingMode)
       : null
 
   if (byLevel.size === 0) {
@@ -122,6 +128,15 @@ export function PredictPage({ data }: { data: RankingsData }) {
         defaults to "a tier's bottom is on par with the tier above's top", refined by real cross-division games
         where any exist. See each team's page for the within-division model itself.
       </p>
+
+      {ratingMode === 'experimental' && (
+        <p className="rankings-table__experimental-note">
+          <strong>Experimental:</strong> this prediction uses the offense/defense-split rating. The split
+          itself is backtest-validated within a division, but translating it across divisions reuses the
+          classic model's tier-offset machinery as-is -- that specific reuse hasn't been separately
+          validated, since there's no cross-division ground truth to check it against yet.
+        </p>
+      )}
 
       <div className="predict__pickers">
         <TeamSelect id="predict-team-a" label="Home team" byLevel={byLevel} value={teamA} onChange={setTeamA} />

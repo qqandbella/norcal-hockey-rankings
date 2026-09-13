@@ -99,6 +99,13 @@ export interface AgeGroupRatings {
   teams: Record<string, UnifiedTeamRating>
   /** Keyed by division tier ("A", "BB", "B", ...). */
   tierOffsets: Record<string, TierOffset>
+  /** Same cross-division machinery re-run on the experimental
+   * (offense+defense) rating instead of the classic one -- reuses the
+   * tier-offset pipeline wholesale rather than a separate two-sided
+   * design. Only the within-division offense/defense split itself has
+   * been backtest-validated; this specific cross-division reuse hasn't. */
+  experimentalTeams: Record<string, UnifiedTeamRating>
+  experimentalTierOffsets: Record<string, TierOffset>
 }
 
 export interface RankingsData {
