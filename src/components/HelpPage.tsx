@@ -80,8 +80,10 @@ export function HelpPage() {
       <ul>
         <li>
           <strong>A default assumption</strong> -- roughly, &quot;the bottom of the higher tier is
-          about as strong as the top of the lower tier&quot; -- calibrated from a full past season
-          of results (hundreds of games), not this season&apos;s own small early sample.
+          about as strong as the top of the lower tier&quot;. Where a full past season of results
+          exists for a tier pair (hundreds of games), that historical average is used; otherwise
+          (too few historical samples to trust, or a brand-new split with no history at all, like
+          a future B East/B West) the default is a flat +7 gap.
         </li>
         <li>
           <strong>Real cross-division games</strong>, when they exist -- a team that has played
@@ -99,6 +101,16 @@ export function HelpPage() {
         the blended offset moves only slightly above +5.6 -- not all the way to +8. If five more
         BB-vs-B games get played later in the season and they also suggest a bigger gap, the
         offset will keep drifting toward what the real games show.
+      </p>
+      <p>
+        <strong>A team that plays mostly in one tier, with just a game or two in another,</strong>{' '}
+        keeps its rating anchored mainly to whichever tier it has the most games in (its
+        &quot;primary&quot; tier) -- the occasional cross-tier game nudges that rating slightly
+        rather than replacing it outright. Without this, a single low-sample game in an unfamiliar
+        tier (which on its own looks unremarkable, since there&apos;s no track record yet to judge
+        it against) could otherwise drag a well-established team&apos;s rating down toward that
+        other tier&apos;s average, even when the team&apos;s much larger body of evidence from its
+        real tier says it&apos;s clearly stronger than that.
       </p>
 
       <h3>How predictions work</h3>

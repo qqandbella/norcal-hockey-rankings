@@ -58,10 +58,9 @@ export interface UnifiedTeamRating {
 /** Either a historical, multi-season reference gap (no specific teams --
  * derived from a full completed past season, not this season's own noisy
  * few-games-per-team sample), or, only when no historical value exists for
- * a tier pair, a fallback naming the two in-season teams that anchor it. */
-export type PriorAnchor =
-  | { source: 'historical'; gap: number }
-  | { source: 'inSeason'; lowTeam: string; lowRating: number; highTeam: string; highRating: number; gap: number }
+ * a tier pair (too few historical samples, or a brand-new split like a
+ * future B East/B West), a flat default gap. */
+export type PriorAnchor = { source: 'historical' | 'default'; gap: number }
 
 export interface BridgeGame {
   homeTeam: string

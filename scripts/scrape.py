@@ -27,6 +27,7 @@ from ratings import (
     compute_ratings,
     compute_team_stats,
     compute_tier_offsets,
+    compute_unified_ratings,
 )
 
 BASE_URL = "https://www.norcalyouthhockey.org"
@@ -346,24 +347,7 @@ def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
         if not offsets:
             continue
 
-        # Unified rating per team = games-played-weighted average of
-        # (within-rating + that tier's offset) across every tier the team
-        # is rated in -- almost always just one, more for cross-tested teams.
-        team_tier_ratings: dict[str, list[tuple[TeamRating, str]]] = {}
-        for tier, rows in within_ratings_by_tier.items():
-            if tier not in offsets:
-                continue
-            for r in rows:
-                team_tier_ratings.setdefault(r.name, []).append((r, tier))
-
-        teams = {}
-        for name, entries in team_tier_ratings.items():
-            total_games = sum(r.games_played for r, _ in entries)
-            unified = (
-                sum((r.rating + offsets[tier]["offset"]) * r.games_played for r, tier in entries) / total_games
-            )
-            teams[name] = {"rating": round(unified, 3), "gamesPlayed": total_games}
-
+        teams = compute_unified_ratings(within_ratings_by_tier, offsets)
         age_groups[age_label] = {"teams": teams, "tierOffsets": offsets}
 
     return age_groups

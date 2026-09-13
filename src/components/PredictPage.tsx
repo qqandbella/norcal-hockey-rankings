@@ -72,17 +72,13 @@ function HopExplanation({ hop }: { hop: TierOffset }) {
           </ul>
         </>
       )}
-      {hop.priorAnchor && hop.priorAnchor.source === 'historical' && (
+      {hop.priorAnchor && (
         <p className="predict__hop-prior">
-          Default assumption (no bridge evidence overrides it): based on a pooled average from a full past season
-          &rarr; assumed gap {hop.priorAnchor.gap}.
-        </p>
-      )}
-      {hop.priorAnchor && hop.priorAnchor.source === 'inSeason' && (
-        <p className="predict__hop-prior">
-          Default assumption (no bridge evidence overrides it): <strong>{hop.priorAnchor.lowTeam}</strong> (top of
-          the lower tier, {hop.priorAnchor.lowRating}) &asymp; <strong>{hop.priorAnchor.highTeam}</strong> (bottom
-          of the higher tier, {hop.priorAnchor.highRating}) &rarr; assumed gap {hop.priorAnchor.gap}.
+          Default assumption (no bridge evidence overrides it):{' '}
+          {hop.priorAnchor.source === 'historical'
+            ? 'based on a pooled average from a full past season'
+            : 'a flat default (no trustworthy historical reference for this tier pair)'}
+          &nbsp;&rarr; assumed gap {hop.priorAnchor.gap}.
         </p>
       )}
       <p className="predict__hop-blend">

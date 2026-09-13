@@ -208,14 +208,7 @@ const SAMPLE: RankingsData = {
         BB: {
           offset: 4.0,
           evidenceCount: 0,
-          priorAnchor: {
-            source: 'inSeason',
-            lowTeam: 'Fresno Jr Monsters 10-1',
-            lowRating: 3.5,
-            highTeam: 'Lake Tahoe Grizzlies 10-1',
-            highRating: -1.5,
-            gap: 5.0,
-          },
+          priorAnchor: { source: 'historical', gap: 5.0 },
           bridgeGames: [],
         },
       },
@@ -382,9 +375,9 @@ describe('App', () => {
 
     expect(await screen.findByText(/favored by/)).toBeInTheDocument()
     expect(screen.getByText(/no bridge games yet/i)).toBeInTheDocument()
-    // The evidence trail itself: which two teams anchor the default gap.
+    // The evidence trail itself: what anchors the default gap.
     const result = document.querySelector<HTMLElement>('.predict__result')!
-    expect(within(result).getByText(/Lake Tahoe Grizzlies 10-1/)).toBeInTheDocument()
+    expect(within(result).getByText(/pooled average from a full past season/)).toBeInTheDocument()
     expect(within(result).getByText(/pure default assumption/)).toBeInTheDocument()
   })
 

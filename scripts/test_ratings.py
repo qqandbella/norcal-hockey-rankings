@@ -4,9 +4,11 @@ from ratings import (
     TeamRating,
     W_PRIOR,
     _assign_tiers,
+    SHRINKAGE_K,
     compute_ratings,
     compute_team_stats,
     compute_tier_offsets,
+    compute_unified_ratings,
 )
 
 # Real 10U B preseason results (Labor Day weekend 2026), used as a regression
@@ -147,41 +149,14 @@ def test_tier_offsets_uses_historical_prior_by_default():
     assert offsets["BB"]["priorAnchor"] == {"source": "historical", "gap": expected_gap}
 
 
-def test_tier_offsets_falls_back_to_in_season_trim_when_no_historical_data(monkeypatch):
+def test_tier_offsets_falls_back_to_flat_default_when_no_historical_data(monkeypatch):
     import ratings
 
     monkeypatch.setattr(ratings, "HISTORICAL_TIER_GAP", {})
     within = _b_bb_setup()
     offsets = compute_tier_offsets(within, bridge_games=[])
-    # B has 3 teams (>=3, trimmed): 2nd-best = B_mid (0.0), not B_top (5.0).
-    # BB only has 2 teams (<3, falls back to the plain extreme): BB_bottom (-4.0).
-    # prior_gap = 0.0 - (-4.0) = 4.0
-    assert offsets["BB"]["offset"] == 4.0
-    assert offsets["BB"]["priorAnchor"] == {
-        "source": "inSeason",
-        "lowTeam": "B_mid",
-        "lowRating": 0.0,
-        "highTeam": "BB_bottom",
-        "highRating": -4.0,
-        "gap": 4.0,
-    }
-
-
-def test_tier_offsets_trimming_needs_at_least_three_teams_per_side(monkeypatch):
-    import ratings
-
-    monkeypatch.setattr(ratings, "HISTORICAL_TIER_GAP", {})
-    # With exactly 2 teams, "trimming one" just leaves the *other* extreme
-    # (flipping the gap's sign), which is worse than not trimming at all --
-    # confirm the 2-team fallback still uses the plain extreme, not that.
-    within = {
-        "B": [TeamRating("B1", rating=5.0, games_played=3), TeamRating("B2", rating=-5.0, games_played=3)],
-        "BB": [TeamRating("BB1", rating=6.0, games_played=3), TeamRating("BB2", rating=-4.0, games_played=3)],
-    }
-    offsets = compute_tier_offsets(within, bridge_games=[])
-    # Both sides have only 2 teams -> both fall back to plain extremes,
-    # identical to the pre-trimming formula: max(B) - min(BB) = 5.0 - (-4.0).
-    assert offsets["BB"]["offset"] == 9.0
+    assert offsets["BB"]["offset"] == ratings.DEFAULT_TIER_GAP
+    assert offsets["BB"]["priorAnchor"] == {"source": "default", "gap": ratings.DEFAULT_TIER_GAP}
 
 
 def test_tier_offsets_one_bridge_game_nudges_toward_its_implied_gap():
@@ -252,10 +227,9 @@ def test_tier_offsets_chain_three_tiers(monkeypatch):
     }
     offsets = compute_tier_offsets(within, bridge_games=[])
     assert offsets["B"]["offset"] == 0.0
-    # gap(BB,B) = B's top (1.0) - BB's bottom (-2.0) = 3.0
-    assert offsets["BB"]["offset"] == 3.0
-    # gap(A,BB) = BB's top (2.0) - A's bottom (-3.0) = 5.0, chained onto offset[BB]
-    assert offsets["A"]["offset"] == 8.0
+    # No historical data for either pair -> both fall back to the flat default.
+    assert offsets["BB"]["offset"] == ratings.DEFAULT_TIER_GAP
+    assert offsets["A"]["offset"] == 2 * ratings.DEFAULT_TIER_GAP
 
 
 def test_tier_offsets_missing_tier_handled_gracefully():
@@ -320,3 +294,58 @@ def test_variance_aware_shrinkage_bounded_by_min_max_ratio():
 
     expected = round(7 / (2 + SHRINKAGE_K), 3)
     assert x.rating == expected
+
+
+def test_unified_ratings_cross_tested_team_secondary_tier_uses_primary_as_prior():
+    # Real-data regression: a team playing mostly in a higher tier (A) with
+    # just one game in a lower tier (BB) shouldn't have that one low-sample
+    # BB reading (shrunk toward BB's own zero mean) drag its unified rating
+    # down below a team it's clearly at least as strong as -- confirmed
+    # directly for Tri Valley Blue Devils 10-1 (3 A games) vs Santa Rosa
+    # Flyers 10-1 (BB native) after a BB-BB-tie test game.
+    within = {
+        "A": [
+            TeamRating("TVBD1", rating=-2.298, games_played=3),
+            TeamRating("A2", rating=2.298, games_played=3),
+        ],
+        "BB": [
+            # TVBD1 tied Flyers1 in its one BB appearance -- barely above
+            # zero once shrunk toward BB's own mean with only 1 game.
+            TeamRating("Flyers1", rating=3.351, games_played=4),
+            TeamRating("TVBD1", rating=1.197, games_played=1),
+        ],
+    }
+    offsets = {
+        "BB": {"offset": 0.0},
+        "A": {"offset": 12.802},
+    }
+    teams = compute_unified_ratings(within, offsets)
+    # TVBD1 should land at or above Flyers1, not below it.
+    assert teams["TVBD1"]["rating"] >= teams["Flyers1"]["rating"]
+    assert teams["TVBD1"]["gamesPlayed"] == 4
+
+
+def test_unified_ratings_single_tier_team_unaffected():
+    within = {
+        "B": [TeamRating("B1", rating=5.0, games_played=3), TeamRating("B2", rating=-5.0, games_played=3)],
+    }
+    offsets = {"B": {"offset": 0.0}}
+    teams = compute_unified_ratings(within, offsets)
+    assert teams["B1"]["rating"] == 5.0
+    assert teams["B2"]["rating"] == -5.0
+
+
+def test_unified_ratings_secondary_tier_correction_matches_hand_derivation():
+    # Exact algebraic check for the n<2 case: corrected = rating + k*prior/(n+k).
+    within = {
+        "A": [TeamRating("X", rating=0.0, games_played=3)],
+        "BB": [TeamRating("X", rating=1.0, games_played=1), TeamRating("Y", rating=-1.0, games_played=3)],
+    }
+    offsets = {"BB": {"offset": 0.0}, "A": {"offset": 10.0}}
+    teams = compute_unified_ratings(within, offsets)
+    primary_estimate = 0.0 + 10.0  # X's A rating + A offset
+    prior_local = primary_estimate - 0.0  # translated onto BB's local scale
+    corrected_local = 1.0 + SHRINKAGE_K * prior_local / (1 + SHRINKAGE_K)
+    expected_bb_estimate = corrected_local + 0.0
+    expected_unified = (3 * primary_estimate + 1 * expected_bb_estimate) / 4
+    assert teams["X"]["rating"] == round(expected_unified, 3)

@@ -89,17 +89,17 @@ tier's bottom is on par with the tier above's top", sourced from a
 the trimmed (2nd-best/2nd-worst, not literal extremes) gap averaged across
 all age groups in a full completed past season
 (`scripts/historical_tier_gap.py`), rather than derived from the *current*
-season's own 3-games-per-team sample. That in-season derivation was tried
-first and is still the fallback when no historical value exists for a tier
-pair, but it broke once variance-aware shrinkage (below) correctly widened
-a division's spread: with two genuinely distinct top-of-division teams both
-now legitimately extreme, the trim's "2nd-best" landed on the *other*
-outlier instead of a representative typical-top-team, inflating one
-division's offset well past what any real evidence supported (concretely:
-BB's offset briefly hit +11.98, correctly identified as implausible from a
-specific Capital Thunder 10-1 vs LBD prediction) — a fixed historical
-constant isn't vulnerable to this because it doesn't move with a single
-season's noisy extremes at all.
+season's own 3-games-per-team sample (tried first, and fragile: once
+variance-aware shrinkage, below, correctly widened a division's spread, two
+genuinely distinct top-of-division teams both became legitimately extreme,
+and the trim's "2nd-best" landed on the *other* outlier instead of a
+representative typical-top-team, briefly inflating one division's offset to
++11.98 — flagged as implausible from a specific Capital Thunder 10-1 vs LBD
+prediction). For a tier pair with no trustworthy historical sample (too
+thin, or a brand-new split like a future B East/B West with no history to
+draw from at all), the fallback is a **flat default gap of 7** rather than
+that fragile in-season derivation — a fixed constant that doesn't move with
+a single season's noisy extremes.
 
 This then blends toward real evidence in proportion to how much
 exists — each team's *primary* tier (wherever it
@@ -108,6 +108,27 @@ the two sides' primary tiers actually differ, so a cross-tested team's
 *ordinary* same-tier games are never mistaken for cross-division evidence.
 One or two noisy bridge games barely move the default; real, repeated
 evidence can.
+
+A cross-tested team's **own unified rating** (`compute_unified_ratings`)
+gets the same "trust the established evidence" treatment. A team's rating
+in a tier it barely plays (one cross-level test game, say) is, by
+construction, shrunk toward that tier's own zero mean — correct for a team
+we know nothing about, wrong once the team already has an established
+rating from its primary tier. Naively averaging the two tiers' raw ratings
+weighted by games played then silently discounts a team's known strength
+whenever its tier split is uneven. Confirmed on real data: Tri Valley Blue
+Devils 10-1 (3 games in A) tied Santa Rosa Flyers 10-1 (BB) in its first BB
+appearance; its lone, barely-above-zero BB reading (1 game, shrunk hard
+toward BB's mean) dragged its unified rating *below* Flyers1's despite a
+strong, competitive result. Fix: before blending, re-express that
+secondary-tier rating as if it had been computed with a prior mean of "the
+primary-tier estimate, translated onto the secondary tier's own local
+scale" instead of the default prior of 0 — reconstructed algebraically from
+the already-computed rating (`rating + k*prior/(n+k)`) rather than
+re-solving the whole division. Verified: Tri Valley Blue Devils 10-1 now
+unifies to 10.571, just above Santa Rosa Flyers 10-1's 10.136 — anchored by
+its established A-division strength, nudged by the tie, not swamped by a
+single low-sample reading.
 
 - **Predict page** (`/predict/<age>`, linked from the nav and from each
   team's own page): pick any two teams in an age group, even across

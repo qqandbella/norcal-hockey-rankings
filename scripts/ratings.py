@@ -68,11 +68,24 @@ W_PRIOR = 5.0
 # extreme results that make a 3-game sample untrustworthy as a calibration
 # anchor, even though those same extremes are legitimate signal for the
 # *within-division* rating of the specific team that earned them.
+#
+# Only pairs with a real, reasonably-trustworthy historical sample get an
+# entry here. For everything else (AA/A had only 1 historical sample -- too
+# noisy to trust -- and any pair with no historical season to draw from at
+# all, e.g. a not-yet-existing B East/B West split), fall back to
+# DEFAULT_TIER_GAP below rather than a shaky number.
 HISTORICAL_TIER_GAP: dict[tuple[str, str], float] = {
     ("A", "BB"): 6.09,
     ("BB", "B"): 5.65,
-    ("AA", "A"): 3.48,  # only 1 historical sample (n=4 AA teams) -- noisier than the others
 }
+
+# Flat default gap for any adjacent tier pair with no trustworthy historical
+# calibration. Simpler than deriving one from this season's own noisy
+# few-games-per-team extremes (which is what this replaced -- see
+# compute_tier_offsets), and just as sound as a starting assumption: real
+# cross-division evidence still overrides it in proportion to how much
+# exists, the same way it overrides a calibrated historical value.
+DEFAULT_TIER_GAP = 7.0
 
 # Standard hockey points: win=2, tie=1, loss=0. The source feed carries no
 # OT/shootout marker, so ties are recorded as plain ties rather than OTL.
@@ -222,6 +235,68 @@ def compute_primary_tiers(within_ratings_by_tier: dict[str, list[TeamRating]]) -
     return primary_tier
 
 
+def compute_unified_ratings(
+    within_ratings_by_tier: dict[str, list[TeamRating]],
+    offsets: dict[str, dict],
+    k: float = SHRINKAGE_K,
+) -> dict[str, dict]:
+    """Final, single cross-division-comparable rating per team.
+
+    A cross-tested team's rating in a *secondary* tier (any tier that isn't
+    the one it has the most games in) is, by construction, shrunk toward
+    that tier's own zero mean -- the right call for a team we genuinely
+    know nothing about, but wrong once the team already has an established
+    rating from its primary tier. Naively averaging the two tiers' raw
+    ratings (weighted just by games played) then silently discounts a
+    team's known strength every time its tier split is uneven. Confirmed on
+    real data: Tri Valley Blue Devils 10-1 (3 A games, rating -2.298; 1 BB
+    tie, rating 1.197 -- barely above zero despite a competitive tie
+    against a real BB team) unified *below* a team it's clearly stronger
+    than, purely because that one low-sample BB reading dragged the average
+    down toward BB's zero mean instead of toward what its 3 A games already
+    established.
+
+    Fix: before blending, re-express each secondary-tier rating as if it
+    had been computed with a prior mean of "the primary-tier estimate,
+    translated onto that secondary tier's own local scale" instead of the
+    default prior of 0 -- reconstructed algebraically from the
+    already-computed rating rather than re-solving the whole division
+    (a team's raw rating is `sum(implied)/(n+k)`, so injecting a prior mean
+    p instead of 0 gives `(sum(implied)+k*p)/(n+k) = rating + k*p/(n+k)`).
+    Exact when the secondary tier has <2 games (shrinkage there is just the
+    base k, since variance can't be estimated from a single game); a
+    reasonable approximation otherwise.
+    """
+    primary_tier = compute_primary_tiers(within_ratings_by_tier)
+    entries_by_team: dict[str, list[tuple[TeamRating, str]]] = {}
+    for tier, rows in within_ratings_by_tier.items():
+        if tier not in offsets:
+            continue
+        for r in rows:
+            entries_by_team.setdefault(r.name, []).append((r, tier))
+
+    teams: dict[str, dict] = {}
+    for name, entries in entries_by_team.items():
+        p_tier = primary_tier[name]
+        primary_row = next(r for r, tier in entries if tier == p_tier)
+        primary_estimate = primary_row.rating + offsets[p_tier]["offset"]
+
+        weighted_sum = 0.0
+        total_games = 0
+        for r, tier in entries:
+            if tier == p_tier:
+                estimate = r.rating + offsets[tier]["offset"]
+            else:
+                prior_local = primary_estimate - offsets[tier]["offset"]
+                corrected_local = r.rating + k * prior_local / (r.games_played + k)
+                estimate = corrected_local + offsets[tier]["offset"]
+            weighted_sum += estimate * r.games_played
+            total_games += r.games_played
+
+        teams[name] = {"rating": round(weighted_sum / total_games, 3), "gamesPlayed": total_games}
+    return teams
+
+
 def compute_tier_offsets(
     within_ratings_by_tier: dict[str, list[TeamRating]],
     bridge_games: list[tuple[str, str, int, str]],
@@ -292,32 +367,21 @@ def compute_tier_offsets(
     offsets[tiers_present[-1]] = {"offset": 0.0, "evidenceCount": 0, "priorAnchor": None, "bridgeGames": []}
     for i in range(len(tiers_present) - 2, -1, -1):
         higher, lower = tiers_present[i], tiers_present[i + 1]
-        low_rows = within_ratings_by_tier[lower]
-        high_rows = within_ratings_by_tier[higher]
         historical_gap = HISTORICAL_TIER_GAP.get((higher, lower))
         if historical_gap is not None:
             prior_gap = historical_gap
             prior_anchor = {"source": "historical", "gap": round(prior_gap, 3)}
         else:
-            # No historical reference for this tier pair -- fall back to
-            # this season's own 2nd-best/2nd-worst as a last resort. Known
-            # to be noisy on a 3-game preseason sample (a single legitimately
-            # extreme team, or two, can distort even the trimmed statistic —
-            # confirmed directly: 10U's own "2nd-best of B" anchor hit 11.85
-            # this way, versus 3.5-7 from a full historical season using the
-            # same rating algorithm) -- only used when there's truly nothing
-            # better to go on.
-            low_top = sorted(low_rows, key=lambda r: r.rating)[-2 if len(low_rows) >= 3 else -1]
-            high_bottom = sorted(high_rows, key=lambda r: r.rating)[1 if len(high_rows) >= 3 else 0]
-            prior_gap = low_top.rating - high_bottom.rating
-            prior_anchor = {
-                "source": "inSeason",
-                "lowTeam": low_top.name,
-                "lowRating": low_top.rating,
-                "highTeam": high_bottom.name,
-                "highRating": high_bottom.rating,
-                "gap": round(prior_gap, 3),
-            }
+            # No trustworthy historical reference for this tier pair (too
+            # few historical samples, or the pair doesn't exist in any past
+            # season at all -- e.g. a brand-new B East/B West split) -- fall
+            # back to the flat default rather than deriving one from this
+            # season's own noisy few-games-per-team extremes (tried
+            # earlier, and fragile: 10U's own "2nd-best of B" anchor once
+            # hit 11.85 in-season versus 3.5-7 from a full historical
+            # season using the same algorithm).
+            prior_gap = DEFAULT_TIER_GAP
+            prior_anchor = {"source": "default", "gap": round(prior_gap, 3)}
         bridges = evidence.get((higher, lower), [])
         blended = (w_prior * prior_gap + sum(b["impliedGap"] for b in bridges)) / (w_prior + len(bridges))
         offsets[higher] = {
