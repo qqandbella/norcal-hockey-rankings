@@ -402,7 +402,19 @@ def _compute_unified_and_patch(
                 key = (row["name"], tier)
                 if key in corrected_local:
                     row[rating_field] = corrected_local[key]
-            division["ratingsByType"]["All"]["teams"] = rerank_and_tier(all_rows, rating_field, rank_field, tier_field)
+            # rerank_and_tier mutates each row's rank/tier fields in place
+            # (it operates on the same dict objects regardless of the order
+            # of the list passed in) -- its *return value* (a re-sorted
+            # copy of the list) is intentionally discarded here, not used
+            # to reorder `all_rows` itself. This function runs twice per
+            # division (once for classic, once for experimental fields) on
+            # the SAME shared row list; if either pass reordered the array,
+            # whichever pass ran last would silently overwrite the other's
+            # ordering (confirmed live: the classic rankings table briefly
+            # displayed rows in experimental order). The array's own
+            # canonical order is set once, explicitly, after all rating
+            # types have been patched -- see compute_age_group_ratings.
+            rerank_and_tier(all_rows, rating_field, rank_field, tier_field)
 
     return teams, offsets
 
@@ -433,6 +445,13 @@ def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
         experimental_teams, experimental_offsets = _compute_unified_and_patch(
             divisions, "experimentalRating", "experimentalRank", "experimentalTier"
         )
+
+        # Canonical row order, set once after both rating types have
+        # patched their own fields -- classic rank ascending. (The frontend
+        # table is independently sortable by any column now, so this only
+        # matters as a sane default / for any other consumer of the data.)
+        for division in divisions:
+            division["ratingsByType"]["All"]["teams"].sort(key=lambda row: row["rank"])
 
         age_groups[age_label] = {
             "teams": teams,

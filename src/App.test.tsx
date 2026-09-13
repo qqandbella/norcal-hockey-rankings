@@ -270,6 +270,29 @@ describe('App', () => {
     expect(screen.getByText('+29')).toBeInTheDocument() // Fresno's goal diff
   })
 
+  it('sorts the rankings table by clicking a column header, defaulting to rating desc', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByText('Fresno Jr Monsters 10-1')
+
+    const rowNames = () =>
+      screen.getAllByRole('row').slice(1).map((row) => within(row).getAllByRole('cell')[1].textContent)
+
+    // Default: rating descending -- Fresno (3.5), Oakland (-1.0), Vacaville (-3.1).
+    expect(rowNames()).toEqual(['Fresno Jr Monsters 10-1', 'Oakland Bears 10-2', 'Vacaville Jets 10-2'])
+
+    // GP defaults descending on first click: Fresno/Vacaville tied at 3
+    // games (stable sort keeps Fresno first), Oakland Bears last at 1 game
+    // -- a different order than the rating-based default, confirming the
+    // click actually re-sorts rather than coincidentally matching.
+    await user.click(screen.getByRole('button', { name: /^GP/ }))
+    expect(rowNames()).toEqual(['Fresno Jr Monsters 10-1', 'Vacaville Jets 10-2', 'Oakland Bears 10-2'])
+
+    // Clicking the same header again flips to ascending: Oakland (1 game) first.
+    await user.click(screen.getByRole('button', { name: /^GP/ }))
+    expect(rowNames()[0]).toBe('Oakland Bears 10-2')
+  })
+
   it('filters the ranking table by game type', async () => {
     const user = userEvent.setup()
     render(<App />)

@@ -213,6 +213,26 @@ body {
   text-align: left;
 }
 
+.rankings-table__sort-btn {
+  font: inherit;
+  font-weight: inherit;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  color: inherit;
+  white-space: nowrap;
+}
+
+.rankings-table__sort-btn:hover {
+  text-decoration: underline;
+}
+
+.rankings-table__sort-arrow {
+  opacity: 0.7;
+  font-size: 0.75em;
+}
+
 .rankings-table__rating {
   font-variant-numeric: tabular-nums;
 }

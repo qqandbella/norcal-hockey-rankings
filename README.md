@@ -233,6 +233,24 @@ division into "top" even though most of those teams aren't meaningfully
 different from each other — confirmed on real data, 10U BB's experimental
 ratings put 10 of 13 teams in "top" this way before the fix).
 
+### Rankings table sorting
+
+Each division's rankings table is fully client-side sortable — click any
+column header to sort by it (ascending or descending, toggling on repeat
+clicks); each column starts in whichever direction reads as "best value
+first" for that stat (fewer losses/goals-against first, more of everything
+else first). Defaults to Rating, descending.
+
+This also structurally closes off a whole class of bug that bit this
+project twice: the backend's own row order needs to stay in sync with a
+`rank` field for anything relying on server-side ordering, and it broke
+both times (once when a display correction re-ranked without reordering
+the array, once when the classic and experimental rating passes both
+reordered the same shared row list and the second call silently clobbered
+the first's order). Real client-side sorting doesn't have this failure
+mode at all — the displayed order is always derived fresh from whatever
+column is actually selected, not trusted from upstream.
+
 ## Data source
 
 Data comes from `www.norcalyouthhockey.org` (the NorCal Youth Hockey
