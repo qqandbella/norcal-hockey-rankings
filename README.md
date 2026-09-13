@@ -109,26 +109,36 @@ the two sides' primary tiers actually differ, so a cross-tested team's
 One or two noisy bridge games barely move the default; real, repeated
 evidence can.
 
-A cross-tested team's **own unified rating** (`compute_unified_ratings`)
-gets the same "trust the established evidence" treatment. A team's rating
-in a tier it barely plays (one cross-level test game, say) is, by
-construction, shrunk toward that tier's own zero mean — correct for a team
-we know nothing about, wrong once the team already has an established
-rating from its primary tier. Naively averaging the two tiers' raw ratings
-weighted by games played then silently discounts a team's known strength
-whenever its tier split is uneven. Confirmed on real data: Tri Valley Blue
-Devils 10-1 (3 games in A) tied Santa Rosa Flyers 10-1 (BB) in its first BB
-appearance; its lone, barely-above-zero BB reading (1 game, shrunk hard
-toward BB's mean) dragged its unified rating *below* Flyers1's despite a
-strong, competitive result. Fix: before blending, re-express that
-secondary-tier rating as if it had been computed with a prior mean of "the
-primary-tier estimate, translated onto the secondary tier's own local
-scale" instead of the default prior of 0 — reconstructed algebraically from
-the already-computed rating (`rating + k*prior/(n+k)`) rather than
-re-solving the whole division. Verified: Tri Valley Blue Devils 10-1 now
-unifies to 10.571, just above Santa Rosa Flyers 10-1's 10.136 — anchored by
-its established A-division strength, nudged by the tie, not swamped by a
-single low-sample reading.
+A cross-tested team's rating gets the same "trust the established
+evidence" treatment, both in its **own unified rating**
+(`compute_unified_ratings`) and in **the raw number displayed on the
+division it's a guest in** (its division rankings table row, and the
+per-division rating block on its own team page —
+`compute_corrected_local_ratings`, patched back into that division's own
+"All" bucket in `scrape.py`). A team's rating in a tier it barely plays
+(one cross-level test game, say) is, by construction, shrunk toward that
+tier's own zero mean — correct for a team we know nothing about, wrong once
+the team already has an established rating from its primary tier. Naively
+averaging the two tiers' raw ratings weighted by games played (for the
+unified number), or just displaying that raw, barely-shrunk-off-zero number
+outright (on the guest division's own table), then silently discounts a
+team's known strength whenever its tier split is uneven. Confirmed on real
+data: Tri Valley Blue Devils 10-1 (3 games in A) tied Santa Rosa Flyers
+10-1 (BB) in its first BB appearance; its lone, barely-above-zero BB
+reading (1 game, shrunk hard toward BB's mean, 1.197) both dragged its
+*unified* rating below Flyers1's, and showed as a worse-looking BB rating
+than Flyers1's directly on the BB rankings table, despite a strong,
+competitive result. Fix: re-express that secondary-tier rating as if it
+had been computed with a prior mean of "the primary-tier estimate,
+translated onto the secondary tier's own local scale" instead of the
+default prior of 0 — reconstructed algebraically from the already-computed
+rating (`rating + k*prior/(n+k)`) rather than re-solving the whole
+division. Verified: Tri Valley Blue Devils 10-1 now unifies to 10.571,
+just above Santa Rosa Flyers 10-1's 10.136, *and* its displayed BB rating
+(the number that actually shows up on the BB rankings table) is 3.986,
+ranked above Flyers1's 3.351 there too — anchored by its established
+A-division strength, nudged by the tie, not swamped by a single low-sample
+reading.
 
 - **Predict page** (`/predict/<age>`, linked from the nav and from each
   team's own page): pick any two teams in an age group, even across

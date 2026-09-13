@@ -24,10 +24,12 @@ from ratings import (
     Game,
     TeamRating,
     capped_margin,
+    compute_corrected_local_ratings,
     compute_ratings,
     compute_team_stats,
     compute_tier_offsets,
     compute_unified_ratings,
+    rerank_and_tier,
 )
 
 BASE_URL = "https://www.norcalyouthhockey.org"
@@ -348,6 +350,30 @@ def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
             continue
 
         teams = compute_unified_ratings(within_ratings_by_tier, offsets)
+
+        # A cross-tested team's raw, displayed within-division rating in a
+        # tier it barely plays undersells it -- see
+        # compute_corrected_local_ratings. Patch the same correction back
+        # into that division's own "All" bucket, so a division's own
+        # rankings table and a team's own per-division rating block on its
+        # team page show the corrected number too, not a stale, too-low
+        # raw one that contradicts the unified rating shown elsewhere. Only
+        # "All" is patched -- offsets/bridge evidence are themselves only
+        # ever computed from "All", so per-game-type buckets are outside
+        # this correction's scope.
+        corrected_local = compute_corrected_local_ratings(within_ratings_by_tier, offsets)
+        for division in divisions:
+            tier = tier_of(division["levelLabel"])
+            if tier is None:
+                continue
+            all_rows = division["ratingsByType"]["All"]["teams"]
+            if any((row["name"], tier) in corrected_local for row in all_rows):
+                for row in all_rows:
+                    key = (row["name"], tier)
+                    if key in corrected_local:
+                        row["rating"] = corrected_local[key]
+                rerank_and_tier(all_rows)
+
         age_groups[age_label] = {"teams": teams, "tierOffsets": offsets}
 
     return age_groups

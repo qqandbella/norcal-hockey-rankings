@@ -235,37 +235,36 @@ def compute_primary_tiers(within_ratings_by_tier: dict[str, list[TeamRating]]) -
     return primary_tier
 
 
-def compute_unified_ratings(
+def compute_corrected_local_ratings(
     within_ratings_by_tier: dict[str, list[TeamRating]],
     offsets: dict[str, dict],
     k: float = SHRINKAGE_K,
-) -> dict[str, dict]:
-    """Final, single cross-division-comparable rating per team.
+) -> dict[tuple[str, str], float]:
+    """For each cross-tested team's *secondary* tier (any tier that isn't
+    the one it has the most games in), the corrected within-that-tier
+    rating -- keyed by (team name, secondary tier). A team's primary tier
+    is intentionally absent from the result (nothing to correct there).
 
-    A cross-tested team's rating in a *secondary* tier (any tier that isn't
-    the one it has the most games in) is, by construction, shrunk toward
-    that tier's own zero mean -- the right call for a team we genuinely
-    know nothing about, but wrong once the team already has an established
-    rating from its primary tier. Naively averaging the two tiers' raw
-    ratings (weighted just by games played) then silently discounts a
-    team's known strength every time its tier split is uneven. Confirmed on
-    real data: Tri Valley Blue Devils 10-1 (3 A games, rating -2.298; 1 BB
-    tie, rating 1.197 -- barely above zero despite a competitive tie
-    against a real BB team) unified *below* a team it's clearly stronger
-    than, purely because that one low-sample BB reading dragged the average
-    down toward BB's zero mean instead of toward what its 3 A games already
-    established.
+    A secondary-tier rating is, by construction, shrunk toward that tier's
+    own zero mean -- the right call for a team we genuinely know nothing
+    about, but wrong once the team already has an established rating from
+    its primary tier. Confirmed on real data: Tri Valley Blue Devils 10-1
+    (3 A games, rating -2.298; 1 BB tie, rating 1.197 -- barely above zero
+    despite a competitive tie against a real BB team) displayed a BB rating
+    *below* a team it's clearly stronger than, purely because that one
+    low-sample BB reading was shrunk toward BB's zero mean instead of
+    toward what its 3 A games already established.
 
-    Fix: before blending, re-express each secondary-tier rating as if it
-    had been computed with a prior mean of "the primary-tier estimate,
-    translated onto that secondary tier's own local scale" instead of the
-    default prior of 0 -- reconstructed algebraically from the
-    already-computed rating rather than re-solving the whole division
-    (a team's raw rating is `sum(implied)/(n+k)`, so injecting a prior mean
-    p instead of 0 gives `(sum(implied)+k*p)/(n+k) = rating + k*p/(n+k)`).
-    Exact when the secondary tier has <2 games (shrinkage there is just the
-    base k, since variance can't be estimated from a single game); a
-    reasonable approximation otherwise.
+    Fix: re-express the secondary-tier rating as if it had been computed
+    with a prior mean of "the primary-tier estimate, translated onto that
+    secondary tier's own local scale" instead of the default prior of 0 --
+    reconstructed algebraically from the already-computed rating rather
+    than re-solving the whole division (a team's raw rating is
+    `sum(implied)/(n+k)`, so injecting a prior mean p instead of 0 gives
+    `(sum(implied)+k*p)/(n+k) = rating + k*p/(n+k)`). Exact when the
+    secondary tier has <2 games (shrinkage there is just the base k, since
+    variance can't be estimated from a single game); a reasonable
+    approximation otherwise.
     """
     primary_tier = compute_primary_tiers(within_ratings_by_tier)
     entries_by_team: dict[str, list[tuple[TeamRating, str]]] = {}
@@ -275,26 +274,61 @@ def compute_unified_ratings(
         for r in rows:
             entries_by_team.setdefault(r.name, []).append((r, tier))
 
-    teams: dict[str, dict] = {}
+    corrected: dict[tuple[str, str], float] = {}
     for name, entries in entries_by_team.items():
         p_tier = primary_tier[name]
         primary_row = next(r for r, tier in entries if tier == p_tier)
         primary_estimate = primary_row.rating + offsets[p_tier]["offset"]
+        for r, tier in entries:
+            if tier == p_tier:
+                continue
+            prior_local = primary_estimate - offsets[tier]["offset"]
+            corrected[(name, tier)] = round(r.rating + k * prior_local / (r.games_played + k), 3)
+    return corrected
 
+
+def compute_unified_ratings(
+    within_ratings_by_tier: dict[str, list[TeamRating]],
+    offsets: dict[str, dict],
+    k: float = SHRINKAGE_K,
+) -> dict[str, dict]:
+    """Final, single cross-division-comparable rating per team --
+    games-played-weighted average of (corrected local rating + tier offset)
+    across every tier a team is rated in. See compute_corrected_local_ratings
+    for why the secondary-tier rating is corrected before blending, rather
+    than used as-is."""
+    corrected_local = compute_corrected_local_ratings(within_ratings_by_tier, offsets, k)
+    entries_by_team: dict[str, list[tuple[TeamRating, str]]] = {}
+    for tier, rows in within_ratings_by_tier.items():
+        if tier not in offsets:
+            continue
+        for r in rows:
+            entries_by_team.setdefault(r.name, []).append((r, tier))
+
+    teams: dict[str, dict] = {}
+    for name, entries in entries_by_team.items():
         weighted_sum = 0.0
         total_games = 0
         for r, tier in entries:
-            if tier == p_tier:
-                estimate = r.rating + offsets[tier]["offset"]
-            else:
-                prior_local = primary_estimate - offsets[tier]["offset"]
-                corrected_local = r.rating + k * prior_local / (r.games_played + k)
-                estimate = corrected_local + offsets[tier]["offset"]
-            weighted_sum += estimate * r.games_played
+            local_rating = corrected_local.get((name, tier), r.rating)
+            weighted_sum += (local_rating + offsets[tier]["offset"]) * r.games_played
             total_games += r.games_played
-
         teams[name] = {"rating": round(weighted_sum / total_games, 3), "gamesPlayed": total_games}
     return teams
+
+
+def rerank_and_tier(rows: list[dict]) -> list[dict]:
+    """Re-derive rank + tier for a list of team-row dicts after any of their
+    'rating' values changed post-hoc (e.g. a cross-tested team's displayed
+    within-division rating corrected by compute_corrected_local_ratings) --
+    same gap-based tier assignment compute_ratings itself uses, just
+    applied to already-computed ratings instead of raw games."""
+    ordered = sorted(rows, key=lambda row: -row["rating"])
+    tiers = _assign_tiers([row["rating"] for row in ordered])
+    for i, row in enumerate(ordered):
+        row["rank"] = i + 1
+        row["tier"] = tiers[i]
+    return ordered
 
 
 def compute_tier_offsets(

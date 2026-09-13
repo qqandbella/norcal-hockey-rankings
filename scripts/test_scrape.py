@@ -111,3 +111,41 @@ def test_age_group_ratings_deduplicates_shared_game_ids():
     # not to within-division rating pooling, so just check it doesn't crash
     # and produces a sane result.
     assert age_groups["10U"]["teams"]["A"]["gamesPlayed"] == 2
+
+
+def test_age_group_ratings_patches_cross_tested_teams_displayed_rating():
+    # B1 mostly plays B (2 games) with one cross-division test game filed
+    # under BB -- its BB-side rating there, from 1 game, is a near-zero
+    # placeholder compared to what its established B record implies. The
+    # division's own "All" bucket (what the rankings table and a team's own
+    # per-division rating block actually display) should show the
+    # corrected value, not that raw, too-low one.
+    division_b = _division(
+        3, "10U B",
+        [
+            _raw_game("B1", "B2", 5, 2, "g1", "10U B"),
+            _raw_game("B2", "B3", 3, 1, "g2", "10U B"),
+        ],
+    )
+    division_bb = _division(
+        55, "10U BB",
+        [
+            _raw_game("BB1", "BB2", 4, 1, "g3", "10U BB"),
+            _raw_game("BB1", "B1", 6, 3, "g4", "10U BB"),
+        ],
+    )
+
+    raw_bb1_local_rating = next(
+        row["rating"] for row in division_bb["ratingsByType"]["All"]["teams"] if row["name"] == "B1"
+    )
+
+    compute_age_group_ratings([division_b, division_bb])
+
+    bb_all = division_bb["ratingsByType"]["All"]["teams"]
+    b1_row = next(row for row in bb_all if row["name"] == "B1")
+    # Patched to something other than the raw, single-game, shrunk-toward-BB's-
+    # own-mean rating -- pulled toward what B1's established B record implies.
+    assert b1_row["rating"] != raw_bb1_local_rating
+    # Rank/tier re-derived from the corrected ratings, not stale.
+    assert b1_row["rank"] in (1, 2, 3)
+    assert b1_row["tier"] in ("top", "mid", "low")

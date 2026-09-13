@@ -110,7 +110,10 @@ export function HelpPage() {
         tier (which on its own looks unremarkable, since there&apos;s no track record yet to judge
         it against) could otherwise drag a well-established team&apos;s rating down toward that
         other tier&apos;s average, even when the team&apos;s much larger body of evidence from its
-        real tier says it&apos;s clearly stronger than that.
+        real tier says it&apos;s clearly stronger than that. This applies both to the team&apos;s
+        overall cross-division rating, and to the rating shown for it directly on the guest
+        division&apos;s own rankings table and rating block -- both reflect the same correction, so
+        they stay consistent with each other.
       </p>
 
       <h3>How predictions work</h3>
