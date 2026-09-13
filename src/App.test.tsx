@@ -18,6 +18,11 @@ function team(overrides: Partial<TeamRow>): TeamRow {
     goalsFor: 0,
     goalsAgainst: 0,
     goalDiff: 0,
+    offense: 0,
+    defense: 0,
+    experimentalRating: 0,
+    experimentalRank: 1,
+    experimentalTier: 'mid',
     ...overrides,
   }
 }
@@ -33,6 +38,11 @@ const FRESNO = team({
   goalsFor: 32,
   goalsAgainst: 3,
   goalDiff: 29,
+  offense: 4.2,
+  defense: 2.1,
+  experimentalRating: 6.3,
+  experimentalRank: 1,
+  experimentalTier: 'top',
 })
 const VACAVILLE = team({
   name: 'Vacaville Jets 10-2',
@@ -248,6 +258,26 @@ describe('App', () => {
     expect(select).toHaveValue('All')
     await user.selectOptions(select, 'Preseason')
     expect(select).toHaveValue('Preseason')
+  })
+
+  it('toggles to the experimental offense/defense rating and back', async () => {
+    const user = userEvent.setup()
+    render(<App />)
+    await screen.findByText('Fresno Jr Monsters 10-1')
+
+    // Classic mode by default -- no Offense/Defense columns, no note.
+    expect(screen.queryByText('Offense')).not.toBeInTheDocument()
+    expect(screen.getByText('+3.5')).toBeInTheDocument()
+
+    await user.click(screen.getByRole('button', { name: /try experimental rating/i }))
+    expect(screen.getByText(/backtest-validated/i)).toBeInTheDocument()
+    expect(screen.getByText('Offense')).toBeInTheDocument()
+    expect(screen.getByText('Defense')).toBeInTheDocument()
+    expect(screen.getByText('+6.3')).toBeInTheDocument() // Fresno's experimental rating
+
+    await user.click(screen.getByRole('button', { name: /^classic rating$/i }))
+    expect(screen.queryByText('Offense')).not.toBeInTheDocument()
+    expect(screen.getByText('+3.5')).toBeInTheDocument()
   })
 
   it('links each team to its team page', async () => {

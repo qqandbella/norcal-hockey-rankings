@@ -153,3 +153,24 @@ def test_age_group_ratings_patches_cross_tested_teams_displayed_rating():
     # a frontend table renders rows in array order, doesn't re-sort by rank.
     assert [row["name"] for row in bb_all] == [row["name"] for row in sorted(bb_all, key=lambda r: r["rank"])]
     assert [row["rating"] for row in bb_all] == sorted((row["rating"] for row in bb_all), reverse=True)
+
+
+def test_build_division_payload_includes_experimental_offense_defense_rating():
+    division = _division(
+        3, "10U B",
+        [
+            _raw_game("A", "B", 6, 2, "g1", "10U B"),
+            _raw_game("B", "C", 3, 5, "g2", "10U B"),
+            _raw_game("C", "A", 1, 4, "g3", "10U B"),
+        ],
+    )
+    rows = division["ratingsByType"]["All"]["teams"]
+    assert len(rows) == 3
+    for row in rows:
+        assert isinstance(row["offense"], float)
+        assert isinstance(row["defense"], float)
+        # Experimental rating = offense + defense, same convention used to
+        # rank/tier it -- checked directly rather than trusting rounding.
+        assert row["experimentalRating"] == round(row["offense"] + row["defense"], 3)
+        assert row["experimentalRank"] in (1, 2, 3)
+        assert row["experimentalTier"] in ("top", "mid", "low")

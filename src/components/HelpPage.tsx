@@ -155,6 +155,26 @@ export function HelpPage() {
         the shrinkage strength) has been chosen -- not by eyeballing the results, but by checking
         whether they actually predict real games better.
       </p>
+
+      <h3>Experimental rating (offense/defense split)</h3>
+      <p>
+        Each division&apos;s rankings table has a <strong>Classic rating / Try experimental rating</strong>{' '}
+        toggle. The classic rating is a single number: how much better or worse than average a team is,
+        overall. The experimental rating splits that into two separate numbers -- <strong>offense</strong>{' '}
+        (how many goals a team scores above what an average team would against the same opponents) and{' '}
+        <strong>defense</strong> (how many goals below average it allows). A team can have real offense but
+        a leaky defense, or vice versa -- the same overall record either way, but a different reason for it,
+        and a different question about how it&apos;ll do against a tougher or weaker opponent than usual.
+      </p>
+      <p>
+        This isn&apos;t a guess -- it&apos;s backtest-validated the same way as everything else on this
+        page: on this season&apos;s games so far, the offense/defense split predicts held-out games more
+        accurately than the classic rating (lower average error, and picks the correct favorite more
+        often). It&apos;s still opt-in and within-division only, though: cross-division comparisons and the
+        Predict page don&apos;t use it yet, since that would need extending the whole cross-division scale
+        (tier offsets, described above) to work with two numbers instead of one -- a bigger change that
+        hasn&apos;t been built yet.
+      </p>
     </section>
   )
 }

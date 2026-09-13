@@ -13,6 +13,18 @@ export interface TeamRow {
   goalsFor: number
   goalsAgainst: number
   goalDiff: number
+  /** Experimental offense/defense split (see scripts/ratings.py
+   * compute_offense_defense_ratings) -- backtest-validated to beat the
+   * classic rating within-division, not yet used for cross-division
+   * predictions or tier offsets. Opt-in via the rankings table's
+   * Classic/Experimental toggle. experimentalRating = offense + defense
+   * (predicted margin against a league-average opponent), same
+   * interpretation as the classic rating. */
+  offense: number
+  defense: number
+  experimentalRating: number
+  experimentalRank: number
+  experimentalTier: Tier
 }
 
 export interface RatingsBucket {

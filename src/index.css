@@ -55,6 +55,37 @@ body {
   padding: 0.2rem 0.4rem;
 }
 
+.rankings-filter__rating-toggle {
+  display: flex;
+  gap: 0.25rem;
+  margin-left: auto;
+}
+
+.rankings-filter__toggle-btn {
+  font: inherit;
+  font-size: 0.85rem;
+  padding: 0.25rem 0.6rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  opacity: 0.7;
+}
+
+.rankings-filter__toggle-btn--active {
+  opacity: 1;
+  font-weight: 600;
+  border-color: currentColor;
+}
+
+.rankings-table__experimental-note {
+  font-size: 0.85rem;
+  opacity: 0.8;
+  border-left: 3px solid var(--mid);
+  padding-left: 0.6rem;
+  margin: 0.5rem 0 0.75rem;
+}
+
 .team-stats {
   display: flex;
   flex-wrap: wrap;

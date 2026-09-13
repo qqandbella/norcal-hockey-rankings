@@ -180,6 +180,37 @@ leakage from a held-out game's own result or from games that happen after
 it — not prediction accuracy, which is what running the script itself
 reports).
 
+### Experimental: offense/defense split
+
+Each division's rankings table has a **Classic rating / Try experimental
+rating** toggle. The classic rating is one number per team; the
+experimental rating (`compute_offense_defense_ratings` in
+`scripts/ratings.py`) splits it into separate **offense** and **defense**
+components instead, so a team with real offensive output but a leaky
+defense (or vice versa) doesn't collapse into a single number that looks
+identical to a team that's just uniformly weaker. Combined into a single
+sortable "experimental rating" = offense + defense (predicted margin
+against a league-average opponent), tiered the same gap-based way as the
+classic model.
+
+Backtest-validated via `scripts/backtest_offense_defense.py`
+(walk-forward, within-division games only): naively reusing the classic
+model's `SHRINKAGE_K=3.0` made it strictly worse (MAE 3.84 vs 3.47) —
+splitting one signal into two starves each half of data unless shrinkage
+is retuned specifically for it. Grid-searching found a real win at
+`OFFENSE_DEFENSE_SHRINKAGE_K=0.2`: MAE 3.20 vs 3.47, directional accuracy
+77.9% vs 72.1%, flat across k=0.15-0.30 (not a knife's-edge fit to noise).
+
+Deliberately shipped as an **opt-in toggle, not a replacement** — this is
+industry-standard practice for a validated-but-newer model (an
+"experimental" label a user can switch to and back from), rather than
+silently swapping the model everyone already trusts. It's also
+within-division only for now: cross-division tier offsets
+(`compute_tier_offsets`, `compute_unified_ratings`) still assume a single
+scalar rating per team throughout, so the Predict page and cross-division
+comparisons keep using the classic rating until that's extended (tracked
+in [issue #6](https://github.com/qqandbella/norcal-hockey-rankings/issues/6)).
+
 ## Data source
 
 Data comes from `www.norcalyouthhockey.org` (the NorCal Youth Hockey

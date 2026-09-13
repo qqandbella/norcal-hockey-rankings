@@ -25,6 +25,7 @@ from ratings import (
     TeamRating,
     capped_margin,
     compute_corrected_local_ratings,
+    compute_offense_defense_ratings,
     compute_ratings,
     compute_team_stats,
     compute_tier_offsets,
@@ -210,9 +211,26 @@ def _build_team_rows(played_of_type: list[dict], roster_of_type: list[dict]) -> 
     rating_games = _rating_games(played_of_type)
     ratings = compute_ratings(rating_games)
     stats_by_name = compute_team_stats(rating_games)
+
+    # Experimental offense/defense split (see compute_offense_defense_ratings
+    # -- backtest-validated to beat the classic model within-division, not
+    # yet extended to cross-division tier offsets). Combined into a single
+    # sortable "experimental rating" = offense + defense = predicted margin
+    # against a league-average (0, 0) opponent, the same interpretation as
+    # the classic rating. Reuses rerank_and_tier for the same gap-based
+    # tiering the classic model uses, rather than a separate implementation.
+    od_by_name = {o.name: o for o in compute_offense_defense_ratings(rating_games)}
+    experimental_rows = [
+        {"name": name, "rating": round(od.offense + od.defense, 3)} for name, od in od_by_name.items()
+    ]
+    rerank_and_tier(experimental_rows)
+    experimental_by_name = {row["name"]: row for row in experimental_rows}
+
     rows = []
     for r in sorted(ratings, key=lambda r: r.rank):
         s = stats_by_name.get(r.name)
+        od = od_by_name.get(r.name)
+        exp = experimental_by_name.get(r.name)
         rows.append(
             {
                 "name": r.name,
@@ -227,6 +245,11 @@ def _build_team_rows(played_of_type: list[dict], roster_of_type: list[dict]) -> 
                 "goalsFor": s.goals_for if s else 0,
                 "goalsAgainst": s.goals_against if s else 0,
                 "goalDiff": s.goal_diff if s else 0,
+                "offense": od.offense if od else 0.0,
+                "defense": od.defense if od else 0.0,
+                "experimentalRating": exp["rating"] if exp else 0.0,
+                "experimentalRank": exp["rank"] if exp else 0,
+                "experimentalTier": exp["tier"] if exp else "mid",
             }
         )
     unrated = sorted(
