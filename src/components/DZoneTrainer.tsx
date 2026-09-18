@@ -73,6 +73,25 @@ function clampToZone(p: Point): Point {
 
 const MIN_DOT_SEPARATION = OFFENSE_RADIUS + DEFENDER_RADIUS + 6
 
+// Plausible off-puck "home" spots for the 2-4 offense players not shown
+// or controlled by the user -- not a real attacking AI, just enough of a
+// formation that the defense has genuine weak-side/point/trailer threats
+// to read (see idealBoxPositions' danger/point/trailer logic). `side`
+// picks which side of the ice (relative to the puck) the spot mirrors;
+// `depthFrac`/`xFrac` are fractions of zone depth / half-width from net.
+const HOME_FORMATION: { side: 'weak' | 'strong' | 'center'; xFrac: number; depthFrac: number }[] = [
+  { side: 'weak', xFrac: 0.75, depthFrac: 0.92 }, // weak-side point
+  { side: 'weak', xFrac: 0.75, depthFrac: 0.5 }, // weak-side half-wall
+  { side: 'strong', xFrac: 0.7, depthFrac: 0.9 }, // strong-side point (the puck carrier's own support)
+  { side: 'center', xFrac: 0.15, depthFrac: 0.12 }, // low-slot trailer
+]
+
+function phantomOffensePosition(entry: (typeof HOME_FORMATION)[number], weakSign: number, strongSign: number): Point {
+  const sign = entry.side === 'strong' ? strongSign : weakSign
+  const depth = entry.depthFrac * ZONE_DEPTH_FT * PX_PER_FT
+  return { x: NET.x + sign * entry.xFrac * GEO.halfWidth, y: NET.y - depth }
+}
+
 /** Nudges each defender away from any offense dot it's ended up on top
  * of, so a defender and an offense player are never fully overlapping
  * (a real reported bug: the model can legitimately converge a defender
@@ -298,15 +317,25 @@ export function DZoneTrainer() {
   const [swapA, setSwapA] = useState<DefenderKey>('LW')
   const [swapB, setSwapB] = useState<DefenderKey>('RD')
 
+  // Always 5 offense positions -- a real 5-on-5, even though the UI only
+  // ever renders/controls the first `offenseCount` of them. Indices
+  // [offenseCount, 5) are "phantom" attackers (see HOME_FORMATION below):
+  // not drawn, not draggable, but real inputs to `idealBoxPositions` so
+  // the defense genuinely reads a full attack, not just however many
+  // blue dots happen to be on screen.
   const offenseRef = useRef<Point[]>([
     { x: NET.x - 90, y: NET.y - 130 },
     { x: NET.x + 90, y: NET.y - 150 },
     { x: NET.x, y: NET.y - 40 },
+    { x: NET.x + 200, y: NET.y - 260 },
+    { x: NET.x - 220, y: NET.y - 100 },
   ])
   const puckHolderRef = useRef(0)
   const puckPosRef = useRef<Point>({ ...offenseRef.current[0] })
   const passRef = useRef<PassState | null>(null)
-  const defenderPosRef = useRef<BoxPositions>(idealBoxPositions(offenseRef.current[0], GEO))
+  const defenderPosRef = useRef<BoxPositions>(
+    idealBoxPositions(offenseRef.current[0], offenseRef.current.slice(1), GEO),
+  )
   const dragRef = useRef<DragState | null>(null)
   const [accuracyText, setAccuracyText] = useState<string>('')
 
@@ -351,18 +380,36 @@ export function DZoneTrainer() {
         frame++
 
         if (mode === 'control') {
-          // Every ~90 frames, pick new wander targets for any offense dot
-          // not currently being dragged by the user (Watch mode drag is
-          // disabled here; in Control mode the user drags the defender).
+          // Every ~90 frames, pick new wander targets for any SHOWN
+          // offense dot not currently being dragged by the user (Watch
+          // mode drag is disabled here; in Control mode the user drags
+          // the defender). Phantom (unshown) attackers are handled below.
           if (frame % 90 === 0) {
-            wanderTargetsRef.current = offenseRef.current.map(() =>
+            wanderTargetsRef.current = offenseRef.current.slice(0, offenseCount).map(() =>
               clampToZone({
                 x: NET.x + (Math.random() - 0.5) * GEO.halfWidth * 1.5,
                 y: BLUE_LINE_Y + Math.random() * (NET.y - BLUE_LINE_Y) * 0.85,
               }),
             )
           }
-          offenseRef.current = offenseRef.current.map((p, i) => lerpPoint(p, wanderTargetsRef.current[i], 0.02))
+          offenseRef.current = offenseRef.current.map((p, i) =>
+            i < offenseCount ? lerpPoint(p, wanderTargetsRef.current[i], 0.02) : p,
+          )
+        }
+
+        // Phantom (unshown) attackers drift toward a plausible off-puck
+        // formation spot every frame, mirrored to whichever side of the
+        // puck is currently "weak" -- so the defense reads a genuine
+        // 5-on-5 attack even though only `offenseCount` dots are drawn.
+        {
+          const weakSign = puckPosRef.current.x >= NET.x ? -1 : 1
+          const strongSign = -weakSign
+          offenseRef.current = offenseRef.current.map((p, i) => {
+            if (i < offenseCount) return p
+            const entry = HOME_FORMATION[(i - offenseCount) % HOME_FORMATION.length]
+            const target = clampToZone(phantomOffensePosition(entry, weakSign, strongSign))
+            return lerpPoint(p, target, 0.03)
+          })
         }
 
         // Puck position: mid-flight during an active pass, otherwise
@@ -383,7 +430,8 @@ export function DZoneTrainer() {
         }
 
         const puck = puckPosRef.current
-        const ideal = idealBoxPositions(puck, GEO)
+        const others = offenseRef.current.filter((_, i) => i !== puckHolderRef.current)
+        const ideal = idealBoxPositions(puck, others, GEO)
         const current = defenderPosRef.current
 
         // Defender speed is capped relative to how fast the puck CARRIER
@@ -423,7 +471,11 @@ export function DZoneTrainer() {
         }
       }
 
-      const idealForDraw = idealBoxPositions(puckPosRef.current, GEO)
+      const idealForDraw = idealBoxPositions(
+        puckPosRef.current,
+        offenseRef.current.filter((_, i) => i !== puckHolderRef.current),
+        GEO,
+      )
       const current = defenderPosRef.current
 
       drawRink(ctx)

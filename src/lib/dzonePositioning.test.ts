@@ -50,35 +50,35 @@ const geo: DZoneGeometry = { net: { x: 0, y: 100 }, blueLineY: 0, halfWidth: 80,
 describe('idealBoxPositions (Box+1 coverage)', () => {
   it('puts the puck-side defenseman closer to the puck than the weak-side one', () => {
     const puck = { x: -50, y: 80 } // deep on the left (close to the net)
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     const dist = (p: { x: number; y: number }) => Math.hypot(p.x - puck.x, p.y - puck.y)
     expect(dist(pos.LD)).toBeLessThan(dist(pos.RD))
   })
 
   it('mirrors correctly when the puck is on the right instead', () => {
     const puck = { x: 50, y: 80 }
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     const dist = (p: { x: number; y: number }) => Math.hypot(p.x - puck.x, p.y - puck.y)
     expect(dist(pos.RD)).toBeLessThan(dist(pos.LD))
   })
 
   it('keeps the weak-side D net-front, not chasing the puck', () => {
     const puck = { x: -70, y: 10 } // deep left, near the blue line
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     // Weak-side D (RD, since puck is left) stays close to the goal line (y near 100).
     expect(pos.RD.y).toBeGreaterThan(70)
   })
 
   it("doesn't let a defenseman pressure beyond hash-mark depth -- that's the winger's job past there", () => {
     const puck = { x: -20, y: 1 } // right up at the blue line
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     const dCapY = geo.net.y - (geo.net.y - geo.blueLineY) * 0.32
     expect(pos.LD.y).toBeGreaterThanOrEqual(dCapY - 1e-9)
   })
 
   it('lets the puck-side defenseman track the puck behind the net (prevent a wrap-around)', () => {
     const puck = { x: -30, y: geo.net.y + 10 } // behind the net, left side
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     // LD (strong side here) should follow behind the net too, not stop at the goal line.
     expect(pos.LD.y).toBeGreaterThan(geo.net.y)
     // Weak-side D (RD) stays in front, doesn't also go behind the net.
@@ -87,41 +87,41 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
 
   it('holds the puck-side winger higher (closer to the blue line, smaller y) than either defenseman', () => {
     const puck = { x: -30, y: 60 }
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     expect(pos.LW.y).toBeLessThan(pos.LD.y)
     expect(pos.LW.y).toBeLessThan(pos.RD.y)
   })
 
   it('collapses the weak-side winger toward middle ice, not out wide', () => {
     const puck = { x: -60, y: 70 }
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     // Weak-side winger is RW here (puck is on the left).
     expect(Math.abs(pos.RW.x)).toBeLessThan(geo.halfWidth * 0.3)
   })
 
   it("keeps the center biased toward the puck's side", () => {
     const puckLeft = { x: -60, y: 70 }
-    const posLeft = idealBoxPositions(puckLeft, geo)
+    const posLeft = idealBoxPositions(puckLeft, [], geo)
     expect(posLeft.C.x).toBeLessThan(0)
 
     const puckRight = { x: 60, y: 70 }
-    const posRight = idealBoxPositions(puckRight, geo)
+    const posRight = idealBoxPositions(puckRight, [], geo)
     expect(posRight.C.x).toBeGreaterThan(0)
   })
 
   it("pulls the center more central (less puck-biased) when the puck is at the point", () => {
     const puckLow = { x: -60, y: 80 } // close to the net
     const puckPoint = { x: -60, y: 5 } // near the blue line
-    const posLow = idealBoxPositions(puckLow, geo)
-    const posPoint = idealBoxPositions(puckPoint, geo)
+    const posLow = idealBoxPositions(puckLow, [], geo)
+    const posPoint = idealBoxPositions(puckPoint, [], geo)
     expect(Math.abs(posPoint.C.x)).toBeLessThan(Math.abs(posLow.C.x))
   })
 
   it('is left-right symmetric: mirroring the puck mirrors every position', () => {
     const puck = { x: -35, y: 45 }
     const mirroredPuck = { x: 35, y: 45 }
-    const pos = idealBoxPositions(puck, geo)
-    const mirrored = idealBoxPositions(mirroredPuck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
+    const mirrored = idealBoxPositions(mirroredPuck, [], geo)
     expect(mirrored.RD.x).toBeCloseTo(-pos.LD.x, 5)
     expect(mirrored.RD.y).toBeCloseTo(pos.LD.y, 5)
     expect(mirrored.LD.x).toBeCloseTo(-pos.RD.x, 5)
@@ -132,7 +132,7 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
 
   it('keeps every position within the playable area (blue line to behind the net)', () => {
     const puck = { x: -60, y: 20 }
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     for (const p of Object.values(pos)) {
       expect(p.y).toBeGreaterThanOrEqual(geo.blueLineY - 1e-9)
       expect(p.y).toBeLessThanOrEqual(geo.net.y + geo.behindNetDepth + 1e-9)
@@ -145,8 +145,8 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
     // different spot -- this was a real, reported bug (a hard left/right
     // switch caused every defender to "teleport" the instant the puck
     // crossed center).
-    const justLeft = idealBoxPositions({ x: geo.net.x - 0.5, y: 40 }, geo)
-    const justRight = idealBoxPositions({ x: geo.net.x + 0.5, y: 40 }, geo)
+    const justLeft = idealBoxPositions({ x: geo.net.x - 0.5, y: 40 }, [], geo)
+    const justRight = idealBoxPositions({ x: geo.net.x + 0.5, y: 40 }, [], geo)
     const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(a.x - b.x, a.y - b.y)
     for (const key of ['LD', 'RD', 'LW', 'RW', 'C'] as const) {
       expect(dist(justLeft[key], justRight[key])).toBeLessThan(1)
@@ -161,12 +161,12 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
     // sit on the RIGHT of net.x (their own side), not drift left with
     // everyone else.
     const puck = { x: -60, y: 70 } // confidently left
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     expect(pos.RD.x).toBeGreaterThan(geo.net.x)
     expect(pos.RW.x).toBeGreaterThan(geo.net.x)
 
     const puckRight = { x: 60, y: 70 }
-    const posRight = idealBoxPositions(puckRight, geo)
+    const posRight = idealBoxPositions(puckRight, [], geo)
     expect(posRight.LD.x).toBeLessThan(geo.net.x)
     expect(posRight.LW.x).toBeLessThan(geo.net.x)
   })
@@ -176,7 +176,7 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
     // (leftmost defender to rightmost) must stay wide even when the puck
     // is deep on one side -- a "swarm" collapses this span to near zero.
     const puck = { x: -65, y: 75 }
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     const xs = Object.values(pos).map((p) => p.x)
     const span = Math.max(...xs) - Math.min(...xs)
     expect(span).toBeGreaterThan(geo.halfWidth * 0.3)
@@ -189,7 +189,7 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
     // away the shooting/passing lane by sitting on the net-puck line, not
     // just shadow the puck's x-coordinate at its own arbitrary depth.
     const puck = { x: -70, y: 5 } // deep left, up near the blue line
-    const pos = idealBoxPositions(puck, geo)
+    const pos = idealBoxPositions(puck, [], geo)
     // LD is shallower than the puck (pressure-capped) -- its x must sit
     // strictly between the net's x and the puck's x, not equal to the
     // puck's x (which would put it beside, not between).
@@ -198,13 +198,51 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
     expect(Math.abs(pos.LD.x - puck.x)).toBeGreaterThan(1e-6)
   })
 
+  it('collapses the weak-side D tighter to net when a second attacker crashes the low slot on that side', () => {
+    const puck = { x: -60, y: 70 } // puck confidently left -> RD is weak-side
+    const noThreat = idealBoxPositions(puck, [], geo)
+    // A crasher deep on the RIGHT (weak) side, close to the net.
+    const crasher = { x: 55, y: 92 }
+    const withThreat = idealBoxPositions(puck, [crasher], geo)
+    const distToCrasher = (p: { x: number; y: number }) => Math.hypot(p.x - crasher.x, p.y - crasher.y)
+    expect(distToCrasher(withThreat.RD)).toBeLessThan(distToCrasher(noThreat.RD))
+    // Still never sits exactly on top of the crease.
+    expect(withThreat.RD.y).toBeLessThan(geo.net.y)
+  })
+
+  it('does NOT pull the weak-side D toward an attacker standing at the point (not a low-slot danger)', () => {
+    const puck = { x: -60, y: 70 }
+    const noThreat = idealBoxPositions(puck, [], geo)
+    const pointMan = { x: 55, y: 5 } // weak side, but up at the blue line -- not a slot threat
+    const withPointMan = idealBoxPositions(puck, [pointMan], geo)
+    expect(withPointMan.RD.x).toBeCloseTo(noThreat.RD.x, 5)
+    expect(withPointMan.RD.y).toBeCloseTo(noThreat.RD.y, 5)
+  })
+
+  it('rises the strong-side winger to challenge an off-puck attacker at the point on its own side', () => {
+    const puck = { x: -50, y: 90 } // strong side low, LW should normally hold lower
+    const noThreat = idealBoxPositions(puck, [], geo)
+    const pointMan = { x: -60, y: 8 } // same (left/strong) side, up at the point
+    const withPointMan = idealBoxPositions(puck, [pointMan], geo)
+    // Smaller y = higher up ice (closer to the point).
+    expect(withPointMan.LW.y).toBeLessThan(noThreat.LW.y)
+  })
+
+  it('shades the center toward a trailing attacker in the low slot', () => {
+    const puck = { x: -60, y: 80 }
+    const noThreat = idealBoxPositions(puck, [], geo)
+    const trailer = { x: 10, y: 90 } // central, low slot
+    const withTrailer = idealBoxPositions(puck, [trailer], geo)
+    expect(withTrailer.C.x).toBeGreaterThan(noThreat.C.x)
+  })
+
   it('smoothly blends strong/weak roles across the whole centerline transition band, not just right at 0', () => {
     // Sweep puck.x across the transition zone and confirm LD's position
     // moves continuously (no single step bigger than a small bound),
     // rather than jumping at some other fixed threshold.
     const steps = 40
     const xs = Array.from({ length: steps + 1 }, (_, i) => -geo.halfWidth * 0.4 + (i / steps) * geo.halfWidth * 0.8)
-    const positions = xs.map((x) => idealBoxPositions({ x, y: 40 }, geo).LD)
+    const positions = xs.map((x) => idealBoxPositions({ x, y: 40 }, [], geo).LD)
     for (let i = 1; i < positions.length; i++) {
       const step = Math.hypot(positions[i].x - positions[i - 1].x, positions[i].y - positions[i - 1].y)
       expect(step).toBeLessThan(3)

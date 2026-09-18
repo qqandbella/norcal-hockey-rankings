@@ -42,6 +42,19 @@
  * is the convention `DZoneTrainer.tsx` actually renders. Every caller
  * (including tests) must build a `DZoneGeometry` with `net.y > blueLineY`,
  * or every depth-based calculation below silently breaks.
+ *
+ * This is a real 5-on-5 read, not a 5-on-1 reaction to the puck alone:
+ * `idealBoxPositions` also takes `others`, the 4 non-carrier attackers
+ * (whether or not the UI happens to be rendering all of them). Box+1 is
+ * still fundamentally a ZONE system -- these positions don't switch to
+ * man-to-man marking -- but a real zone defense reads WHERE the danger
+ * actually is within its zone, not just the puck:
+ * - the weak-side D collapses tighter to net if a second attacker is
+ *   crashing the low slot on the weak side (still never fully abandons
+ *   the crease -- same "not a screen for our goalie" rule as before);
+ * - the strong-side winger rises to challenge a point attacker on its own
+ *   side, instead of only reacting to the puck's own depth;
+ * - the center shades toward a central trailing attacker in the low slot.
  */
 
 export interface Point {
@@ -120,7 +133,15 @@ export function moveToward(current: Point, target: Point, maxStep: number): Poin
   return { x: current.x + dx * t, y: current.y + dy * t }
 }
 
-export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions {
+// An off-puck attacker inside this fraction of zone depth (roughly
+// hash-marks-to-net) is a genuine secondary danger a weak-side D/center
+// should read, not just someone standing around.
+const DANGER_DEPTH_FRACTION = 0.4
+// An off-puck attacker beyond this fraction of zone depth is up at the
+// point -- the strong-side winger's job, not the D's or center's.
+const POINT_DEPTH_FRACTION = 0.75
+
+export function idealBoxPositions(puck: Point, others: Point[], geo: DZoneGeometry): BoxPositions {
   const zoneDepth = geo.net.y - geo.blueLineY // positive: net.y > blueLineY by convention
   // 0 = goal line, zoneDepth = blue line, negative = behind the net.
   const puckDepth = clamp(geo.net.y - puck.y, -geo.behindNetDepth, zoneDepth)
@@ -132,6 +153,59 @@ export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions
 
   const dCapDepth = zoneDepth * D_PRESSURE_CAP_FRACTION
   const wingerHoldDepth = zoneDepth * WINGER_HOLD_FRACTION
+
+  function depthOf(p: Point): number {
+    return clamp(geo.net.y - p.y, -geo.behindNetDepth, zoneDepth)
+  }
+  // Loosely "on this side" -- a small tolerance band around center so an
+  // attacker standing near the slot still counts for whichever D/winger
+  // is nearer, instead of a hard cutoff exactly at net.x.
+  function onSide(p: Point, sign: number): boolean {
+    return (p.x - geo.net.x) * sign >= -geo.halfWidth * 0.1
+  }
+
+  const dangerDepth = zoneDepth * DANGER_DEPTH_FRACTION
+  const dangerAttackers = others.filter((o) => depthOf(o) < dangerDepth)
+  function nearestDangerOnSide(sign: number): Point | null {
+    let best: Point | null = null
+    let bestDist = Infinity
+    for (const o of dangerAttackers) {
+      if (!onSide(o, sign)) continue
+      const d = Math.hypot(o.x - geo.net.x, o.y - geo.net.y)
+      if (d < bestDist) {
+        bestDist = d
+        best = o
+      }
+    }
+    return best
+  }
+  function nearestCentralDanger(): Point | null {
+    let best: Point | null = null
+    let bestDx = Infinity
+    for (const o of dangerAttackers) {
+      const dx = Math.abs(o.x - geo.net.x)
+      if (dx < bestDx) {
+        bestDx = dx
+        best = o
+      }
+    }
+    return best
+  }
+
+  const pointDepth = zoneDepth * POINT_DEPTH_FRACTION
+  function nearestPointOnSide(sign: number): Point | null {
+    let best: Point | null = null
+    let bestY = Infinity
+    for (const o of others) {
+      if (depthOf(o) < pointDepth) continue // not actually up at the point
+      if (!onSide(o, sign)) continue
+      if (o.y < bestY) {
+        bestY = o.y
+        best = o
+      }
+    }
+    return best
+  }
 
   function strongD(): Point {
     // Pressures the puck directly, including behind the net (a real D
@@ -157,14 +231,36 @@ export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions
   function weakD(ownSign: number): Point {
     // Biases toward ITS OWN side (away from the puck, which is on the
     // other side when this D is playing weak) -- +ownSign, not -ownSign.
-    return { x: geo.net.x + ownSign * geo.halfWidth * 0.18, y: geo.net.y - zoneDepth * 0.14 }
+    const base = { x: geo.net.x + ownSign * geo.halfWidth * 0.18, y: geo.net.y - zoneDepth * 0.14 }
+    const danger = nearestDangerOnSide(ownSign)
+    if (!danger) return base
+    // A second attacker crashing the low slot on this D's own side is a
+    // real threat -- collapse tighter to mark it, but still never sit
+    // right on the crease itself ("weak side D is not a screen for our
+    // goalie" -- same rule as the puck-side D's own floor).
+    return {
+      x: lerp(base.x, danger.x, 0.5),
+      // Track the danger's depth, but never sit closer to net than the
+      // crease floor (a max on y in this convention -- larger y is closer
+      // to the net).
+      y: Math.min(lerp(base.y, danger.y, 0.5), geo.net.y - zoneDepth * 0.06),
+    }
   }
   function strongW(sign: number): Point {
     const baseX = geo.net.x + sign * geo.halfWidth * 0.55
-    return {
-      x: lerp(baseX, puck.x, 0.35),
-      y: geo.net.y - Math.max(wingerHoldDepth, Math.max(puckDepth, 0) * 0.9),
-    }
+    const holdY = geo.net.y - Math.max(wingerHoldDepth, Math.max(puckDepth, 0) * 0.9)
+    const point = nearestPointOnSide(sign)
+    if (!point) return { x: lerp(baseX, puck.x, 0.35), y: holdY }
+    // Reacts to a point threat, but how strongly scales with how far up
+    // ice the PUCK itself already is -- Box+1's own rule is that the
+    // winger only truly owns the point once the puck is up around/above
+    // the hash marks. A winger fully abandoning low support to challenge
+    // a stationary point man while the puck is still buried in the
+    // corner would be a real coverage breakdown, not this system --
+    // that's a seam-denial read for the D/center, not a wholesale swap.
+    const puckShallowness = clamp(puckDepth / zoneDepth, 0, 1) // 0 = at net, 1 = at blue line
+    const pointHonorY = Math.min(holdY, point.y + 6)
+    return { x: lerp(baseX, puck.x, 0.35), y: lerp(holdY, pointHonorY, puckShallowness) }
   }
   function weakW(ownSign: number): Point {
     // Same fix as weakD: bias toward ITS OWN side, not the puck's.
@@ -185,8 +281,14 @@ export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions
   // continuous `t` for lateral bias, so it never jumps either.
   const depthFraction = clamp(puckDepth, 0, zoneDepth) / zoneDepth // 0 = goal line, 1 = blue line
   const cBias = lerp(0.4, 0.12, depthFraction) // less lateral bias as puck gets higher
+  const cX = geo.net.x + t * geo.halfWidth * cBias
+  // A trailing attacker in the low slot (not necessarily strong- or
+  // weak-side specifically -- whichever off-puck attacker is nearest
+  // center ice) pulls the center's own low-slot coverage slightly toward
+  // them, on top of the puck-side bias.
+  const trailer = nearestCentralDanger()
   const C: Point = {
-    x: geo.net.x + t * geo.halfWidth * cBias,
+    x: trailer ? lerp(cX, trailer.x, 0.25) : cX,
     y: geo.net.y - lerp(zoneDepth * 0.22, zoneDepth * 0.38, depthFraction),
   }
 
