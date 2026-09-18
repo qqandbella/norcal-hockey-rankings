@@ -1,6 +1,43 @@
 import { describe, expect, it } from 'vitest'
-import { idealBoxPositions } from './dzonePositioning'
+import { idealBoxPositions, moveToward } from './dzonePositioning'
 import type { DZoneGeometry } from './dzonePositioning'
+
+describe('moveToward (max-speed-capped seek, not an ease)', () => {
+  it('moves exactly maxStep toward the target when farther away than that', () => {
+    const current = { x: 0, y: 0 }
+    const target = { x: 100, y: 0 }
+    const next = moveToward(current, target, 10)
+    expect(next.x).toBeCloseTo(10, 5)
+    expect(next.y).toBeCloseTo(0, 5)
+  })
+
+  it('covers the same distance per call regardless of how far from the target it starts -- constant speed, not an ease', () => {
+    const target = { x: 1000, y: 0 }
+    const far = moveToward({ x: 0, y: 0 }, target, 25)
+    const near = moveToward({ x: 990, y: 0 }, target, 25)
+    // Both should move by exactly `maxStep` in this direction (near
+    // clamps to the target since it's within maxStep -- covered below);
+    // here both are still farther than maxStep, so both cover exactly 25.
+    expect(Math.hypot(far.x - 0, far.y - 0)).toBeCloseTo(25, 5)
+    expect(Math.hypot(near.x - 990, near.y - 0)).toBeCloseTo(10, 5) // only 10px left, arrives exactly
+  })
+
+  it('arrives exactly at the target (no overshoot) once within maxStep, rather than creeping forever', () => {
+    const next = moveToward({ x: 0, y: 0 }, { x: 5, y: 0 }, 10)
+    expect(next).toEqual({ x: 5, y: 0 })
+  })
+
+  it('moves diagonally at the correct capped speed (Pythagorean, not per-axis)', () => {
+    const next = moveToward({ x: 0, y: 0 }, { x: 100, y: 100 }, 10)
+    expect(Math.hypot(next.x, next.y)).toBeCloseTo(10, 5)
+    expect(next.x).toBeCloseTo(next.y, 5) // stays on the diagonal toward the target
+  })
+
+  it('returns the current position unchanged if already at the target', () => {
+    const p = { x: 42, y: 7 }
+    expect(moveToward(p, { x: 42, y: 7 }, 10)).toEqual({ x: 42, y: 7 })
+  })
+})
 
 // net.y > blueLineY, matching the real convention (see dzonePositioning.ts's
 // module doc comment) -- an earlier version of these tests used the OPPOSITE

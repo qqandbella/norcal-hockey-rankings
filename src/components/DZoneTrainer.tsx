@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { idealBoxPositions } from '../lib/dzonePositioning'
+import { idealBoxPositions, moveToward } from '../lib/dzonePositioning'
 import type { BoxPositions, DZoneGeometry, Point } from '../lib/dzonePositioning'
 
 type Mode = 'watch' | 'control'
@@ -37,7 +37,16 @@ const GEO: DZoneGeometry = {
   halfWidth: (RINK_WIDTH_FT / 2) * PX_PER_FT,
   behindNetDepth: BEHIND_NET_FT * PX_PER_FT,
 }
-const FOLLOW_RATE = 0.08 // per-frame lerp fraction -- smooth, not instant, movement toward the ideal spot
+// Defender movement speed -- capped RELATIVE to the puck carrier's own
+// current speed, not a fixed constant, and not an easing fraction of
+// remaining distance (a real skater moves at roughly constant speed
+// toward where they're going, not faster the farther away they are).
+// These numbers are a reasonable estimate for 10U-level skating speed,
+// not measured from real player-tracking data:
+//   ~15 ft/s base skating speed => 15 * PX_PER_FT =~ 105 px/s
+const DEFENDER_SPEED_MULTIPLIER_OF_CARRIER = 1.15 // defenders read/close slightly faster than the carrier is moving
+const MIN_DEFENDER_SPEED_PX_PER_S = 8 * PX_PER_FT // still adjusts/creeps even if the carrier is standing still
+const MAX_DEFENDER_SPEED_PX_PER_S = 24 * PX_PER_FT // sprint cap, so dragging the carrier instantly doesn't let defenders teleport too
 const OFFENSE_RADIUS = 12
 const DEFENDER_RADIUS = 14
 const PUCK_RADIUS = 5
@@ -49,6 +58,10 @@ function lerpPoint(from: Point, to: Point, t: number): Point {
 
 function dist(a: Point, b: Point): number {
   return Math.hypot(a.x - b.x, a.y - b.y)
+}
+
+function clamp(v: number, lo: number, hi: number): number {
+  return Math.max(lo, Math.min(hi, v))
 }
 
 function clampToZone(p: Point): Point {
@@ -283,9 +296,18 @@ export function DZoneTrainer() {
 
     let raf = 0
     let frame = 0
+    let lastFrameTime = performance.now()
+    let lastCarrierPos: Point = { ...offenseRef.current[puckHolderRef.current] }
 
     function tick() {
       if (!ctx) return
+
+      const now = performance.now()
+      // Clamp dt so a backgrounded tab (huge gap between frames) doesn't
+      // let defenders "teleport" on the next tick -- treat anything over
+      // 200ms as a fresh start instead of a real elapsed duration.
+      const dtSeconds = Math.min(0.2, Math.max(0, (now - lastFrameTime) / 1000))
+      lastFrameTime = now
 
       if (!paused) {
         frame++
@@ -325,13 +347,31 @@ export function DZoneTrainer() {
         const puck = puckPosRef.current
         const ideal = idealBoxPositions(puck, GEO)
         const current = defenderPosRef.current
+
+        // Defender speed is capped relative to how fast the puck CARRIER
+        // (the skater, not the puck mid-flight during a pass -- see the
+        // MIN/MAX/multiplier comment above) is actually moving right now,
+        // not a fixed easing fraction. This is a real, deliberate physics
+        // constraint: no defender can close distance faster than a
+        // plausible skating speed allows, regardless of how far its
+        // target position is.
+        const carrierPos = offenseRef.current[puckHolderRef.current]
+        const carrierSpeedPxPerS = dtSeconds > 0 ? dist(carrierPos, lastCarrierPos) / dtSeconds : 0
+        lastCarrierPos = { ...carrierPos }
+        const defenderSpeedPxPerS = clamp(
+          carrierSpeedPxPerS * DEFENDER_SPEED_MULTIPLIER_OF_CARRIER,
+          MIN_DEFENDER_SPEED_PX_PER_S,
+          MAX_DEFENDER_SPEED_PX_PER_S,
+        )
+        const maxStepThisFrame = defenderSpeedPxPerS * dtSeconds
+
         const next: BoxPositions = { LD: current.LD, RD: current.RD, C: current.C, LW: current.LW, RW: current.RW }
         for (const key of DEFENDER_KEYS) {
           if (locked[key]) continue // coach-corrected: hold this exact spot, don't auto-follow
           if (mode === 'control' && key === controlledDefender && dragRef.current?.kind === 'defender') {
             continue // user is actively dragging this one -- don't auto-follow it
           }
-          next[key] = lerpPoint(current[key], ideal[roleAssignment[key]], FOLLOW_RATE)
+          next[key] = moveToward(current[key], ideal[roleAssignment[key]], maxStepThisFrame)
         }
         defenderPosRef.current = separateFromOffense(next, offenseRef.current.slice(0, offenseCount))
 

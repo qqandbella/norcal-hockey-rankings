@@ -196,6 +196,22 @@ export function HelpPage() {
         the play and adjust incrementally.
       </p>
       <p>
+        Honest caveat: the coaching source describes roles in prose, not exact coordinates -- the
+        <em> shape</em> of the system (who covers what, roughly) is real coaching knowledge, but the
+        specific numbers (exact depths, how wide a lateral shift, how gradually roles hand off near
+        center ice) are this site's own best-guess interpolation between those roles, tuned by hand
+        against a handful of observed issues rather than validated against game film or a coach's direct
+        review. Treat the exact positioning as a reasonable approximation, not gospel.
+      </p>
+      <p>
+        Each defender's movement speed is capped relative to how fast the puck carrier is actually
+        moving right now (roughly 1.15x, with a floor so defenders still adjust when the carrier is
+        standing still, and a ceiling so dragging the carrier instantly across the ice doesn't let
+        defenders teleport too) -- a real physical constraint, not just a smoothing effect. That speed
+        estimate (~15ft/s base) is a plausible guess for 10U-level skating, not measured from real
+        player-tracking data either.
+      </p>
+      <p>
         The rink itself is drawn to real NHL dimensions (85ft wide, 64ft goal line to blue line, 28ft
         corner radius, properly-spaced faceoff circles and hash marks), not an arbitrary shape.
       </p>

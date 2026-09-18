@@ -96,6 +96,30 @@ function lerpPoint(a: Point, b: Point, t: number): Point {
   return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) }
 }
 
+/**
+ * Moves `current` directly toward `target` by at most `maxStep` -- a
+ * constant-max-speed "seek", not an easing/lerp. Arrives exactly at
+ * `target` (no overshoot, no asymptotic creep) once within `maxStep`.
+ *
+ * This -- not the target position itself -- is where a hard physical
+ * constraint belongs: a real skater has a max speed, and closing on a
+ * target 300px away can't happen any faster than closing the last 20px
+ * of the same target. An exponential-decay ease (`lerp(current, target,
+ * fixedFraction)` every frame) gets this backwards: the step size is
+ * proportional to the REMAINING distance, so it's fastest when farthest
+ * from the target and crawls as it arrives -- the opposite of a real
+ * skater, who moves at roughly constant speed and then decelerates only
+ * right at the very end.
+ */
+export function moveToward(current: Point, target: Point, maxStep: number): Point {
+  const dx = target.x - current.x
+  const dy = target.y - current.y
+  const distance = Math.hypot(dx, dy)
+  if (distance <= maxStep || distance < 1e-9) return { ...target }
+  const t = maxStep / distance
+  return { x: current.x + dx * t, y: current.y + dy * t }
+}
+
 export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions {
   const zoneDepth = geo.net.y - geo.blueLineY // positive: net.y > blueLineY by convention
   // 0 = goal line, zoneDepth = blue line, negative = behind the net.

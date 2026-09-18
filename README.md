@@ -262,6 +262,23 @@ tests (`src/lib/dzonePositioning.test.ts`) asserting the actual coaching invaria
 defenseman is always closer to the puck than the weak-side one," "a defenseman never pressures above the
 top of the circles") rather than just implementation details.
 
+Honest caveat on the model itself: the coaching source describes roles in prose (who covers what,
+roughly), not exact coordinates. Every specific number in `dzonePositioning.ts` -- depth fractions,
+lateral bias multipliers, how wide the strong/weak transition band is -- is this project's own
+interpolation between those documented roles, tuned by hand against specific observed issues rather than
+validated against game film, player-tracking data, or direct coach review. Treat the exact positions as a
+reasonable approximation, not a precisely correct one.
+
+Two separate layers: `idealBoxPositions` computes a stateless TARGET position each frame (no memory of
+velocity or momentum); `moveToward` (also in `dzonePositioning.ts`) handles actually moving there, capped
+at a real max speed -- deliberately NOT an easing/lerp (`current + (target-current)*fixedFraction)`),
+since that makes step size proportional to remaining distance: fastest when farthest from the target,
+crawling as it arrives, the opposite of a real skater. Defender speed is capped relative to the puck
+carrier's own actual current speed (~1.15x, with a floor so defenders still adjust when the carrier is
+stationary and a ceiling so dragging the carrier instantly across the ice doesn't let defenders teleport
+too) -- unit-tested directly (constant speed regardless of distance, exact arrival with no overshoot,
+correct diagonal/Pythagorean speed).
+
 The rink is drawn to real NHL dimensions (85ft wide, 64ft goal line to blue line, 28ft corner radius,
 properly-spaced faceoff circles/hash marks) -- not an arbitrary shape.
 
