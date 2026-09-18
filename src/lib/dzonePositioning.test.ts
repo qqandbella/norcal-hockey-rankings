@@ -153,6 +153,51 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
     }
   })
 
+  it('biases the weak-side D and winger toward their OWN side, not toward the puck (the "5-on-1 swarm" bug)', () => {
+    // A real reported bug: after a sign-inversion regression, ALL FIVE
+    // defenders collapsed toward whichever side the puck was on, leaving
+    // the far side of the ice completely empty. With the puck confidently
+    // on the left, the weak-side D (RD) and weak-side winger (RW) must
+    // sit on the RIGHT of net.x (their own side), not drift left with
+    // everyone else.
+    const puck = { x: -60, y: 70 } // confidently left
+    const pos = idealBoxPositions(puck, geo)
+    expect(pos.RD.x).toBeGreaterThan(geo.net.x)
+    expect(pos.RW.x).toBeGreaterThan(geo.net.x)
+
+    const puckRight = { x: 60, y: 70 }
+    const posRight = idealBoxPositions(puckRight, geo)
+    expect(posRight.LD.x).toBeLessThan(geo.net.x)
+    expect(posRight.LW.x).toBeLessThan(geo.net.x)
+  })
+
+  it('keeps the full 5-player box spanning both sides of the ice when the puck is off to one side', () => {
+    // Same bug from the defense's-eye view: the box's total lateral span
+    // (leftmost defender to rightmost) must stay wide even when the puck
+    // is deep on one side -- a "swarm" collapses this span to near zero.
+    const puck = { x: -65, y: 75 }
+    const pos = idealBoxPositions(puck, geo)
+    const xs = Object.values(pos).map((p) => p.x)
+    const span = Math.max(...xs) - Math.min(...xs)
+    expect(span).toBeGreaterThan(geo.halfWidth * 0.3)
+    // And the box must have real presence on the side AWAY from the puck.
+    expect(Math.max(...xs)).toBeGreaterThan(geo.net.x + geo.halfWidth * 0.1)
+  })
+
+  it("cuts the puck-side D BETWEEN the puck and the net, not directly beside the puck", () => {
+    // A real reported coaching point: the puck-side D's job is to take
+    // away the shooting/passing lane by sitting on the net-puck line, not
+    // just shadow the puck's x-coordinate at its own arbitrary depth.
+    const puck = { x: -70, y: 5 } // deep left, up near the blue line
+    const pos = idealBoxPositions(puck, geo)
+    // LD is shallower than the puck (pressure-capped) -- its x must sit
+    // strictly between the net's x and the puck's x, not equal to the
+    // puck's x (which would put it beside, not between).
+    expect(pos.LD.x).toBeGreaterThanOrEqual(Math.min(geo.net.x, puck.x) - 1e-9)
+    expect(pos.LD.x).toBeLessThanOrEqual(Math.max(geo.net.x, puck.x) + 1e-9)
+    expect(Math.abs(pos.LD.x - puck.x)).toBeGreaterThan(1e-6)
+  })
+
   it('smoothly blends strong/weak roles across the whole centerline transition band, not just right at 0', () => {
     // Sweep puck.x across the transition zone and confirm LD's position
     // moves continuously (no single step bigger than a small bound),

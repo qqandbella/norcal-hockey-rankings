@@ -100,6 +100,44 @@ function separateFromOffense(defenders: BoxPositions, offensePositions: Point[])
   return result
 }
 
+const MIN_DEFENDER_SEPARATION = DEFENDER_RADIUS * 2 + 6
+
+/** Pushes any two defenders that have drifted within collision distance
+ * of each other apart -- a real reported bug: two teammates converging on
+ * the same "ideal" spot (e.g. both drawn toward the puck) and visibly
+ * overlapping/colliding, which never happens with real skaters. Runs
+ * after `separateFromOffense`, and after the auto-follow step, so it's a
+ * final positional correction rather than a change to the coaching model
+ * itself (the same "two layers" split as `moveToward` vs `idealBoxPositions`). */
+function separateDefendersMutually(defenders: BoxPositions): BoxPositions {
+  const result: BoxPositions = { ...defenders }
+  // A few relaxation passes so a push away from one teammate doesn't just
+  // create a new collision with a different one.
+  for (let pass = 0; pass < 3; pass++) {
+    for (let i = 0; i < DEFENDER_KEYS.length; i++) {
+      for (let j = i + 1; j < DEFENDER_KEYS.length; j++) {
+        const a = DEFENDER_KEYS[i]
+        const b = DEFENDER_KEYS[j]
+        const pa = result[a]
+        const pb = result[b]
+        const d = dist(pa, pb)
+        if (d >= MIN_DEFENDER_SEPARATION) continue
+        const push = (MIN_DEFENDER_SEPARATION - d) / 2
+        if (d < 1e-6) {
+          result[a] = { x: pa.x - MIN_DEFENDER_SEPARATION / 2, y: pa.y }
+          result[b] = { x: pb.x + MIN_DEFENDER_SEPARATION / 2, y: pb.y }
+        } else {
+          const ux = (pa.x - pb.x) / d
+          const uy = (pa.y - pb.y) / d
+          result[a] = { x: pa.x + ux * push, y: pa.y + uy * push }
+          result[b] = { x: pb.x - ux * push, y: pb.y - uy * push }
+        }
+      }
+    }
+  }
+  return result
+}
+
 /** Traces the boards -- straight side walls, 28ft-radius corners at the
  * net end, open at the blue-line end (that's a viewport edge into the
  * neutral zone, not a real wall). */
@@ -373,7 +411,9 @@ export function DZoneTrainer() {
           }
           next[key] = moveToward(current[key], ideal[roleAssignment[key]], maxStepThisFrame)
         }
-        defenderPosRef.current = separateFromOffense(next, offenseRef.current.slice(0, offenseCount))
+        defenderPosRef.current = separateDefendersMutually(
+          separateFromOffense(next, offenseRef.current.slice(0, offenseCount)),
+        )
 
         if (mode === 'control') {
           const d = dist(next[controlledDefender], ideal[roleAssignment[controlledDefender]])

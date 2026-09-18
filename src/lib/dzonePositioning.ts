@@ -143,13 +143,21 @@ export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions
     // there's no crease to avoid crowding, so the floor must not apply,
     // or it cancels out negative (behind-net) depth entirely via Math.max.
     const effectiveDepth = depth >= 0 ? Math.max(depth, zoneDepth * 0.12) : depth
+    // Cut BETWEEN the puck carrier and the net, not just mirror the
+    // puck's x -- interpolate laterally along the net->puck line at this
+    // D's own depth, so a D pressuring from shallower than the puck sits
+    // on the shooting/passing lane rather than directly beside the puck.
+    const fraction = Math.abs(puckDepth) > 1e-6 ? clamp(effectiveDepth / puckDepth, 0, 1.3) : 1
+    const x = geo.net.x + (puck.x - geo.net.x) * fraction
     return {
-      x: clamp(puck.x, geo.net.x - geo.halfWidth * 0.85, geo.net.x + geo.halfWidth * 0.85),
+      x: clamp(x, geo.net.x - geo.halfWidth * 0.85, geo.net.x + geo.halfWidth * 0.85),
       y: geo.net.y - effectiveDepth,
     }
   }
-  function weakD(sign: number): Point {
-    return { x: geo.net.x - sign * geo.halfWidth * 0.18, y: geo.net.y - zoneDepth * 0.14 }
+  function weakD(ownSign: number): Point {
+    // Biases toward ITS OWN side (away from the puck, which is on the
+    // other side when this D is playing weak) -- +ownSign, not -ownSign.
+    return { x: geo.net.x + ownSign * geo.halfWidth * 0.18, y: geo.net.y - zoneDepth * 0.14 }
   }
   function strongW(sign: number): Point {
     const baseX = geo.net.x + sign * geo.halfWidth * 0.55
@@ -158,8 +166,9 @@ export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions
       y: geo.net.y - Math.max(wingerHoldDepth, Math.max(puckDepth, 0) * 0.9),
     }
   }
-  function weakW(sign: number): Point {
-    return { x: geo.net.x - sign * geo.halfWidth * 0.15, y: geo.net.y - zoneDepth * 0.42 }
+  function weakW(ownSign: number): Point {
+    // Same fix as weakD: bias toward ITS OWN side, not the puck's.
+    return { x: geo.net.x + ownSign * geo.halfWidth * 0.15, y: geo.net.y - zoneDepth * 0.42 }
   }
 
   // Weight of "the puck is confidently on the left" -- 1 at t=-1, 0 at t=+1.
