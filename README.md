@@ -251,6 +251,27 @@ the first's order). Real client-side sorting doesn't have this failure
 mode at all — the displayed order is always derived fresh from whatever
 column is actually selected, not trusted from upstream.
 
+## D-Zone Positioning Trainer
+
+A separate practice tool (`/dzone`, linked from the header) for teaching defensive-zone positioning to
+young players -- unrelated to the rating model above. Built on **"Box + 1"** defensive zone coverage
+(goalie is the "+1"), a standard introductory system for youth hockey, not invented for this site. Every
+positioning rule in `src/lib/dzonePositioning.ts` traces to a real coaching source (AJH Coach Player
+Book, "D-Zone Coverage Responsibilities -- Box + 1") and is documented as such in that file, with unit
+tests (`src/lib/dzonePositioning.test.ts`) asserting the actual coaching invariants (e.g. "the puck-side
+defenseman is always closer to the puck than the weak-side one," "a defenseman never pressures above the
+top of the circles") rather than just implementation details.
+
+Three modes, in `src/components/DZoneTrainer.tsx`:
+- **Watch**: control 1-3 offensive players (drag to move; whichever one you're dragging has the puck) and
+  watch the 5 defenders (LD/RD/C/LW/RW) react. Optionally focus on one position to watch it specifically.
+- **Control**: directly control one defensive position; the rest follow the model. A dashed circle marks
+  the model's ideal spot for comparison, with a live distance readout.
+- **Coach**: pause at any time; manually correct any defender's position (it holds there until reset,
+  instead of snapping back to the model's default); or swap which position's assignment two defenders
+  each follow, for a deliberate tactical call ("LW tracks the puck carrier into RD's zone and continues,
+  RD rotates into LW's zone") rather than a one-off nudge.
+
 ## Data source
 
 Data comes from `www.norcalyouthhockey.org` (the NorCal Youth Hockey

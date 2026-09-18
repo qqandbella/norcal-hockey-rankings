@@ -178,6 +178,29 @@ export function HelpPage() {
         (offense-gap / defense-gap) cross-division model, but this specific reuse hasn&apos;t been
         separately validated, since there&apos;s no cross-division ground truth to check it against yet.
       </p>
+
+      <h3>D-Zone Positioning Trainer</h3>
+      <p>
+        A separate practice tool (linked from the header) for teaching defensive-zone positioning, not
+        part of the rating model above. It's built on the &quot;Box + 1&quot; defensive zone coverage
+        system (goalie is the &quot;+1&quot;) -- a standard, widely-used introductory system for youth
+        hockey, not something invented for this site. Every positioning rule it uses traces to that real
+        coaching source (AJH Coach Player Book, &quot;D-Zone Coverage Responsibilities -- Box + 1&quot;):
+        the puck-side defenseman pressures the puck and stays low; the weak-side defenseman holds the
+        net-front/slot; the puck-side winger holds the top of the circle on that side; the weak-side
+        winger collapses to the middle-ice slot; and the center plays low in support of the puck side,
+        shifting more central when the puck is at the point.
+      </p>
+      <p>
+        <strong>Watch mode</strong> lets you control 1-3 offensive players and see the 5 defenders
+        (LD/RD/C/LW/RW) react -- you can focus on one position to watch it specifically.{' '}
+        <strong>Control mode</strong> lets you directly control one defensive position yourself, with a
+        dashed circle showing the model's ideal spot for comparison. <strong>Coach mode</strong> adds the
+        ability to pause at any time, manually correct any defender's position (it stays put until reset,
+        rather than snapping back), or swap which position's assignment two defenders each follow -- for
+        a scenario like "LW tracks the puck carrier into RD's zone and continues, RD rotates into LW's
+        zone" as a deliberate tactical call, not just a one-off nudge.
+      </p>
     </section>
   )
 }

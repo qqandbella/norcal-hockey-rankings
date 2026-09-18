@@ -428,9 +428,73 @@ body {
   flex-wrap: wrap;
 }
 
+.app__header-links {
+  display: flex;
+  gap: 1rem;
+}
+
 .app__help-link {
   font-size: 0.9rem;
   white-space: nowrap;
+}
+
+.dzone__controls {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin: 0.75rem 0;
+}
+
+.dzone__option {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.dzone__option select {
+  font: inherit;
+  padding: 0.2rem 0.4rem;
+}
+
+.dzone__hint {
+  max-width: 60ch;
+  opacity: 0.85;
+  font-size: 0.9rem;
+}
+
+.dzone__coach-panel {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.5rem;
+  padding: 0.5rem 0.75rem;
+  border: 1px dashed var(--border);
+  border-radius: 6px;
+}
+
+.dzone__coach-tactics {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-size: 0.9rem;
+}
+
+.dzone__coach-tactics select {
+  font: inherit;
+  padding: 0.15rem 0.3rem;
+}
+
+.dzone__canvas {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  touch-action: none;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.15);
+  cursor: grab;
 }
 
 .help {

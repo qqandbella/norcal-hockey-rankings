@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { HashRouter, Link, Navigate, Route, Routes, useParams } from 'react-router-dom'
 import { DivisionNav } from './components/DivisionNav'
+import { DZoneTrainer } from './components/DZoneTrainer'
 import { HelpPage } from './components/HelpPage'
 import { PredictPage } from './components/PredictPage'
 import { RankingsTable } from './components/RankingsTable'
@@ -70,9 +71,14 @@ export default function App() {
         <header className="app__header">
           <div className="app__title-row">
             <h1>NorCal Hockey Rankings</h1>
-            <Link to="/help" className="app__help-link">
-              Help / FAQ
-            </Link>
+            <span className="app__header-links">
+              <Link to="/dzone" className="app__help-link">
+                D-Zone Trainer
+              </Link>
+              <Link to="/help" className="app__help-link">
+                Help / FAQ
+              </Link>
+            </span>
           </div>
           <p className="app__subtitle">
             Calibrated ratings from results, computed with a capped, shrinkage-regularized
@@ -131,6 +137,7 @@ export default function App() {
                 />
                 <Route path="/predict/:age" element={<PredictPage data={data} ratingMode={ratingMode} />} />
                 <Route path="/help" element={<HelpPage />} />
+                <Route path="/dzone" element={<DZoneTrainer />} />
               </Routes>
             </main>
           </div>
