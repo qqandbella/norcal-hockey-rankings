@@ -262,9 +262,14 @@ tests (`src/lib/dzonePositioning.test.ts`) asserting the actual coaching invaria
 defenseman is always closer to the puck than the weak-side one," "a defenseman never pressures above the
 top of the circles") rather than just implementation details.
 
+The rink is drawn to real NHL dimensions (85ft wide, 64ft goal line to blue line, 28ft corner radius,
+properly-spaced faceoff circles/hash marks) -- not an arbitrary shape.
+
 Three modes, in `src/components/DZoneTrainer.tsx`:
-- **Watch**: control 1-3 offensive players (drag to move; whichever one you're dragging has the puck) and
-  watch the 5 defenders (LD/RD/C/LW/RW) react. Optionally focus on one position to watch it specifically.
+- **Watch**: control 1-3 offensive players -- drag the puck carrier (yellow ring) to move with the puck,
+  or tap a teammate to pass to them at a selectable speed (the puck animates visibly between them, and
+  defenders react to its actual in-flight position, not a teleport). Watch the 5 defenders (LD/RD/C/LW/RW)
+  react; optionally focus on one position to watch it specifically.
 - **Control**: directly control one defensive position; the rest follow the model. A dashed circle marks
   the model's ideal spot for comparison, with a live distance readout.
 - **Coach**: pause at any time; manually correct any defender's position (it holds there until reset,

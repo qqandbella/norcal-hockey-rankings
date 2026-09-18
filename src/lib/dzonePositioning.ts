@@ -26,6 +26,14 @@
  * source's own worked examples, which show first RD-strong/LD-weak, then
  * describe the same rules applying symmetrically). This module
  * determines strong/weak side dynamically from puck position every call.
+ *
+ * Coordinate convention (IMPORTANT, and the source of a real bug once):
+ * `net.y` is the LARGER y value and `blueLineY` is SMALLER -- y DECREASES
+ * moving from the net toward the blue line. This matches an HTML canvas
+ * with the net drawn near the bottom of the screen (y grows downward) and
+ * is the convention `DZoneTrainer.tsx` actually renders. Every caller
+ * (including tests) must build a `DZoneGeometry` with `net.y > blueLineY`,
+ * or every depth-based calculation below silently breaks.
  */
 
 export interface Point {
@@ -34,10 +42,10 @@ export interface Point {
 }
 
 export interface DZoneGeometry {
-  /** Net/crease center. */
+  /** Net/crease center. y must be GREATER than `blueLineY` -- see the
+   * module doc comment above. */
   net: Point
-  /** Blue line y-coordinate -- puck.y ranges from `net.y` (goal line) up
-   * to roughly this value inside the zone. */
+  /** Blue line y-coordinate -- smaller than `net.y`. */
   blueLineY: number
   /** Half-width of the zone, used to clamp/scale lateral positioning. */
   halfWidth: number
@@ -60,32 +68,32 @@ function lerp(a: number, b: number, t: number): number {
 }
 
 /**
- * Depth (distance from the goal line) of the "top of the circles" --
- * defensemen generally don't pressure above this; wingers hold roughly
- * at this depth by default.
+ * Depth (distance from the goal line, toward the blue line) of the "top
+ * of the circles" -- defensemen generally don't pressure beyond this;
+ * wingers hold roughly at this depth by default.
  */
 function topOfCirclesDepth(geo: DZoneGeometry): number {
-  return (geo.blueLineY - geo.net.y) * 0.55
+  return (geo.net.y - geo.blueLineY) * 0.55
 }
 
 export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions {
-  const zoneDepth = geo.blueLineY - geo.net.y
-  const puckDepth = clamp(puck.y - geo.net.y, 0, zoneDepth) // 0 = goal line, zoneDepth = blue line
+  const zoneDepth = geo.net.y - geo.blueLineY // positive: net.y > blueLineY by convention
+  const puckDepth = clamp(geo.net.y - puck.y, 0, zoneDepth) // 0 = goal line, zoneDepth = blue line
   const puckSideIsLeft = puck.x < geo.net.x
   const strongSideSign = puckSideIsLeft ? -1 : 1
 
   // -- Defensemen: puck-side D pressures the puck directly (contain/
-  // separate), capped so it never chases above the top of the circles.
+  // separate), capped so it never chases beyond the top of the circles.
   // Weak-side D stays net-front/slot, biased toward the puck side only
   // slightly ("head on a swivel", not a screen for the goalie).
   const strongDDepth = clamp(puckDepth, 0, topOfCirclesDepth(geo))
   const strongD: Point = {
     x: clamp(puck.x, geo.net.x - geo.halfWidth * 0.85, geo.net.x + geo.halfWidth * 0.85),
-    y: geo.net.y + Math.max(strongDDepth, zoneDepth * 0.12),
+    y: geo.net.y - Math.max(strongDDepth, zoneDepth * 0.12),
   }
   const weakD: Point = {
     x: geo.net.x - strongSideSign * geo.halfWidth * 0.18,
-    y: geo.net.y + zoneDepth * 0.14,
+    y: geo.net.y - zoneDepth * 0.14,
   }
 
   // -- Wingers: puck-side winger holds the top of the circle on that
@@ -96,11 +104,11 @@ export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions
   const strongWBaseX = geo.net.x + strongSideSign * geo.halfWidth * 0.55
   const strongW: Point = {
     x: lerp(strongWBaseX, puck.x, 0.35),
-    y: geo.net.y + Math.max(topOfCirclesDepth(geo), puckDepth * 0.9),
+    y: geo.net.y - Math.max(topOfCirclesDepth(geo), puckDepth * 0.9),
   }
   const weakW: Point = {
     x: geo.net.x - strongSideSign * geo.halfWidth * 0.15,
-    y: geo.net.y + zoneDepth * 0.42,
+    y: geo.net.y - zoneDepth * 0.42,
   }
 
   // -- Center: low corner of the box in support of the strong side,
@@ -111,7 +119,7 @@ export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions
   const cBias = lerp(0.4, 0.12, depthFraction) // less lateral bias as puck gets higher
   const c: Point = {
     x: geo.net.x + strongSideSign * geo.halfWidth * cBias,
-    y: geo.net.y + lerp(zoneDepth * 0.22, zoneDepth * 0.38, depthFraction),
+    y: geo.net.y - lerp(zoneDepth * 0.22, zoneDepth * 0.38, depthFraction),
   }
 
   return {

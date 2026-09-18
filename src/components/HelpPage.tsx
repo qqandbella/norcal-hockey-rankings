@@ -192,8 +192,14 @@ export function HelpPage() {
         shifting more central when the puck is at the point.
       </p>
       <p>
-        <strong>Watch mode</strong> lets you control 1-3 offensive players and see the 5 defenders
-        (LD/RD/C/LW/RW) react -- you can focus on one position to watch it specifically.{' '}
+        The rink itself is drawn to real NHL dimensions (85ft wide, 64ft goal line to blue line, 28ft
+        corner radius, properly-spaced faceoff circles and hash marks), not an arbitrary shape.
+      </p>
+      <p>
+        <strong>Watch mode</strong> lets you control 1-3 offensive players (drag the puck carrier, marked
+        with a yellow ring, to move with the puck; tap a teammate to pass to them at a selectable speed --
+        the puck travels visibly between them, and the 5 defenders react to where it actually is mid-pass,
+        not just teleporting). You can focus on one position to watch it specifically.{' '}
         <strong>Control mode</strong> lets you directly control one defensive position yourself, with a
         dashed circle showing the model's ideal spot for comparison. <strong>Coach mode</strong> adds the
         ability to pause at any time, manually correct any defender's position (it stays put until reset,

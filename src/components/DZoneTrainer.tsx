@@ -3,19 +3,40 @@ import { idealBoxPositions } from '../lib/dzonePositioning'
 import type { BoxPositions, DZoneGeometry, Point } from '../lib/dzonePositioning'
 
 type Mode = 'watch' | 'control'
+type PassSpeed = 'slow' | 'medium' | 'fast'
 type DefenderKey = keyof BoxPositions
 const DEFENDER_KEYS: DefenderKey[] = ['LD', 'RD', 'C', 'LW', 'RW']
 const DEFENDER_LABEL: Record<DefenderKey, string> = { LD: 'LD', RD: 'RD', C: 'C', LW: 'LW', RW: 'RW' }
 const IDENTITY_ASSIGNMENT: Record<DefenderKey, DefenderKey> = { LD: 'LD', RD: 'RD', C: 'C', LW: 'LW', RW: 'RW' }
+const PASS_DURATION_MS: Record<PassSpeed, number> = { slow: 1100, medium: 650, fast: 350 }
 
-const CANVAS_W = 520
-const CANVAS_H = 620
-const NET: Point = { x: CANVAS_W / 2, y: CANVAS_H - 60 }
-const BLUE_LINE_Y = 90
-const GEO: DZoneGeometry = { net: NET, blueLineY: BLUE_LINE_Y, halfWidth: 190 }
+// Real NHL rink dimensions, scaled to pixels -- not an arbitrary shape.
+// Rink is 200x85ft with a 28ft corner radius; the goal line sits 11ft in
+// front of the end boards; the zone (goal line to blue line) is 64ft
+// deep. We render one end zone plus a small slice of neutral ice above
+// the blue line for point play, so the boards/corners are only drawn at
+// the near (net) end -- the blue-line edge is an open viewport boundary
+// into the neutral zone, not a wall.
+const PX_PER_FT = 7
+const RINK_WIDTH_FT = 85
+const ZONE_DEPTH_FT = 64
+const BEHIND_NET_FT = 11
+const NEUTRAL_SLIVER_FT = 12
+const CORNER_RADIUS_FT = 28
+
+const CANVAS_W = RINK_WIDTH_FT * PX_PER_FT
+const CANVAS_H = (ZONE_DEPTH_FT + BEHIND_NET_FT + NEUTRAL_SLIVER_FT) * PX_PER_FT
+const BLUE_LINE_Y = NEUTRAL_SLIVER_FT * PX_PER_FT
+const NET: Point = { x: CANVAS_W / 2, y: BLUE_LINE_Y + ZONE_DEPTH_FT * PX_PER_FT }
+const END_BOARDS_Y = NET.y + BEHIND_NET_FT * PX_PER_FT
+const CORNER_RADIUS_PX = CORNER_RADIUS_FT * PX_PER_FT
+
+const GEO: DZoneGeometry = { net: NET, blueLineY: BLUE_LINE_Y, halfWidth: (RINK_WIDTH_FT / 2) * PX_PER_FT }
 const FOLLOW_RATE = 0.08 // per-frame lerp fraction -- smooth, not instant, movement toward the ideal spot
 const OFFENSE_RADIUS = 12
 const DEFENDER_RADIUS = 14
+const PUCK_RADIUS = 5
+const TAP_VS_DRAG_THRESHOLD_PX = 6
 
 function lerpPoint(from: Point, to: Point, t: number): Point {
   return { x: from.x + (to.x - from.x) * t, y: from.y + (to.y - from.y) * t }
@@ -27,8 +48,54 @@ function dist(a: Point, b: Point): number {
 
 function clampToZone(p: Point): Point {
   return {
-    x: Math.max(NET.x - GEO.halfWidth, Math.min(NET.x + GEO.halfWidth, p.x)),
-    y: Math.max(20, Math.min(BLUE_LINE_Y + 40, p.y)),
+    x: Math.max(12, Math.min(CANVAS_W - 12, p.x)),
+    y: Math.max(BLUE_LINE_Y - 25, Math.min(END_BOARDS_Y - 8, p.y)),
+  }
+}
+
+/** Traces the boards -- straight side walls, 28ft-radius corners at the
+ * net end, open at the blue-line end (that's a viewport edge into the
+ * neutral zone, not a real wall). */
+function tracedBoards(): Path2D {
+  const path = new Path2D()
+  const r = CORNER_RADIUS_PX
+  path.moveTo(0, BLUE_LINE_Y - 30)
+  path.lineTo(0, END_BOARDS_Y - r)
+  path.arcTo(0, END_BOARDS_Y, r, END_BOARDS_Y, r)
+  path.lineTo(CANVAS_W - r, END_BOARDS_Y)
+  path.arcTo(CANVAS_W, END_BOARDS_Y, CANVAS_W, END_BOARDS_Y - r, r)
+  path.lineTo(CANVAS_W, BLUE_LINE_Y - 30)
+  return path
+}
+
+function drawFaceoffSpot(ctx: CanvasRenderingContext2D, x: number, y: number) {
+  const circleR = 15 * PX_PER_FT
+  ctx.strokeStyle = '#c0392b'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.arc(x, y, circleR, 0, Math.PI * 2)
+  ctx.stroke()
+  ctx.fillStyle = '#c0392b'
+  ctx.beginPath()
+  ctx.arc(x, y, 4, 0, Math.PI * 2)
+  ctx.fill()
+
+  // Hash marks: short ticks near the dot, roughly matching the real
+  // rink's faceoff-circle hash mark pattern (decorative precision, not
+  // to spec down to the inch, but recognizably in the right place/scale).
+  const hx = 3 * PX_PER_FT
+  const hy = 2.2 * PX_PER_FT
+  const tick = 1.3 * PX_PER_FT
+  ctx.lineWidth = 2.5
+  for (const sx of [-1, 1]) {
+    for (const sy of [-1, 1]) {
+      ctx.beginPath()
+      ctx.moveTo(x + sx * hx, y + sy * hy)
+      ctx.lineTo(x + sx * (hx + tick), y + sy * hy)
+      ctx.moveTo(x + sx * hx, y + sy * hy)
+      ctx.lineTo(x + sx * hx, y + sy * (hy + tick))
+      ctx.stroke()
+    }
   }
 }
 
@@ -37,44 +104,52 @@ function drawRink(ctx: CanvasRenderingContext2D) {
   ctx.fillStyle = '#eef6fb'
   ctx.fillRect(0, 0, CANVAS_W, CANVAS_H)
 
-  // Blue line
+  const boards = tracedBoards()
+
+  // Blue line (full width -- it's a real line across the whole rink).
   ctx.strokeStyle = '#2c6fbb'
-  ctx.lineWidth = 4
+  ctx.lineWidth = 5
   ctx.beginPath()
   ctx.moveTo(0, BLUE_LINE_Y)
   ctx.lineTo(CANVAS_W, BLUE_LINE_Y)
   ctx.stroke()
 
-  // Boards
-  ctx.strokeStyle = '#666'
-  ctx.lineWidth = 3
-  ctx.strokeRect(2, 2, CANVAS_W - 4, CANVAS_H - 4)
+  // Goal line.
+  ctx.strokeStyle = '#c0392b'
+  ctx.lineWidth = 2
+  ctx.beginPath()
+  ctx.moveTo(0, NET.y)
+  ctx.lineTo(CANVAS_W, NET.y)
+  ctx.stroke()
 
-  // Faceoff dots/circles (reference for "top of the circles")
-  const dotY = NET.y - (NET.y - BLUE_LINE_Y) * 0.55
+  // Faceoff dots/circles + hash marks, at the real spec (20ft from the
+  // goal line, 22ft off the rink centerline).
   for (const sign of [-1, 1]) {
-    const dotX = NET.x + sign * 95
-    ctx.strokeStyle = '#c0392b'
-    ctx.lineWidth = 2
-    ctx.beginPath()
-    ctx.arc(dotX, dotY, 46, 0, Math.PI * 2)
-    ctx.stroke()
-    ctx.fillStyle = '#c0392b'
-    ctx.beginPath()
-    ctx.arc(dotX, dotY, 4, 0, Math.PI * 2)
-    ctx.fill()
+    drawFaceoffSpot(ctx, NET.x + sign * 22 * PX_PER_FT, NET.y - 20 * PX_PER_FT)
   }
 
-  // Crease
+  // Crease.
   ctx.fillStyle = 'rgba(44,111,187,0.15)'
+  ctx.strokeStyle = '#2c6fbb'
+  ctx.lineWidth = 2
   ctx.beginPath()
-  ctx.arc(NET.x, NET.y, 34, Math.PI, 0)
+  ctx.arc(NET.x, NET.y, 4 * PX_PER_FT, Math.PI, 0)
   ctx.fill()
+  ctx.stroke()
 
-  // Net
+  // Net.
   ctx.strokeStyle = '#222'
+  ctx.fillStyle = 'rgba(0,0,0,0.05)'
   ctx.lineWidth = 3
-  ctx.strokeRect(NET.x - 24, NET.y - 6, 48, 14)
+  const netW = 6 * PX_PER_FT
+  const netD = 3.3 * PX_PER_FT
+  ctx.fillRect(NET.x - netW / 2, NET.y - netD, netW, netD)
+  ctx.strokeRect(NET.x - netW / 2, NET.y - netD, netW, netD)
+
+  // Boards outline on top.
+  ctx.strokeStyle = '#333'
+  ctx.lineWidth = 3
+  ctx.stroke(boards)
 }
 
 function drawDot(
@@ -99,10 +174,26 @@ function drawDot(
   ctx.fillText(label, p.x, p.y)
 }
 
+interface PassState {
+  from: Point
+  to: Point
+  startTime: number
+  duration: number
+  targetIndex: number
+}
+
+interface DragState {
+  kind: 'offense' | 'defender'
+  index: number | DefenderKey
+  startPoint: Point
+  moved: boolean
+}
+
 export function DZoneTrainer() {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [mode, setMode] = useState<Mode>('watch')
   const [offenseCount, setOffenseCount] = useState(1)
+  const [passSpeed, setPassSpeed] = useState<PassSpeed>('medium')
   const [controlledDefender, setControlledDefender] = useState<DefenderKey>('LD')
   // Watch mode: focus on one position (e.g. "I play LW, so watch how LW
   // specifically reacts") -- highlights that dot and dims the rest,
@@ -122,18 +213,33 @@ export function DZoneTrainer() {
   const [swapA, setSwapA] = useState<DefenderKey>('LW')
   const [swapB, setSwapB] = useState<DefenderKey>('RD')
 
-  const offenseRef = useRef<Point[]>([{ x: NET.x - 60, y: 200 }, { x: NET.x + 60, y: 220 }, { x: NET.x, y: 260 }])
+  const offenseRef = useRef<Point[]>([
+    { x: NET.x - 90, y: NET.y - 130 },
+    { x: NET.x + 90, y: NET.y - 150 },
+    { x: NET.x, y: NET.y - 40 },
+  ])
   const puckHolderRef = useRef(0)
-  const defenderPosRef = useRef<BoxPositions>(
-    idealBoxPositions(offenseRef.current[0], GEO),
-  )
-  const dragRef = useRef<{ kind: 'offense' | 'defender'; index: number | DefenderKey } | null>(null)
+  const puckPosRef = useRef<Point>({ ...offenseRef.current[0] })
+  const passRef = useRef<PassState | null>(null)
+  const defenderPosRef = useRef<BoxPositions>(idealBoxPositions(offenseRef.current[0], GEO))
+  const dragRef = useRef<DragState | null>(null)
   const [accuracyText, setAccuracyText] = useState<string>('')
 
   // Simple scripted wandering for offense in Control mode, so there's
   // something dynamic to react to while the user is busy controlling one
   // defender.
   const wanderTargetsRef = useRef<Point[]>(offenseRef.current.map((p) => p))
+
+  function startPass(targetIndex: number) {
+    if (targetIndex === puckHolderRef.current || targetIndex >= offenseCount) return
+    passRef.current = {
+      from: { ...puckPosRef.current },
+      to: { ...offenseRef.current[targetIndex] },
+      startTime: performance.now(),
+      duration: PASS_DURATION_MS[passSpeed],
+      targetIndex,
+    }
+  }
 
   useEffect(() => {
     const canvas = canvasRef.current
@@ -157,15 +263,32 @@ export function DZoneTrainer() {
           if (frame % 90 === 0) {
             wanderTargetsRef.current = offenseRef.current.map(() =>
               clampToZone({
-                x: NET.x + (Math.random() - 0.5) * GEO.halfWidth * 1.6,
-                y: BLUE_LINE_Y + Math.random() * 60 + (NET.y - BLUE_LINE_Y) * Math.random() * 0.7,
+                x: NET.x + (Math.random() - 0.5) * GEO.halfWidth * 1.5,
+                y: BLUE_LINE_Y + Math.random() * (NET.y - BLUE_LINE_Y) * 0.85,
               }),
             )
           }
           offenseRef.current = offenseRef.current.map((p, i) => lerpPoint(p, wanderTargetsRef.current[i], 0.02))
         }
 
-        const puck = offenseRef.current[puckHolderRef.current]
+        // Puck position: mid-flight during an active pass, otherwise
+        // wherever the current holder actually is (so dragging the
+        // holder carries the puck with them in real time).
+        if (passRef.current) {
+          const pass = passRef.current
+          const t = (performance.now() - pass.startTime) / pass.duration
+          if (t >= 1) {
+            puckHolderRef.current = pass.targetIndex
+            puckPosRef.current = { ...offenseRef.current[pass.targetIndex] }
+            passRef.current = null
+          } else {
+            puckPosRef.current = lerpPoint(pass.from, pass.to, t)
+          }
+        } else {
+          puckPosRef.current = { ...offenseRef.current[puckHolderRef.current] }
+        }
+
+        const puck = puckPosRef.current
         const ideal = idealBoxPositions(puck, GEO)
         const current = defenderPosRef.current
         const next: BoxPositions = { LD: current.LD, RD: current.RD, C: current.C, LW: current.LW, RW: current.RW }
@@ -186,16 +309,22 @@ export function DZoneTrainer() {
         }
       }
 
-      const puckForDraw = offenseRef.current[puckHolderRef.current]
-      const idealForDraw = idealBoxPositions(puckForDraw, GEO)
+      const idealForDraw = idealBoxPositions(puckPosRef.current, GEO)
       const current = defenderPosRef.current
 
       drawRink(ctx)
-      // Offense
-      offenseRef.current.forEach((p, i) => {
-        const hasPuck = i === puckHolderRef.current
-        drawDot(ctx, p, OFFENSE_RADIUS, hasPuck ? '#1565c0' : '#64b5f6', hasPuck ? '●' : `O${i + 1}`)
+      // Offense -- only as many as offenseCount, never stale extras.
+      offenseRef.current.slice(0, offenseCount).forEach((p, i) => {
+        const isHolder = i === puckHolderRef.current
+        drawDot(ctx, p, OFFENSE_RADIUS, '#1976d2', `O${i + 1}`, isHolder ? '#f1c40f' : undefined)
       })
+      // The puck itself, drawn separately so a pass in flight is visible
+      // between the two players rather than teleporting.
+      ctx.beginPath()
+      ctx.arc(puckPosRef.current.x, puckPosRef.current.y, PUCK_RADIUS, 0, Math.PI * 2)
+      ctx.fillStyle = '#111'
+      ctx.fill()
+
       // Defenders
       for (const key of DEFENDER_KEYS) {
         const isControlled = mode === 'control' && key === controlledDefender
@@ -221,7 +350,13 @@ export function DZoneTrainer() {
           ctx.setLineDash([4, 4])
           ctx.lineWidth = 2
           ctx.beginPath()
-          ctx.arc(idealForDraw[roleAssignment[key]].x, idealForDraw[roleAssignment[key]].y, DEFENDER_RADIUS, 0, Math.PI * 2)
+          ctx.arc(
+            idealForDraw[roleAssignment[key]].x,
+            idealForDraw[roleAssignment[key]].y,
+            DEFENDER_RADIUS,
+            0,
+            Math.PI * 2,
+          )
           ctx.stroke()
           ctx.restore()
         }
@@ -232,7 +367,7 @@ export function DZoneTrainer() {
 
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
-  }, [mode, controlledDefender, paused, locked, roleAssignment, coachMode, highlighted])
+  }, [mode, controlledDefender, paused, locked, roleAssignment, coachMode, highlighted, offenseCount])
 
   function canvasPoint(e: React.PointerEvent<HTMLCanvasElement>): Point {
     const rect = e.currentTarget.getBoundingClientRect()
@@ -250,7 +385,7 @@ export function DZoneTrainer() {
     if (coachMode && paused) {
       const key = DEFENDER_KEYS.find((k) => dist(defenderPosRef.current[k], p) < DEFENDER_RADIUS + 10)
       if (key) {
-        dragRef.current = { kind: 'defender', index: key }
+        dragRef.current = { kind: 'defender', index: key, startPoint: p, moved: false }
         e.currentTarget.setPointerCapture(e.pointerId)
         return
       }
@@ -259,14 +394,13 @@ export function DZoneTrainer() {
     if (mode === 'watch') {
       const i = offenseRef.current.slice(0, offenseCount).findIndex((o) => dist(o, p) < OFFENSE_RADIUS + 8)
       if (i >= 0) {
-        dragRef.current = { kind: 'offense', index: i }
-        puckHolderRef.current = i // dragging a dot also gives it the puck, simulating a pass to it
+        dragRef.current = { kind: 'offense', index: i, startPoint: p, moved: false }
         e.currentTarget.setPointerCapture(e.pointerId)
       }
     } else {
       const pos = defenderPosRef.current[controlledDefender]
       if (dist(pos, p) < DEFENDER_RADIUS + 10) {
-        dragRef.current = { kind: 'defender', index: controlledDefender }
+        dragRef.current = { kind: 'defender', index: controlledDefender, startPoint: p, moved: false }
         e.currentTarget.setPointerCapture(e.pointerId)
       }
     }
@@ -276,8 +410,13 @@ export function DZoneTrainer() {
     const drag = dragRef.current
     if (!drag) return
     const p = clampToZone(canvasPoint(e))
+    if (dist(p, drag.startPoint) > TAP_VS_DRAG_THRESHOLD_PX) drag.moved = true
+
     if (drag.kind === 'offense' && typeof drag.index === 'number') {
       offenseRef.current[drag.index] = p
+      if (drag.index === puckHolderRef.current && !passRef.current) {
+        puckPosRef.current = p // puck travels with its carrier while dragging them
+      }
     } else if (drag.kind === 'defender') {
       defenderPosRef.current = { ...defenderPosRef.current, [drag.index]: p }
     }
@@ -285,10 +424,16 @@ export function DZoneTrainer() {
 
   function handlePointerUp() {
     const drag = dragRef.current
+    if (mode === 'watch' && drag?.kind === 'offense' && typeof drag.index === 'number') {
+      if (!drag.moved && drag.index !== puckHolderRef.current) {
+        // A tap (not a drag) on a teammate: pass to them.
+        startPass(drag.index)
+      }
+    }
     // A coach manually placing a defender while paused is a deliberate
     // correction -- lock it so play doesn't immediately pull it back to
     // the model's default the moment it resumes.
-    if (coachMode && paused && drag?.kind === 'defender') {
+    if (coachMode && paused && drag?.kind === 'defender' && drag.moved) {
       setLocked((prev) => ({ ...prev, [drag.index as DefenderKey]: true }))
     }
     dragRef.current = null
@@ -350,6 +495,17 @@ export function DZoneTrainer() {
             </select>
           </label>
         ) : null}
+
+        {mode === 'watch' && offenseCount > 1 && (
+          <label className="dzone__option">
+            Pass speed
+            <select value={passSpeed} onChange={(e) => setPassSpeed(e.target.value as PassSpeed)}>
+              <option value="slow">Slow</option>
+              <option value="medium">Medium</option>
+              <option value="fast">Fast</option>
+            </select>
+          </label>
+        )}
 
         {mode === 'watch' && (
           <label className="dzone__option">
@@ -429,8 +585,9 @@ export function DZoneTrainer() {
 
       {mode === 'watch' ? (
         <p className="dzone__hint">
-          Drag any blue dot (the offensive players) around the zone -- whichever one you're dragging has the
-          puck. Watch the 5 red defenders (LD/RD/C/LW/RW) adjust to cover it.
+          Drag the puck carrier (yellow ring) to move with the puck. Tap a different blue player to pass to
+          them{offenseCount > 1 ? ' -- the puck travels at the selected speed, and defense reacts as it does' : ''}.
+          Watch the 5 red defenders (LD/RD/C/LW/RW) adjust to cover it.
         </p>
       ) : (
         <p className="dzone__hint">
