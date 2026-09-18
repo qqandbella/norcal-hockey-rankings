@@ -5,15 +5,19 @@
  * -- Box + 1"). Every rule below traces to that source, not guessed:
  *
  * - Puck-side ("strong side") defenseman: first to pressure the puck
- *   carrier, separating puck from carrier; stays low, near the
- *   boards/corner on the puck's side, not chasing above the top of the
- *   circles.
+ *   carrier, separating puck from carrier -- including behind the net,
+ *   where a real D chases to prevent a wrap-around. Stays low: doesn't
+ *   press beyond roughly the faceoff-dot/hash-mark depth. Past that
+ *   depth, pressuring the puck becomes the winger's or center's job, not
+ *   the D's -- a real D doesn't chase all the way to the point.
  * - Weak-side defenseman: stays net-front/slot, biased toward the puck
  *   side just enough to stay aware, but never fully abandons the crease
  *   ("weak side D is not a screen for our goalie" -- i.e. stays central
  *   enough not to block the goalie's own net-front coverage).
  * - Puck-side ("strong side") winger: holds the top of the circle on
- *   that side, covering the half-wall and point on the puck's side.
+ *   that side, covering the half-wall and point on the puck's side --
+ *   this is the position responsible once the puck is up around/above
+ *   the hash marks, past where the D would pressure.
  * - Weak-side winger (farthest from puck): collapses to the middle-ice
  *   slot, supporting the weak-side D and net-front.
  * - Center: plays low, in support of the strong-side D/winger (the "low
@@ -24,8 +28,12 @@
  * strong-side D role whenever the puck happens to be on the left, and
  * the weak-side D role when the puck is on the right (matches the
  * source's own worked examples, which show first RD-strong/LD-weak, then
- * describe the same rules applying symmetrically). This module
- * determines strong/weak side dynamically from puck position every call.
+ * describe the same rules applying symmetrically). Which side is "strong"
+ * is a CONTINUOUS function of puck.x, not a hard left/right switch --
+ * real players read the play and shift gradually as the puck crosses
+ * toward the middle, not with a sudden role swap the instant the puck
+ * crosses the centerline. A hard switch was tried first and produced a
+ * jarring, physically-impossible teleport right at center ice.
  *
  * Coordinate convention (IMPORTANT, and the source of a real bug once):
  * `net.y` is the LARGER y value and `blueLineY` is SMALLER -- y DECREASES
@@ -49,6 +57,10 @@ export interface DZoneGeometry {
   blueLineY: number
   /** Half-width of the zone, used to clamp/scale lateral positioning. */
   halfWidth: number
+  /** How far behind the net (beyond the goal line, away from the blue
+   * line) the puck-side defenseman should track the puck -- real hockey:
+   * the D chases behind the net to prevent/contest a wrap-around. */
+  behindNetDepth: number
 }
 
 export interface BoxPositions {
@@ -59,6 +71,19 @@ export interface BoxPositions {
   RW: Point
 }
 
+// Roughly the faceoff-dot/hash-mark depth (about 20ft into a 64ft zone).
+// The puck-side D doesn't pressure beyond this -- past it, that's the
+// winger's or center's responsibility, not the D's.
+const D_PRESSURE_CAP_FRACTION = 0.32
+// Roughly the top of the faceoff circles (about 35ft into a 64ft zone) --
+// where a winger holds by default.
+const WINGER_HOLD_FRACTION = 0.55
+// How wide (as a fraction of halfWidth) the smooth strong/weak transition
+// band around the rink centerline is. Wider = more gradual handoff --
+// real players don't fully swap roles the instant the puck nudges past
+// center, they shift gradually as it moves convincingly to one side.
+const SIDE_BLEND_HALFWIDTH_FRACTION = 0.42
+
 function clamp(v: number, lo: number, hi: number): number {
   return Math.max(lo, Math.min(hi, v))
 }
@@ -67,66 +92,70 @@ function lerp(a: number, b: number, t: number): number {
   return a + (b - a) * clamp(t, 0, 1)
 }
 
-/**
- * Depth (distance from the goal line, toward the blue line) of the "top
- * of the circles" -- defensemen generally don't pressure beyond this;
- * wingers hold roughly at this depth by default.
- */
-function topOfCirclesDepth(geo: DZoneGeometry): number {
-  return (geo.net.y - geo.blueLineY) * 0.55
+function lerpPoint(a: Point, b: Point, t: number): Point {
+  return { x: lerp(a.x, b.x, t), y: lerp(a.y, b.y, t) }
 }
 
 export function idealBoxPositions(puck: Point, geo: DZoneGeometry): BoxPositions {
   const zoneDepth = geo.net.y - geo.blueLineY // positive: net.y > blueLineY by convention
-  const puckDepth = clamp(geo.net.y - puck.y, 0, zoneDepth) // 0 = goal line, zoneDepth = blue line
-  const puckSideIsLeft = puck.x < geo.net.x
-  const strongSideSign = puckSideIsLeft ? -1 : 1
+  // 0 = goal line, zoneDepth = blue line, negative = behind the net.
+  const puckDepth = clamp(geo.net.y - puck.y, -geo.behindNetDepth, zoneDepth)
 
-  // -- Defensemen: puck-side D pressures the puck directly (contain/
-  // separate), capped so it never chases beyond the top of the circles.
-  // Weak-side D stays net-front/slot, biased toward the puck side only
-  // slightly ("head on a swivel", not a screen for the goalie).
-  const strongDDepth = clamp(puckDepth, 0, topOfCirclesDepth(geo))
-  const strongD: Point = {
-    x: clamp(puck.x, geo.net.x - geo.halfWidth * 0.85, geo.net.x + geo.halfWidth * 0.85),
-    y: geo.net.y - Math.max(strongDDepth, zoneDepth * 0.12),
+  // Continuous, not a hard boolean -- see the module doc comment on why.
+  // t: -1 = puck confidently on the left, 0 = dead center, +1 = confidently right.
+  const blendWidth = Math.max(1e-6, geo.halfWidth * SIDE_BLEND_HALFWIDTH_FRACTION)
+  const t = clamp((puck.x - geo.net.x) / blendWidth, -1, 1)
+
+  const dCapDepth = zoneDepth * D_PRESSURE_CAP_FRACTION
+  const wingerHoldDepth = zoneDepth * WINGER_HOLD_FRACTION
+
+  function strongD(): Point {
+    // Pressures the puck directly, including behind the net (a real D
+    // chases there to prevent a wrap-around), but doesn't press beyond
+    // the hash-mark depth on the shallow end -- that's the winger's job.
+    const depth = clamp(puckDepth, -geo.behindNetDepth, dCapDepth)
+    // The "don't sit right on top of the crease" floor (zoneDepth*0.12)
+    // only makes sense in FRONT of the net (depth >= 0) -- behind the net
+    // there's no crease to avoid crowding, so the floor must not apply,
+    // or it cancels out negative (behind-net) depth entirely via Math.max.
+    const effectiveDepth = depth >= 0 ? Math.max(depth, zoneDepth * 0.12) : depth
+    return {
+      x: clamp(puck.x, geo.net.x - geo.halfWidth * 0.85, geo.net.x + geo.halfWidth * 0.85),
+      y: geo.net.y - effectiveDepth,
+    }
   }
-  const weakD: Point = {
-    x: geo.net.x - strongSideSign * geo.halfWidth * 0.18,
-    y: geo.net.y - zoneDepth * 0.14,
+  function weakD(sign: number): Point {
+    return { x: geo.net.x - sign * geo.halfWidth * 0.18, y: geo.net.y - zoneDepth * 0.14 }
+  }
+  function strongW(sign: number): Point {
+    const baseX = geo.net.x + sign * geo.halfWidth * 0.55
+    return {
+      x: lerp(baseX, puck.x, 0.35),
+      y: geo.net.y - Math.max(wingerHoldDepth, Math.max(puckDepth, 0) * 0.9),
+    }
+  }
+  function weakW(sign: number): Point {
+    return { x: geo.net.x - sign * geo.halfWidth * 0.15, y: geo.net.y - zoneDepth * 0.42 }
   }
 
-  // -- Wingers: puck-side winger holds the top of the circle on that
-  // side, sliding toward the point/half-wall as the puck gets shallower
-  // (closer to the blue line). Weak-side winger collapses to the
-  // middle-ice slot, a bit deeper than the strong winger, supporting the
-  // weak-side D and net-front.
-  const strongWBaseX = geo.net.x + strongSideSign * geo.halfWidth * 0.55
-  const strongW: Point = {
-    x: lerp(strongWBaseX, puck.x, 0.35),
-    y: geo.net.y - Math.max(topOfCirclesDepth(geo), puckDepth * 0.9),
-  }
-  const weakW: Point = {
-    x: geo.net.x - strongSideSign * geo.halfWidth * 0.15,
-    y: geo.net.y - zoneDepth * 0.42,
-  }
+  // Weight of "the puck is confidently on the left" -- 1 at t=-1, 0 at t=+1.
+  const wLeft = (1 - t) / 2
+  const LD = lerpPoint(weakD(-1), strongD(), wLeft)
+  const RD = lerpPoint(strongD(), weakD(1), wLeft)
+  const LW = lerpPoint(weakW(-1), strongW(-1), wLeft)
+  const RW = lerpPoint(strongW(1), weakW(1), wLeft)
 
   // -- Center: low corner of the box in support of the strong side,
   // shifting more centrally (less puck-side-biased) when the puck is up
   // near the point rather than down low -- there's less need to commit
-  // to the corner when the puck isn't actually in it.
-  const depthFraction = puckDepth / zoneDepth // 0 = goal line, 1 = blue line
+  // to the corner when the puck isn't actually in it. Uses the same
+  // continuous `t` for lateral bias, so it never jumps either.
+  const depthFraction = clamp(puckDepth, 0, zoneDepth) / zoneDepth // 0 = goal line, 1 = blue line
   const cBias = lerp(0.4, 0.12, depthFraction) // less lateral bias as puck gets higher
-  const c: Point = {
-    x: geo.net.x + strongSideSign * geo.halfWidth * cBias,
+  const C: Point = {
+    x: geo.net.x + t * geo.halfWidth * cBias,
     y: geo.net.y - lerp(zoneDepth * 0.22, zoneDepth * 0.38, depthFraction),
   }
 
-  return {
-    LD: puckSideIsLeft ? strongD : weakD,
-    RD: puckSideIsLeft ? weakD : strongD,
-    LW: puckSideIsLeft ? strongW : weakW,
-    RW: puckSideIsLeft ? weakW : strongW,
-    C: c,
-  }
+  return { LD, RD, LW, RW, C }
 }

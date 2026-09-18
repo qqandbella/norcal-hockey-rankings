@@ -186,10 +186,14 @@ export function HelpPage() {
         system (goalie is the &quot;+1&quot;) -- a standard, widely-used introductory system for youth
         hockey, not something invented for this site. Every positioning rule it uses traces to that real
         coaching source (AJH Coach Player Book, &quot;D-Zone Coverage Responsibilities -- Box + 1&quot;):
-        the puck-side defenseman pressures the puck and stays low; the weak-side defenseman holds the
-        net-front/slot; the puck-side winger holds the top of the circle on that side; the weak-side
-        winger collapses to the middle-ice slot; and the center plays low in support of the puck side,
-        shifting more central when the puck is at the point.
+        the puck-side defenseman pressures the puck and stays low -- including chasing behind the net to
+        prevent a wrap-around, but handing off to a winger once the puck gets up around the hash marks,
+        rather than chasing it all the way to the point; the weak-side defenseman holds the net-front/slot;
+        the puck-side winger holds the top of the circle on that side; the weak-side winger collapses to
+        the middle-ice slot; and the center plays low in support of the puck side, shifting more central
+        when the puck is at the point. Which side is "strong" shifts gradually as the puck crosses toward
+        the middle of the ice, not with a sudden swap the instant it crosses center -- real players read
+        the play and adjust incrementally.
       </p>
       <p>
         The rink itself is drawn to real NHL dimensions (85ft wide, 64ft goal line to blue line, 28ft

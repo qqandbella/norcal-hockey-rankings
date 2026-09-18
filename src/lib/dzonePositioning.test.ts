@@ -8,7 +8,7 @@ import type { DZoneGeometry } from './dzonePositioning'
 // integration bug: the actual canvas component builds geometry with
 // net.y > blueLineY, and every depth calculation silently broke against
 // that (zoneDepth went negative). These fixtures now match the real usage.
-const geo: DZoneGeometry = { net: { x: 0, y: 100 }, blueLineY: 0, halfWidth: 80 }
+const geo: DZoneGeometry = { net: { x: 0, y: 100 }, blueLineY: 0, halfWidth: 80, behindNetDepth: 15 }
 
 describe('idealBoxPositions (Box+1 coverage)', () => {
   it('puts the puck-side defenseman closer to the puck than the weak-side one', () => {
@@ -32,11 +32,20 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
     expect(pos.RD.y).toBeGreaterThan(70)
   })
 
-  it('never lets a defenseman pressure beyond the top of the circles', () => {
+  it("doesn't let a defenseman pressure beyond hash-mark depth -- that's the winger's job past there", () => {
     const puck = { x: -20, y: 1 } // right up at the blue line
     const pos = idealBoxPositions(puck, geo)
-    const topOfCirclesY = geo.net.y - (geo.net.y - geo.blueLineY) * 0.55
-    expect(pos.LD.y).toBeGreaterThanOrEqual(topOfCirclesY - 1e-9)
+    const dCapY = geo.net.y - (geo.net.y - geo.blueLineY) * 0.32
+    expect(pos.LD.y).toBeGreaterThanOrEqual(dCapY - 1e-9)
+  })
+
+  it('lets the puck-side defenseman track the puck behind the net (prevent a wrap-around)', () => {
+    const puck = { x: -30, y: geo.net.y + 10 } // behind the net, left side
+    const pos = idealBoxPositions(puck, geo)
+    // LD (strong side here) should follow behind the net too, not stop at the goal line.
+    expect(pos.LD.y).toBeGreaterThan(geo.net.y)
+    // Weak-side D (RD) stays in front, doesn't also go behind the net.
+    expect(pos.RD.y).toBeLessThanOrEqual(geo.net.y)
   })
 
   it('holds the puck-side winger higher (closer to the blue line, smaller y) than either defenseman', () => {
@@ -84,12 +93,39 @@ describe('idealBoxPositions (Box+1 coverage)', () => {
     expect(mirrored.C.x).toBeCloseTo(-pos.C.x, 5)
   })
 
-  it('keeps every position within the zone (between the blue line and the net), not off in space', () => {
+  it('keeps every position within the playable area (blue line to behind the net)', () => {
     const puck = { x: -60, y: 20 }
     const pos = idealBoxPositions(puck, geo)
     for (const p of Object.values(pos)) {
       expect(p.y).toBeGreaterThanOrEqual(geo.blueLineY - 1e-9)
-      expect(p.y).toBeLessThanOrEqual(geo.net.y + 1e-9)
+      expect(p.y).toBeLessThanOrEqual(geo.net.y + geo.behindNetDepth + 1e-9)
+    }
+  })
+
+  it('never jumps discontinuously as the puck crosses the rink centerline', () => {
+    // A tiny nudge across x=net.x (dead center) should only nudge every
+    // defender's position a little, not swap them to a completely
+    // different spot -- this was a real, reported bug (a hard left/right
+    // switch caused every defender to "teleport" the instant the puck
+    // crossed center).
+    const justLeft = idealBoxPositions({ x: geo.net.x - 0.5, y: 40 }, geo)
+    const justRight = idealBoxPositions({ x: geo.net.x + 0.5, y: 40 }, geo)
+    const dist = (a: { x: number; y: number }, b: { x: number; y: number }) => Math.hypot(a.x - b.x, a.y - b.y)
+    for (const key of ['LD', 'RD', 'LW', 'RW', 'C'] as const) {
+      expect(dist(justLeft[key], justRight[key])).toBeLessThan(1)
+    }
+  })
+
+  it('smoothly blends strong/weak roles across the whole centerline transition band, not just right at 0', () => {
+    // Sweep puck.x across the transition zone and confirm LD's position
+    // moves continuously (no single step bigger than a small bound),
+    // rather than jumping at some other fixed threshold.
+    const steps = 40
+    const xs = Array.from({ length: steps + 1 }, (_, i) => -geo.halfWidth * 0.4 + (i / steps) * geo.halfWidth * 0.8)
+    const positions = xs.map((x) => idealBoxPositions({ x, y: 40 }, geo).LD)
+    for (let i = 1; i < positions.length; i++) {
+      const step = Math.hypot(positions[i].x - positions[i - 1].x, positions[i].y - positions[i - 1].y)
+      expect(step).toBeLessThan(3)
     }
   })
 })

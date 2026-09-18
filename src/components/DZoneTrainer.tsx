@@ -31,7 +31,12 @@ const NET: Point = { x: CANVAS_W / 2, y: BLUE_LINE_Y + ZONE_DEPTH_FT * PX_PER_FT
 const END_BOARDS_Y = NET.y + BEHIND_NET_FT * PX_PER_FT
 const CORNER_RADIUS_PX = CORNER_RADIUS_FT * PX_PER_FT
 
-const GEO: DZoneGeometry = { net: NET, blueLineY: BLUE_LINE_Y, halfWidth: (RINK_WIDTH_FT / 2) * PX_PER_FT }
+const GEO: DZoneGeometry = {
+  net: NET,
+  blueLineY: BLUE_LINE_Y,
+  halfWidth: (RINK_WIDTH_FT / 2) * PX_PER_FT,
+  behindNetDepth: BEHIND_NET_FT * PX_PER_FT,
+}
 const FOLLOW_RATE = 0.08 // per-frame lerp fraction -- smooth, not instant, movement toward the ideal spot
 const OFFENSE_RADIUS = 12
 const DEFENDER_RADIUS = 14
@@ -51,6 +56,35 @@ function clampToZone(p: Point): Point {
     x: Math.max(12, Math.min(CANVAS_W - 12, p.x)),
     y: Math.max(BLUE_LINE_Y - 25, Math.min(END_BOARDS_Y - 8, p.y)),
   }
+}
+
+const MIN_DOT_SEPARATION = OFFENSE_RADIUS + DEFENDER_RADIUS + 6
+
+/** Nudges each defender away from any offense dot it's ended up on top
+ * of, so a defender and an offense player are never fully overlapping
+ * (a real reported bug: the model can legitimately converge a defender
+ * right where the puck carrier already is, and with same-size circles
+ * drawn on top of each other one becomes invisible). Purely a rendering
+ * concern -- the coaching model's own "ideal spot" is untouched, this
+ * only nudges the drawn/followed position so both dots stay visible and
+ * separately draggable. */
+function separateFromOffense(defenders: BoxPositions, offensePositions: Point[]): BoxPositions {
+  const result: BoxPositions = { ...defenders }
+  for (const key of DEFENDER_KEYS) {
+    let pos = result[key]
+    for (const o of offensePositions) {
+      const d = dist(pos, o)
+      if (d >= MIN_DOT_SEPARATION) continue
+      const push = MIN_DOT_SEPARATION - d
+      if (d < 1e-6) {
+        pos = { x: pos.x + MIN_DOT_SEPARATION, y: pos.y }
+      } else {
+        pos = { x: pos.x + ((pos.x - o.x) / d) * push, y: pos.y + ((pos.y - o.y) / d) * push }
+      }
+    }
+    result[key] = pos
+  }
+  return result
 }
 
 /** Traces the boards -- straight side walls, 28ft-radius corners at the
@@ -299,7 +333,7 @@ export function DZoneTrainer() {
           }
           next[key] = lerpPoint(current[key], ideal[roleAssignment[key]], FOLLOW_RATE)
         }
-        defenderPosRef.current = next
+        defenderPosRef.current = separateFromOffense(next, offenseRef.current.slice(0, offenseCount))
 
         if (mode === 'control') {
           const d = dist(next[controlledDefender], ideal[roleAssignment[controlledDefender]])
