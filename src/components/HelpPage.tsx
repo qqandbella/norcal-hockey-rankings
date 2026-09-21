@@ -116,6 +116,16 @@ export function HelpPage() {
         they stay consistent with each other.
       </p>
 
+      <p>
+        The <strong>Unified</strong> page (one per age group) lists every team across every division on
+        this same shared, offset-adjusted scale -- not just within its own division -- so you can see how
+        an A team, a BB team, and a B team actually compare. It also shows each tier&apos;s current offset
+        and how many real cross-division games back it (&quot;evidence&quot;) -- early in the season that
+        count can be small, so an offset (and the ranking positions it implies) can still be dominated by
+        the historical prior rather than this season&apos;s own games; it firms up as more cross-division
+        games get played and scraped in.
+      </p>
+
       <h3>How predictions work</h3>
       <p>
         The <strong>Predict</strong> page (and the &quot;predicted: ...&quot; links on team

@@ -4,6 +4,7 @@ import { DivisionNav } from './components/DivisionNav'
 import { DZoneTrainer } from './components/DZoneTrainer'
 import { HelpPage } from './components/HelpPage'
 import { PredictPage } from './components/PredictPage'
+import { UnifiedRankingsPage } from './components/UnifiedRankingsPage'
 import { RankingsTable } from './components/RankingsTable'
 import type { RatingMode } from './components/RankingsTable'
 import { StatusBar } from './components/StatusBar'
@@ -136,6 +137,7 @@ export default function App() {
                   element={<TeamPageRoute data={data} ratingMode={ratingMode} />}
                 />
                 <Route path="/predict/:age" element={<PredictPage data={data} ratingMode={ratingMode} />} />
+                <Route path="/unified/:age" element={<UnifiedRankingsPage data={data} ratingMode={ratingMode} />} />
                 <Route path="/help" element={<HelpPage />} />
                 <Route path="/dzone" element={<DZoneTrainer />} />
               </Routes>

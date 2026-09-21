@@ -25,6 +25,16 @@ export function DivisionNav({ ageGroups }: DivisionNavProps) {
               </NavLink>
             ))}
             <NavLink
+              to={`/unified/${encodeURIComponent(group.ageLabel)}`}
+              className={({ isActive }) =>
+                isActive
+                  ? 'division-nav__link division-nav__link--active division-nav__link--predict'
+                  : 'division-nav__link division-nav__link--predict'
+              }
+            >
+              Unified
+            </NavLink>
+            <NavLink
               to={`/predict/${encodeURIComponent(group.ageLabel)}`}
               className={({ isActive }) =>
                 isActive
