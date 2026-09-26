@@ -155,6 +155,77 @@ def test_age_group_ratings_patches_cross_tested_teams_displayed_rating():
     assert [row["rating"] for row in bb_all] == sorted((row["rating"] for row in bb_all), reverse=True)
 
 
+def test_age_group_ratings_filters_roster_to_declared_division():
+    # B1 tested at BB (won convincingly) but is declared to stay in B.
+    # BB's own roster must not show B1, even though it has a real game
+    # (and a row) filed under BB's schedule.
+    division_b = _division(3, "10U B", [_raw_game("B1", "B2", 5, 2, "g1", "10U B")])
+    division_bb = _division(
+        55, "10U BB",
+        [
+            _raw_game("BB1", "BB2", 4, 1, "g2", "10U BB"),
+            _raw_game("BB1", "B1", 3, 6, "g3", "10U BB"),
+        ],
+    )
+    declared = {"B1": "10U B", "B2": "10U B", "BB1": "10U BB", "BB2": "10U BB"}
+
+    compute_age_group_ratings([division_b, division_bb], declared_divisions=declared)
+
+    bb_names = {row["name"] for row in division_bb["ratingsByType"]["All"]["teams"]}
+    assert "B1" not in bb_names
+    b_names = {row["name"] for row in division_b["ratingsByType"]["All"]["teams"]}
+    assert "B1" in b_names
+
+
+def test_age_group_ratings_adds_promoted_team_with_no_row_in_new_division():
+    # B1's declared division is BB, but every one of its actual games was
+    # filed under B's own schedule (it hosted its one BB-caliber test) --
+    # it never produced a row in BB's "All" bucket to begin with. BB's
+    # roster must still show it, synthesized from the unified rating.
+    division_b = _division(
+        3, "10U B",
+        [
+            _raw_game("B1", "B2", 5, 2, "g1", "10U B"),
+            _raw_game("B1", "BB1", 6, 3, "g2", "10U B"),  # B1 hosts, filed under B
+        ],
+    )
+    division_bb = _division(55, "10U BB", [_raw_game("BB1", "BB2", 4, 1, "g3", "10U BB")])
+    declared = {"B1": "10U BB", "B2": "10U B", "BB1": "10U BB", "BB2": "10U BB"}
+
+    compute_age_group_ratings([division_b, division_bb], declared_divisions=declared)
+
+    bb_names = {row["name"] for row in division_bb["ratingsByType"]["All"]["teams"]}
+    assert "B1" in bb_names
+    b1_row = next(row for row in division_bb["ratingsByType"]["All"]["teams"] if row["name"] == "B1")
+    assert b1_row["wins"] == 2  # its full merged record (both games), not zero
+    assert "B1" not in {row["name"] for row in division_b["ratingsByType"]["All"]["teams"]}
+
+
+def test_age_group_ratings_matches_declared_east_west_split_by_base_tier():
+    # NorCal's own schedule feed only ever exposes one lumped "10U B"
+    # division -- a team declared "10U B East" or "10U B West" must still
+    # match against it (not get filtered out for an exact-label mismatch).
+    division_b = _division(3, "10U B", [_raw_game("B1", "B2", 5, 2, "g1", "10U B")])
+    declared = {"B1": "10U B East", "B2": "10U B West"}
+
+    compute_age_group_ratings([division_b], declared_divisions=declared)
+
+    names = {row["name"] for row in division_b["ratingsByType"]["All"]["teams"]}
+    assert names == {"B1", "B2"}
+
+
+def test_age_group_ratings_missing_declared_entry_is_not_dropped():
+    # A team absent from declared_divisions.json entirely (stale/incomplete
+    # file) must be kept, not silently filtered out.
+    division_b = _division(3, "10U B", [_raw_game("B1", "B2", 5, 2, "g1", "10U B")])
+    declared = {"B1": "10U B"}  # B2 deliberately absent
+
+    compute_age_group_ratings([division_b], declared_divisions=declared)
+
+    names = {row["name"] for row in division_b["ratingsByType"]["All"]["teams"]}
+    assert "B2" in names
+
+
 def test_build_division_payload_includes_experimental_offense_defense_rating():
     division = _division(
         3, "10U B",

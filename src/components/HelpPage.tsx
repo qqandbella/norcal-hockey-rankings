@@ -70,11 +70,21 @@ export function HelpPage() {
 
       <h3>Comparing teams across divisions</h3>
       <p>
-        A B-division team&apos;s +2 rating and a BB-division team&apos;s +2 rating aren&apos;t the
-        same thing -- each division is centered around its own average, and divisions themselves
-        differ in overall strength (AA &gt; A &gt; BB &gt; B). To compare across divisions, each
-        team&apos;s rating gets a <strong>tier offset</strong> added on top of its within-division
-        rating, so everyone lands on one shared scale.
+        Once final division placement is announced each season, every division&apos;s rankings
+        table shows this same shared, cross-division-comparable rating -- not a separate
+        division-local-only number. A B-division team&apos;s +2 and a BB-division team&apos;s +2
+        mean the exact same thing. A division&apos;s roster is also now the teams{' '}
+        <strong>officially placed</strong> there, from the league&apos;s own final standings --
+        not just whoever happened to play a game filed under that division&apos;s schedule (a
+        preseason cross-division test no longer leaves a team&apos;s name sitting in a roster it
+        doesn&apos;t actually belong to). A team&apos;s W-L-T record still reflects every game it
+        played this preseason, including any cross-division tests, even after it settles into one
+        official division.
+      </p>
+      <p>
+        Divisions themselves differ in overall strength (AA &gt; A &gt; BB &gt; B), so a shared
+        scale still requires shifting each division&apos;s own internal rating by a{' '}
+        <strong>tier offset</strong> before comparing:
       </p>
       <p>Each adjacent tier-pair&apos;s offset comes from two sources, blended together:</p>
       <ul>

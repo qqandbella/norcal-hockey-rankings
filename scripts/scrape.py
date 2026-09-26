@@ -23,6 +23,7 @@ from ratings import (
     DIVISION_HIERARCHY,
     Game,
     TeamRating,
+    TeamStats,
     capped_margin,
     compute_corrected_local_ratings,
     compute_offense_defense_ratings,
@@ -57,11 +58,25 @@ LEVEL_LINE_RE = re.compile(r"'Level:\s*([^|']+)\|(\d+)'")
 TEAM_IDS_PATH = Path(__file__).resolve().parent / "team_ids.json"
 TTS_TEAM_URL = "https://stats.caha.timetoscore.com/display-schedule?team={team_id}&season={season}&league=3&stat_class=1"
 
+# Built by scripts/build_declared_divisions.py (run manually/rarely, same
+# posture as team_ids.json). {team_name: "10U BB", ...} -- the official
+# division a team is actually placed in, independent of which division's
+# schedule any individual game (including preseason cross-division tests)
+# happened to be filed under. Missing file or missing entries means "unknown
+# -- don't filter that team out," never "assume it doesn't belong anywhere."
+DECLARED_DIVISIONS_PATH = Path(__file__).resolve().parent / "declared_divisions.json"
+
 
 def load_team_ids() -> dict[str, dict[str, str]]:
     if not TEAM_IDS_PATH.exists():
         return {}
     return json.loads(TEAM_IDS_PATH.read_text())
+
+
+def load_declared_divisions() -> dict[str, str]:
+    if not DECLARED_DIVISIONS_PATH.exists():
+        return {}
+    return json.loads(DECLARED_DIVISIONS_PATH.read_text())
 
 
 def build_team_links(team_names: set[str], team_ids: dict[str, dict[str, str]]) -> dict[str, str]:
@@ -419,7 +434,136 @@ def _compute_unified_and_patch(
     return teams, offsets
 
 
-def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
+def _merged_stats_for_age_group(divisions: list[dict]) -> dict[str, TeamStats]:
+    """Each team's full preseason record across EVERY division it played a
+    game in (its own declared division plus any cross-division tests),
+    deduped by gameId -- the record shown once divisions display the
+    unified rating should reflect the team's whole body of evidence, not
+    just whichever division's schedule an individual game happened to be
+    filed under."""
+    seen_ids: set[str] = set()
+    games: list[Game] = []
+    for division in divisions:
+        for g in division["games"]:
+            if g["gameId"] in seen_ids or not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
+                continue
+            seen_ids.add(g["gameId"])
+            games.append(Game(home=g["home"], away=g["away"], home_goals=g["homeGoals"], away_goals=g["awayGoals"]))
+    return compute_team_stats(games)
+
+
+def _apply_declared_roster_and_unified_rating(
+    divisions: list[dict],
+    teams: dict[str, dict],
+    experimental_teams: dict[str, dict],
+    declared_divisions: dict[str, str],
+) -> None:
+    """Replace each division's displayed "All" roster with ONLY the teams
+    officially placed there (per declared_divisions.json), and replace their
+    shown rating with the unified, cross-division-comparable number instead
+    of the division-local one -- deprecating the per-division-only rating in
+    favor of one number that means the same thing everywhere on the site.
+
+    Type-specific buckets (Preseason/Regular/...) keep their own existing
+    within-division rating (unified ratings are inherently an All-games,
+    cross-division concept -- re-deriving tier offsets per game type isn't
+    worth the complexity), but still get the same roster filter for
+    consistency of "who is shown in this division" regardless of which
+    stat view is selected.
+
+    A team missing from declared_divisions.json (stale/incomplete file) is
+    kept, not dropped -- see the file's own docstring for why "unknown"
+    must never mean "doesn't belong here."
+
+    Matching is done on BASE tier (East/West stripped), not the exact
+    label -- NorCal's own schedule feed only ever exposes one lumped "10U
+    B" schedule (see KNOWN_MISSING_LEVELS), it has never separately
+    surfaced "10U B East"/"10U B West" as queryable schedules of their own,
+    even though the final declared placement now splits B that way. A
+    real East/West split would need discover_divisions itself to learn
+    about two separate schedules; until then, the single "10U B" division
+    page shows the full, correctly-filtered B roster (both flights
+    combined) rather than going empty because of an exact-label mismatch.
+    """
+    merged_stats = _merged_stats_for_age_group(divisions)
+
+    for division in divisions:
+        declared_key = f"{division['ageLabel']} {division['levelLabel']}"
+        declared_base = re.sub(r"\s+(East|West)$", "", declared_key).strip()
+
+        def belongs_here(name: str) -> bool:
+            declared = declared_divisions.get(name)
+            if declared is None:
+                return True
+            base = re.sub(r"\s+(East|West)$", "", declared).strip()
+            return base == declared_base
+
+        for bucket_name, bucket in division["ratingsByType"].items():
+            bucket["teams"] = [row for row in bucket["teams"] if belongs_here(row["name"])]
+            bucket["unratedTeams"] = [name for name in bucket["unratedTeams"] if belongs_here(name)]
+
+        # A team can be officially declared here without ever having a row
+        # in this division's own "All" bucket -- e.g. Stockton Colts 10-1's
+        # only cross-division evidence was a game filed under B's own
+        # schedule (they hosted the BB guest), so it never produced a row
+        # under BB even though BB is where they're now declared. Synthesize
+        # a row from the unified rating + merged stats for any such team.
+        all_rows = division["ratingsByType"]["All"]["teams"]
+        present = {row["name"] for row in all_rows}
+        for name, declared in declared_divisions.items():
+            base = re.sub(r"\s+(East|West)$", "", declared).strip()
+            if base != declared_base or name in present:
+                continue
+            unified = teams.get(name)
+            if unified is None or unified["gamesPlayed"] == 0:
+                continue
+            exp_unified = experimental_teams.get(name)
+            all_rows.append(
+                {
+                    "name": name,
+                    "rating": 0.0,
+                    "rank": 0,
+                    "tier": "mid",
+                    "gamesPlayed": 0,
+                    "wins": 0,
+                    "losses": 0,
+                    "ties": 0,
+                    "points": 0,
+                    "goalsFor": 0,
+                    "goalsAgainst": 0,
+                    "goalDiff": 0,
+                    "offense": 0.0,
+                    "defense": 0.0,
+                    "experimentalRating": exp_unified["rating"] if exp_unified else 0.0,
+                    "experimentalRank": 0,
+                    "experimentalTier": "mid",
+                }
+            )
+
+        for row in all_rows:
+            unified = teams.get(row["name"])
+            exp_unified = experimental_teams.get(row["name"])
+            stats = merged_stats.get(row["name"])
+            if unified is not None:
+                row["rating"] = round(unified["rating"], 3)
+            if exp_unified is not None:
+                row["experimentalRating"] = round(exp_unified["rating"], 3)
+            if stats is not None:
+                row["gamesPlayed"] = stats.wins + stats.losses + stats.ties
+                row["wins"] = stats.wins
+                row["losses"] = stats.losses
+                row["ties"] = stats.ties
+                row["points"] = stats.points
+                row["goalsFor"] = stats.goals_for
+                row["goalsAgainst"] = stats.goals_against
+                row["goalDiff"] = stats.goal_diff
+        rerank_and_tier(all_rows, "rating", "rank", "tier")
+        rerank_and_tier(all_rows, "experimentalRating", "experimentalRank", "experimentalTier")
+
+
+def compute_age_group_ratings(
+    payload_divisions: list[dict], declared_divisions: dict[str, str] | None = None
+) -> dict[str, dict]:
     """One unified, cross-division-comparable rating per team, spanning every
     division within an age group (10U, 12U, ...) -- not just its own.
     Computed for both the classic rating and the experimental
@@ -432,10 +576,21 @@ def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
     within-rating gets an additive offset, defaulting to the empirical rule
     "a tier's bottom is on par with the tier above's top", refined by real
     cross-division game evidence in proportion to how much of it exists.
+
+    Once computed, this same unified rating is also what each division's
+    OWN "All" roster displays (see _apply_declared_roster_and_unified_rating)
+    -- there is no longer a separate, division-local-only rating shown
+    anywhere on the site; and that roster is filtered to each team's
+    officially DECLARED division, not just wherever it happened to play a
+    game (a preseason cross-division test no longer leaves a team's name
+    sitting in a division's roster it doesn't actually belong to).
     """
     divisions_by_age: dict[str, list[dict]] = {}
     for division in payload_divisions:
         divisions_by_age.setdefault(division["ageLabel"], []).append(division)
+
+    if declared_divisions is None:
+        declared_divisions = load_declared_divisions()
 
     age_groups: dict[str, dict] = {}
     for age_label, divisions in divisions_by_age.items():
@@ -445,6 +600,8 @@ def compute_age_group_ratings(payload_divisions: list[dict]) -> dict[str, dict]:
         experimental_teams, experimental_offsets = _compute_unified_and_patch(
             divisions, "experimentalRating", "experimentalRank", "experimentalTier"
         )
+
+        _apply_declared_roster_and_unified_rating(divisions, teams, experimental_teams, declared_divisions)
 
         # Canonical row order, set once after both rating types have
         # patched their own fields -- classic rank ascending. (The frontend
