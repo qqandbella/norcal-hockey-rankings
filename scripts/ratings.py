@@ -60,7 +60,18 @@ REFERENCE_VARIANCE = (2 * GOAL_CAP) ** 2 / 12
 
 # Top to bottom. Mirrors src/lib/grouping.ts's LEVEL_ORDER -- keep both in
 # sync if this list changes.
-DIVISION_HIERARCHY = ["AA", "A", "BB", "B"]
+#
+# "B East" and "B West" are a REAL competitive split, not a geographic
+# relabeling of one tier -- confirmed directly: only B East's top 2 finishers
+# advance to the state playoff, B West's champion does not. They're listed
+# here as their own adjacent hierarchy entries (East strictly above West),
+# so compute_tier_offsets computes a real BB->B East->B West chain for age
+# groups where the split exists. Plain "B" (no split, most age groups) stays
+# a separate entry after B West -- an age group only ever has EITHER plain
+# "B" OR both "B East"/"B West" present, never a mix, so their relative
+# order against each other is moot; compute_tier_offsets only chains
+# whichever tiers are actually present for a given age group.
+DIVISION_HIERARCHY = ["AA", "A", "BB", "B East", "B West", "B"]
 
 # Pseudo-observation weight for the tier-gap prior when blending it with
 # real cross-division evidence (see compute_tier_offsets). ~5 independent
@@ -364,14 +375,22 @@ def compute_offense_defense_ratings(
     ]
 
 
-def _adjacent_pair(t1: str, t2: str) -> tuple[str, str] | None:
-    """Return (higher, lower) if t1/t2 are adjacent in DIVISION_HIERARCHY,
-    else None. Non-adjacent cross-division evidence (e.g. a game directly
-    between A and B, skipping BB) is intentionally not used -- rare, and
-    handled implicitly once each adjacent hop's offset is chained."""
-    if t1 not in DIVISION_HIERARCHY or t2 not in DIVISION_HIERARCHY:
+def _adjacent_pair(t1: str, t2: str, tiers_present: list[str]) -> tuple[str, str] | None:
+    """Return (higher, lower) if t1/t2 are adjacent WITHIN `tiers_present`
+    (the tiers actually present for this specific age group, in
+    DIVISION_HIERARCHY order), else None. Non-adjacent cross-division
+    evidence (e.g. a game directly between A and B, skipping BB) is
+    intentionally not used -- rare, and handled implicitly once each
+    adjacent hop's offset is chained.
+
+    Must be adjacency within `tiers_present`, not raw DIVISION_HIERARCHY
+    index distance -- DIVISION_HIERARCHY lists "B East"/"B West" between
+    "BB" and "B" for age groups that split B that way, but most age groups
+    don't have that split at all, so "BB" and "B" need to count as
+    adjacent for THEM even though they're 3 apart in the full list."""
+    if t1 not in tiers_present or t2 not in tiers_present:
         return None
-    i1, i2 = DIVISION_HIERARCHY.index(t1), DIVISION_HIERARCHY.index(t2)
+    i1, i2 = tiers_present.index(t1), tiers_present.index(t2)
     if abs(i1 - i2) != 1:
         return None
     return (t1, t2) if i1 < i2 else (t2, t1)
@@ -525,6 +544,10 @@ def compute_tier_offsets(
         tier: {r.name: r.rating for r in rows} for tier, rows in within_ratings_by_tier.items() if rows
     }
     primary_tier = compute_primary_tiers(within_ratings_by_tier)
+    # Computed here (not after the evidence loop) so _adjacent_pair can use
+    # THIS age group's own present-tier ordering, not raw DIVISION_HIERARCHY
+    # index distance -- see _adjacent_pair's docstring for why that matters.
+    tiers_present = [t for t in DIVISION_HIERARCHY if t in rating_by_tier_name]
 
     # (higher_tier, lower_tier) -> list of evidence dicts, each carrying
     # enough detail to explain the observation on its own (which two teams,
@@ -536,7 +559,7 @@ def compute_tier_offsets(
         home_tier, away_tier = primary_tier.get(home), primary_tier.get(away)
         if home_tier is None or away_tier is None or home_tier == away_tier:
             continue
-        pair = _adjacent_pair(home_tier, away_tier)
+        pair = _adjacent_pair(home_tier, away_tier, tiers_present)
         if pair is None:
             continue
         home_rating = rating_by_tier_name[home_tier][home]
@@ -556,7 +579,6 @@ def compute_tier_offsets(
             }
         )
 
-    tiers_present = [t for t in DIVISION_HIERARCHY if t in rating_by_tier_name]
     offsets: dict[str, dict] = {}
     if not tiers_present:
         return offsets

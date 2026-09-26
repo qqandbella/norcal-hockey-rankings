@@ -1,4 +1,10 @@
-from scrape import build_division_payload, build_team_links, compute_age_group_ratings, tier_of
+from scrape import (
+    build_division_payload,
+    build_team_links,
+    compute_age_group_ratings,
+    split_physical_division_by_declared_subdivisions,
+    tier_of,
+)
 
 
 def _raw_game(home, away, home_goals, away_goals, game_id, division_label, played=True):
@@ -38,11 +44,12 @@ def test_build_team_links_skips_unresolved_teams():
     assert links == {}
 
 
-def test_tier_of_maps_known_labels_and_future_east_west_splits():
+def test_tier_of_maps_known_labels_including_east_west_as_their_own_tiers():
     assert tier_of("B") == "B"
     assert tier_of("BB") == "BB"
-    assert tier_of("B East") == "B"
-    assert tier_of("B West") == "B"
+    # Real, separate tiers (East strictly above West) -- not aliases of "B".
+    assert tier_of("B East") == "B East"
+    assert tier_of("B West") == "B West"
     assert tier_of("Mite") is None
 
 
@@ -98,19 +105,19 @@ def test_age_group_ratings_unplayed_games_dont_count_as_bridges():
 
 
 def test_age_group_ratings_deduplicates_shared_game_ids():
-    # Same gameId appearing in two divisions' games lists (shouldn't happen
-    # in practice, but be defensive) must only count once toward gamesPlayed.
+    # Same gameId appearing in two divisions' games lists -- exactly what
+    # happens for a real physically-split division (see
+    # split_physical_division_by_declared_subdivisions: "B East" and
+    # "B West" payloads both redundantly compute a rating for the whole
+    # shared preseason game pool). A team's within-rating must only be
+    # counted once, not once per division object it happens to have a
+    # (redundant, identical) row in.
     raw = _raw_game("A", "B", 5, 2, "dup1", "10U B")
     division_1 = _division(3, "10U B", [raw])
     division_2 = _division(3, "10U B", [raw])
 
     age_groups = compute_age_group_ratings([division_1, division_2])
-    # Within-ratings from both (identical) divisions get pooled per-tier and
-    # each team's games-played is summed across its (here: two, identical)
-    # tier entries -- dedup only applies to the bridge-game evidence count,
-    # not to within-division rating pooling, so just check it doesn't crash
-    # and produces a sane result.
-    assert age_groups["10U"]["teams"]["A"]["gamesPlayed"] == 2
+    assert age_groups["10U"]["teams"]["A"]["gamesPlayed"] == 1
 
 
 def test_age_group_ratings_patches_cross_tested_teams_displayed_rating():
@@ -201,17 +208,69 @@ def test_age_group_ratings_adds_promoted_team_with_no_row_in_new_division():
     assert "B1" not in {row["name"] for row in division_b["ratingsByType"]["All"]["teams"]}
 
 
-def test_age_group_ratings_matches_declared_east_west_split_by_base_tier():
-    # NorCal's own schedule feed only ever exposes one lumped "10U B"
-    # division -- a team declared "10U B East" or "10U B West" must still
-    # match against it (not get filtered out for an exact-label mismatch).
-    division_b = _division(3, "10U B", [_raw_game("B1", "B2", 5, 2, "g1", "10U B")])
-    declared = {"B1": "10U B East", "B2": "10U B West"}
+def test_split_physical_division_by_declared_subdivisions_detects_a_real_split():
+    raw_games = [_raw_game("B1", "B2", 5, 2, "g1", "10U B"), _raw_game("B3", "B4", 1, 1, "g2", "10U B")]
+    declared = {"B1": "10U B East", "B2": "10U B West", "B3": "10U B East", "B4": "10U B West"}
 
-    compute_age_group_ratings([division_b], declared_divisions=declared)
+    labels = split_physical_division_by_declared_subdivisions("10U B", raw_games, declared)
+    assert labels == ["10U B East", "10U B West"]
 
-    names = {row["name"] for row in division_b["ratingsByType"]["All"]["teams"]}
-    assert names == {"B1", "B2"}
+
+def test_split_physical_division_by_declared_subdivisions_no_split_when_not_declared():
+    raw_games = [_raw_game("B1", "B2", 5, 2, "g1", "10U B")]
+    # No declared entries at all -- nothing to split on, single label unchanged.
+    assert split_physical_division_by_declared_subdivisions("10U B", raw_games, {}) == ["10U B"]
+
+
+def test_age_group_ratings_keeps_declared_east_west_genuinely_separate():
+    # B East and B West are a REAL split (East strictly stronger, confirmed
+    # by state-playoff eligibility -- see DIVISION_HIERARCHY's own comment),
+    # not a geographic relabeling of one shared "B" tier -- they must NOT
+    # get merged back together. Simulates main()'s actual flow: one raw
+    # game list, split into two division payloads by declared sub-label.
+    raw_games = [_raw_game("B1", "B2", 5, 2, "g1", "10U B"), _raw_game("B3", "B4", 6, 1, "g2", "10U B")]
+    declared = {"B1": "10U B East", "B2": "10U B West", "B3": "10U B East", "B4": "10U B West"}
+
+    labels = split_physical_division_by_declared_subdivisions("10U B", raw_games, declared)
+    east = build_division_payload(3, "10U B East", raw_games, {})
+    west = build_division_payload(3, "10U B West", raw_games, {})
+
+    compute_age_group_ratings([east, west], declared_divisions=declared)
+
+    east_names = {row["name"] for row in east["ratingsByType"]["All"]["teams"]}
+    west_names = {row["name"] for row in west["ratingsByType"]["All"]["teams"]}
+    assert labels == ["10U B East", "10U B West"]
+    assert east_names == {"B1", "B3"}
+    assert west_names == {"B2", "B4"}
+    # No cross-contamination -- East teams never leak into West's roster.
+    assert east_names.isdisjoint(west_names)
+
+
+def test_age_group_ratings_routes_within_rating_by_declared_tier_not_division_tier():
+    # The display-roster assertions above (east_names/west_names) pass even
+    # if a team's WITHIN-RATING got attributed to the wrong tier internally
+    # -- display filtering and rating computation are two separate steps
+    # (see _apply_declared_roster_and_unified_rating's own docstring on
+    # why). This test catches that class of bug directly: tierOffsets must
+    # show "B East" and "B West" as two genuinely distinct tiers (not one
+    # merged into the other, and not one silently missing because its
+    # within-ratings got mis-routed to the wrong bucket).
+    raw_b = [_raw_game("B1", "B2", 5, 2, "g1", "10U B"), _raw_game("B3", "B4", 6, 1, "g2", "10U B")]
+    raw_bb = [_raw_game("BB1", "B1", 4, 1, "g3", "10U BB")]  # bridge: BB1 (BB) vs B1 (declared B East)
+    declared = {
+        "B1": "10U B East", "B2": "10U B West", "B3": "10U B East", "B4": "10U B West", "BB1": "10U BB",
+    }
+
+    east = build_division_payload(3, "10U B East", raw_b, {})
+    west = build_division_payload(3, "10U B West", raw_b, {})
+    bb = build_division_payload(55, "10U BB", raw_bb, {})
+
+    age_groups = compute_age_group_ratings([east, west, bb], declared_divisions=declared)
+
+    offsets = age_groups["10U"]["tierOffsets"]
+    assert "B East" in offsets
+    assert "B West" in offsets
+    assert offsets["BB"]["evidenceCount"] == 1  # the BB1-vs-B1 bridge, correctly attributed to B East
 
 
 def test_age_group_ratings_missing_declared_entry_is_not_dropped():

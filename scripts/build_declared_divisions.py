@@ -25,6 +25,7 @@ ones) happened to be filed under.
 from __future__ import annotations
 
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -38,6 +39,16 @@ USER_AGENT = (
     "run rarely by hand -- contact via GitHub issues)"
 )
 OUTPUT_PATH = Path(__file__).resolve().parent / "declared_divisions.json"
+
+
+def _clean_text(text: str) -> str:
+    """Collapse internal whitespace (source has stray double spaces, e.g.
+    "Fresno Jr Monsters  Girls 10G-1") -- MUST match scrape.py's own
+    _clean_text exactly, or a team's name here won't match the name used
+    everywhere else on the site, and it'll silently fall through
+    filter_roster_to_declared's "unknown -> keep" leniency instead of
+    actually being matched to its declared division."""
+    return re.sub(r"\s+", " ", text).strip()
 
 
 def resolve() -> dict[str, str]:
@@ -62,7 +73,7 @@ def resolve() -> dict[str, str]:
             continue
         cells = row.find_all("td")
         if current_division and len(cells) >= 2:
-            name = cells[1].get_text(strip=True)
+            name = _clean_text(cells[1].get_text(strip=True))
             if name and name != "Team":
                 mapping[name] = current_division
     return mapping

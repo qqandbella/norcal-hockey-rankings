@@ -1,8 +1,10 @@
 import type { Division } from './types'
 
 // Top to bottom. Mirrors scripts/ratings.py's DIVISION_HIERARCHY -- keep
-// both in sync if this list changes.
-export const LEVEL_ORDER = ['AA', 'A', 'BB', 'B']
+// both in sync if this list changes. "B East" is a real tier above "B West"
+// (only B East's top finishers reach the state playoff), not a geographic
+// alias of "B" -- see ratings.py's own comment on DIVISION_HIERARCHY.
+export const LEVEL_ORDER = ['AA', 'A', 'BB', 'B East', 'B West', 'B']
 
 function ageSortKey(ageLabel: string): number {
   const match = /^(\d+)/.exec(ageLabel)
