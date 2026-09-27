@@ -21,6 +21,7 @@ from bs4 import BeautifulSoup
 
 from ratings import (
     DIVISION_HIERARCHY,
+    SHRINKAGE_K,
     Game,
     TeamRating,
     TeamStats,
@@ -329,18 +330,29 @@ def build_division_payload(
     }
 
 
-def _team_ratings_from_bucket(
-    bucket: dict, rating_field: str = "rating", rank_field: str = "rank", tier_field: str = "tier"
-) -> list[TeamRating]:
+def _within_ratings_for_games(games: list[Game], experimental: bool) -> list[TeamRating]:
+    """The classic (compute_ratings) or experimental (offense+defense,
+    see compute_offense_defense_ratings) within-tier rating for a set of
+    games -- computed fresh from the games themselves, not read back from
+    any division's precomputed ratingsByType bucket. See
+    _compute_unified_and_patch's own doc comment for why: a division's
+    bucket only ever reflects games filed under THAT division's own
+    schedule, which is exactly the wrong scope once a team's real games
+    are split across more than one physical schedule."""
+    if not experimental:
+        return compute_ratings(games)
+    od_by_name = {o.name: o for o in compute_offense_defense_ratings(games)}
+    rows = [{"name": name, "rating": round(od.offense + od.defense, 3)} for name, od in od_by_name.items()]
+    rerank_and_tier(rows)
     return [
         TeamRating(
-            name=t["name"],
-            rating=t[rating_field],
-            games_played=t["gamesPlayed"],
-            rank=t[rank_field],
-            tier=t[tier_field],
+            name=row["name"],
+            rating=row["rating"],
+            games_played=od_by_name[row["name"]].games_played,
+            rank=row["rank"],
+            tier=row["tier"],
         )
-        for t in bucket["teams"]
+        for row in rows
     ]
 
 
@@ -369,51 +381,69 @@ def _compute_unified_and_patch(
     there's no cross-division experimental-mode ground truth to validate
     against yet.
     """
-    # Route each team's within-rating by its DECLARED tier, not the
-    # physical division's own tier -- two things this must handle:
-    #   1. A team fully "relocated": every one of its actual games is filed
-    #      under a division other than the one it's now declared in (e.g.
-    #      Stockton Colts 10-1's only BB-caliber game was filed under B's
-    #      own schedule, since B was its home when the game was played).
-    #      Its within-rating still has to be computed from wherever it
-    #      actually played, but attributed to its DECLARED tier so the
-    #      tier-offset math treats it as a BB data point, not a B one.
-    #   2. A physically split division (see
-    #      split_physical_division_by_declared_subdivisions): "B East" and
-    #      "B West" payloads both independently compute a rating for the
-    #      WHOLE shared preseason pool (there's no separate East-only game
-    #      history to compute from), so the same team's row shows up,
-    #      redundantly but consistently, in both payloads' "All" buckets.
-    #      `seen_team_names` keeps only one copy regardless of which
-    #      payload it's first found in.
-    within_ratings_by_tier: dict[str, list[TeamRating]] = {}
-    seen_team_names: set[str] = set()
-    for division in divisions:
-        division_tier = tier_of(division["levelLabel"])
-        for r in _team_ratings_from_bucket(division["ratingsByType"]["All"], rating_field, rank_field, tier_field):
-            if r.name in seen_team_names:
-                continue
-            declared = declared_divisions.get(r.name)
-            declared_tier = tier_of(split_age_level(declared)[1]) if declared else None
-            effective_tier = declared_tier or division_tier
-            if effective_tier is None:
-                continue
-            within_ratings_by_tier.setdefault(effective_tier, []).append(r)
-            seen_team_names.add(r.name)
+    # Classify every played game (deduped once, globally) by the two
+    # participants' own DECLARED tiers -- not by which physical schedule
+    # the game happened to be filed under. This is the only classification
+    # that can't silently drop or half-count a team's evidence: a team's
+    # games are frequently split across more than one physical schedule
+    # (e.g. San Mateo Black Stars 10-2, declared "B East", has 2 games
+    # filed under B's own schedule and 3 filed under BB's -- an earlier
+    # version of this function computed each division's within-rating from
+    # ONLY the games filed under that division's own schedule, so her
+    # rating was computed from just her 2 (winning) B-filed games while her
+    # 3 BB-filed losses were silently invisible to the rating algorithm
+    # entirely, producing a wildly inflated result despite a losing
+    # record).
+    #
+    # A team missing from declared_divisions.json falls back to whichever
+    # tier it has the most games filed under, ACROSS ALL divisions -- not
+    # the filed level of any one specific game. Using a single game's own
+    # filed level as the fallback would assign BOTH sides of that exact
+    # game the same tier whenever neither side is declared, which would
+    # misclassify the game as within-tier even when it's genuinely a
+    # bridge between two different (just undeclared) tiers.
+    #
+    # Two teams sharing a tier -> within-tier evidence for that tier
+    # (regardless of which schedule it was scraped from). Two teams in
+    # DIFFERENT tiers -> bridge evidence, same as before.
+    deduped_games = list(_deduped_played_games(divisions))
 
+    fallback_tier_counts: dict[str, dict[str, int]] = {}
+    for g in deduped_games:
+        division_tier = tier_of(g["levelLabel"])
+        if division_tier is None:
+            continue
+        for name in (g["home"], g["away"]):
+            counts = fallback_tier_counts.setdefault(name, {})
+            counts[division_tier] = counts.get(division_tier, 0) + 1
+    fallback_tier_by_name = {name: max(counts.items(), key=lambda kv: kv[1])[0] for name, counts in fallback_tier_counts.items()}
+
+    def _team_tier(name: str) -> str | None:
+        declared = declared_divisions.get(name)
+        if declared:
+            declared_tier = tier_of(split_age_level(declared)[1])
+            if declared_tier is not None:
+                return declared_tier
+        return fallback_tier_by_name.get(name)
+
+    within_games_by_tier: dict[str, list[Game]] = {}
     bridge_games: list[tuple[str, str, int, str]] = []
-    seen_game_ids: set[str] = set()
-    for division in divisions:
-        for g in division["games"]:
-            if g["gameId"] in seen_game_ids:
-                continue
-            seen_game_ids.add(g["gameId"])
-            if not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
-                continue
-            game_tier = tier_of(g["levelLabel"])
-            if game_tier is None:
-                continue
-            bridge_games.append((g["home"], g["away"], capped_margin(g["homeGoals"], g["awayGoals"]), game_tier))
+    for g in deduped_games:
+        home_tier = _team_tier(g["home"])
+        away_tier = _team_tier(g["away"])
+        if home_tier is None or away_tier is None:
+            continue
+        if home_tier == away_tier:
+            within_games_by_tier.setdefault(home_tier, []).append(
+                Game(home=g["home"], away=g["away"], home_goals=g["homeGoals"], away_goals=g["awayGoals"])
+            )
+        else:
+            bridge_games.append((g["home"], g["away"], capped_margin(g["homeGoals"], g["awayGoals"]), home_tier))
+
+    experimental = rating_field != "rating"
+    within_ratings_by_tier: dict[str, list[TeamRating]] = {
+        tier: _within_ratings_for_games(games, experimental) for tier, games in within_games_by_tier.items()
+    }
 
     offsets = compute_tier_offsets(within_ratings_by_tier, bridge_games)
     if not offsets:
@@ -456,24 +486,90 @@ def _compute_unified_and_patch(
             # types have been patched -- see compute_age_group_ratings.
             rerank_and_tier(all_rows, rating_field, rank_field, tier_field)
 
+    # A team can be declared in a tier without ever playing a single game
+    # against another team ALSO declared there -- e.g. San Mateo Black
+    # Stars 10-2 (declared B East, a brand-new split) played only B West
+    # and BB opponents this preseason, no fellow B East team at all. It
+    # never appears in within_ratings_by_tier for ANY tier, so it's
+    # missing from `teams` entirely at this point. Estimate its rating
+    # from whichever of its real opponents already HAVE a known unified
+    # rating, translating each game's margin through that rating (the same
+    # algebra bridge-game evidence uses), then shrink that estimate toward
+    # its own tier's baseline by the SAME SHRINKAGE_K used everywhere else
+    # in this model -- a raw unweighted average over-trusts a handful of
+    # games against unusually strong or weak opponents (e.g. Oakland Bears
+    # 10-2, declared B West, tested exclusively against B East/BB
+    # opponents; losing to all of them narrowly-ish still isn't the same as
+    # being one of B West's better teams, but a straight average of
+    # "competitive against tough opponents" can look that way without
+    # shrinkage pulling it back toward the tier it actually plays in).
+    roster_names = {row["name"] for division in divisions for row in division["ratingsByType"]["All"]["teams"]}
+    for name in roster_names - set(teams):
+        own_tier = tier_of(split_age_level(declared_divisions.get(name) or "")[1])
+        tier_baseline = offsets.get(own_tier, {}).get("offset", 0.0)
+        implied: list[float] = []
+        games_played = 0
+        for g in deduped_games:
+            if g["home"] == name:
+                opp, margin = g["away"], capped_margin(g["homeGoals"], g["awayGoals"])
+            elif g["away"] == name:
+                opp, margin = g["home"], -capped_margin(g["homeGoals"], g["awayGoals"])
+            else:
+                continue
+            games_played += 1
+            opp_unified = teams.get(opp)
+            if opp_unified is not None:
+                implied.append(opp_unified["rating"] + margin)
+        if games_played == 0:
+            continue
+        if implied:
+            raw_estimate = sum(implied) / len(implied)
+            weight = len(implied) / (len(implied) + SHRINKAGE_K)
+            rating = tier_baseline + weight * (raw_estimate - tier_baseline)
+        else:
+            rating = tier_baseline
+        teams[name] = {"rating": round(rating, 3), "gamesPlayed": games_played}
+
     return teams, offsets
+
+
+def _deduped_played_games(divisions: list[dict]):
+    """Yield each played game dict once across every division in an age
+    group. Dedupes by gameId (the same game legitimately appears in more
+    than one division's games list -- a cross-division test, or both
+    flights of a physically-split division sharing one raw schedule) AND
+    by (home, away, date) -- confirmed real data artifact: the source feed
+    can carry two DIFFERENT gameIds for what's clearly the same real game
+    (e.g. "Lake Tahoe Grizzlies 10-1 vs Capital Thunder 10-2" on 09/19/26
+    appeared as both game 57332 (13-2) and game 57345 (12-2) -- almost
+    certainly a score correction posted as a new row rather than an edit
+    to the original). Without this second key, gameId-only dedup lets a
+    single real game silently count twice everywhere: merged stats,
+    within-tier ratings, and bridge-game evidence alike."""
+    seen_ids: set[str] = set()
+    seen_matchups: set[tuple[str, str, str]] = set()
+    for division in divisions:
+        for g in division["games"]:
+            if not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
+                continue
+            matchup = (g["home"], g["away"], g["date"])
+            if g["gameId"] in seen_ids or matchup in seen_matchups:
+                continue
+            seen_ids.add(g["gameId"])
+            seen_matchups.add(matchup)
+            yield g
 
 
 def _merged_stats_for_age_group(divisions: list[dict]) -> dict[str, TeamStats]:
     """Each team's full preseason record across EVERY division it played a
-    game in (its own declared division plus any cross-division tests),
-    deduped by gameId -- the record shown once divisions display the
-    unified rating should reflect the team's whole body of evidence, not
-    just whichever division's schedule an individual game happened to be
-    filed under."""
-    seen_ids: set[str] = set()
-    games: list[Game] = []
-    for division in divisions:
-        for g in division["games"]:
-            if g["gameId"] in seen_ids or not g["played"] or g["homeGoals"] is None or g["awayGoals"] is None:
-                continue
-            seen_ids.add(g["gameId"])
-            games.append(Game(home=g["home"], away=g["away"], home_goals=g["homeGoals"], away_goals=g["awayGoals"]))
+    game in (its own declared division plus any cross-division tests) --
+    the record shown once divisions display the unified rating should
+    reflect the team's whole body of evidence, not just whichever
+    division's schedule an individual game happened to be filed under."""
+    games = [
+        Game(home=g["home"], away=g["away"], home_goals=g["homeGoals"], away_goals=g["awayGoals"])
+        for g in _deduped_played_games(divisions)
+    ]
     return compute_team_stats(games)
 
 

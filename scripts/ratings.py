@@ -94,12 +94,16 @@ W_PRIOR = 5.0
 #
 # Only pairs with a real, reasonably-trustworthy historical sample get an
 # entry here. For everything else (AA/A had only 1 historical sample -- too
-# noisy to trust -- and any pair with no historical season to draw from at
-# all, e.g. a not-yet-existing B East/B West split), fall back to
-# DEFAULT_TIER_GAP below rather than a shaky number.
+# noisy to trust), fall back to DEFAULT_TIER_GAP below rather than a shaky
+# number. Computed via scripts/historical_tier_gap.py against season=31
+# (Fall 2025, the last fully-completed season) -- rerun that script by hand
+# and update this dict if a materially different past season becomes the
+# better reference, or a new split (or un-split) changes what pairs exist.
 HISTORICAL_TIER_GAP: dict[tuple[str, str], float] = {
     ("A", "BB"): 6.09,
     ("BB", "B"): 5.65,
+    ("BB", "B East"): 4.22,
+    ("B East", "B West"): 7.12,
 }
 
 # Flat default gap for any adjacent tier pair with no trustworthy historical

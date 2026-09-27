@@ -120,6 +120,24 @@ def test_age_group_ratings_deduplicates_shared_game_ids():
     assert age_groups["10U"]["teams"]["A"]["gamesPlayed"] == 1
 
 
+def test_age_group_ratings_deduplicates_same_matchup_different_game_ids():
+    # Confirmed real data artifact: the source feed can carry two DIFFERENT
+    # gameIds for what's clearly the same real game (e.g. "Lake Tahoe
+    # Grizzlies 10-1 vs Capital Thunder 10-2" on 09/19/26 appeared as both
+    # game 57332 (13-2) and game 57345 (12-2) -- almost certainly a score
+    # correction posted as a new row rather than an edit to the original).
+    # gameId-only dedup doesn't catch this; (home, away, date) must.
+    division = _division(
+        3, "10U B",
+        [
+            _raw_game("A", "B", 13, 2, "57332", "10U B"),
+            _raw_game("A", "B", 12, 2, "57345", "10U B"),  # same matchup, same date, "corrected" score
+        ],
+    )
+    age_groups = compute_age_group_ratings([division])
+    assert age_groups["10U"]["teams"]["A"]["gamesPlayed"] == 1
+
+
 def test_age_group_ratings_patches_cross_tested_teams_displayed_rating():
     # B1 mostly plays B (2 games) with one cross-division test game filed
     # under BB -- its BB-side rating there, from 1 game, is a near-zero
@@ -228,7 +246,10 @@ def test_age_group_ratings_keeps_declared_east_west_genuinely_separate():
     # not a geographic relabeling of one shared "B" tier -- they must NOT
     # get merged back together. Simulates main()'s actual flow: one raw
     # game list, split into two division payloads by declared sub-label.
-    raw_games = [_raw_game("B1", "B2", 5, 2, "g1", "10U B"), _raw_game("B3", "B4", 6, 1, "g2", "10U B")]
+    raw_games = [
+        _raw_game("B1", "B3", 5, 2, "g1", "10U B"),  # within East
+        _raw_game("B2", "B4", 6, 1, "g2", "10U B"),  # within West
+    ]
     declared = {"B1": "10U B East", "B2": "10U B West", "B3": "10U B East", "B4": "10U B West"}
 
     labels = split_physical_division_by_declared_subdivisions("10U B", raw_games, declared)
@@ -246,6 +267,34 @@ def test_age_group_ratings_keeps_declared_east_west_genuinely_separate():
     assert east_names.isdisjoint(west_names)
 
 
+def test_age_group_ratings_estimates_rating_for_team_with_no_within_tier_game():
+    # San Mateo Black Stars 10-2 (declared B East, a brand-new split) had
+    # zero games against a fellow B East team this preseason -- only B West
+    # and BB opponents. It never appears in within_ratings_by_tier for ANY
+    # tier, so without a fallback it's silently dropped from `teams`
+    # entirely (confirmed live: exactly this team, plus Oakland Bears 10-2,
+    # were missing after the East/West split shipped). Its rating must
+    # still be estimated from its real opponents' own known ratings.
+    raw_east_within = [_raw_game("B1", "B3", 5, 2, "g1", "10U B")]  # within East, uninvolved with B5
+    raw_cross = [_raw_game("B5", "B2", 9, 0, "g2", "10U B")]  # B5 (declared East) vs B2 (declared West)
+    raw_west_within = [_raw_game("B2", "B4", 6, 1, "g3", "10U B")]  # within West
+    declared = {
+        "B1": "10U B East", "B3": "10U B East", "B5": "10U B East",
+        "B2": "10U B West", "B4": "10U B West",
+    }
+
+    raw_games = raw_east_within + raw_cross + raw_west_within
+    east = build_division_payload(3, "10U B East", raw_games, {})
+    west = build_division_payload(3, "10U B West", raw_games, {})
+    age_groups = compute_age_group_ratings([east, west], declared_divisions=declared)
+
+    assert "B5" in age_groups["10U"]["teams"]
+    assert age_groups["10U"]["teams"]["B5"]["gamesPlayed"] == 1
+    b5_row = next(row for row in east["ratingsByType"]["All"]["teams"] if row["name"] == "B5")
+    assert b5_row["rating"] == age_groups["10U"]["teams"]["B5"]["rating"]
+    assert "B5" not in {row["name"] for row in west["ratingsByType"]["All"]["teams"]}
+
+
 def test_age_group_ratings_routes_within_rating_by_declared_tier_not_division_tier():
     # The display-roster assertions above (east_names/west_names) pass even
     # if a team's WITHIN-RATING got attributed to the wrong tier internally
@@ -255,10 +304,17 @@ def test_age_group_ratings_routes_within_rating_by_declared_tier_not_division_ti
     # show "B East" and "B West" as two genuinely distinct tiers (not one
     # merged into the other, and not one silently missing because its
     # within-ratings got mis-routed to the wrong bucket).
-    raw_b = [_raw_game("B1", "B2", 5, 2, "g1", "10U B"), _raw_game("B3", "B4", 6, 1, "g2", "10U B")]
-    raw_bb = [_raw_game("BB1", "B1", 4, 1, "g3", "10U BB")]  # bridge: BB1 (BB) vs B1 (declared B East)
+    raw_b = [
+        _raw_game("B1", "B3", 5, 2, "g1", "10U B"),  # within East
+        _raw_game("B2", "B4", 6, 1, "g2", "10U B"),  # within West
+    ]
+    raw_bb = [
+        _raw_game("BB1", "BB2", 3, 2, "g4", "10U BB"),  # within BB
+        _raw_game("BB1", "B1", 4, 1, "g3", "10U BB"),  # bridge: BB1 (BB) vs B1 (declared B East)
+    ]
     declared = {
-        "B1": "10U B East", "B2": "10U B West", "B3": "10U B East", "B4": "10U B West", "BB1": "10U BB",
+        "B1": "10U B East", "B2": "10U B West", "B3": "10U B East", "B4": "10U B West",
+        "BB1": "10U BB", "BB2": "10U BB",
     }
 
     east = build_division_payload(3, "10U B East", raw_b, {})

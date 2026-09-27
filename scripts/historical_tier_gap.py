@@ -26,7 +26,7 @@ from statistics import median
 
 import requests
 
-from ratings import Game, compute_ratings
+from ratings import DIVISION_HIERARCHY, Game, compute_ratings
 from scrape import split_age_level, tier_of
 
 BASE_URL = "https://stats.caha.timetoscore.com"
@@ -108,7 +108,7 @@ def main() -> int:
 
     print(f"\nHistorical (season={season}) tier-gap check vs. extremes-based prior_gap formula:")
     for age_label, by_tier in sorted(ratings_by_age_tier.items()):
-        tiers_present = [t for t in ["AA", "A", "BB", "B"] if t in by_tier]
+        tiers_present = [t for t in DIVISION_HIERARCHY if t in by_tier]
         for i in range(len(tiers_present) - 1):
             higher, lower = tiers_present[i], tiers_present[i + 1]
             low_r = [r.rating for r in by_tier[lower]]
