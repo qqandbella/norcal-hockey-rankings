@@ -771,6 +771,34 @@ def compute_age_group_ratings(
     return age_groups
 
 
+def merge_raw_games_into_label(
+    raw_games_by_label: dict[str, list[dict]],
+    level_id_by_label: dict[str, int],
+    sub_label: str,
+    level_id: int,
+    games: list[dict],
+) -> int:
+    """Merges `games` into `raw_games_by_label[sub_label]` (creating it if
+    this is the first physical level seen for that label), deduped by TTS
+    game id -- a game appearing in both a legacy lumped feed and its native
+    successor (see KNOWN_MISSING_LEVELS / main()) only counts once. Always
+    updates `level_id_by_label[sub_label]` to `level_id`: callers iterate
+    physical levels in ascending level_id order, so a later/native level's
+    id ends up winning over an earlier legacy one for the same label.
+    Returns how many games were newly added, for logging."""
+    existing = raw_games_by_label.get(sub_label)
+    if existing is None:
+        raw_games_by_label[sub_label] = list(games)
+        added = len(games)
+    else:
+        seen_ids = {g["game_id"] for g in existing}
+        merged_in = [g for g in games if g["game_id"] not in seen_ids]
+        existing.extend(merged_in)
+        added = len(merged_in)
+    level_id_by_label[sub_label] = level_id
+    return added
+
+
 def main() -> int:
     session = _session()
     divisions = discover_divisions(session)
@@ -780,7 +808,23 @@ def main() -> int:
     team_ids = load_team_ids()
     declared_divisions = load_declared_divisions()
 
-    payload_divisions = []
+    # label -> its raw games, merged across every physical level that
+    # contributes to it. Keyed by label (not level_id) because NorCal has,
+    # mid-project, started exposing some previously lumped levels (e.g.
+    # "10U B", level 3, forced in via KNOWN_MISSING_LEVELS) as their own
+    # real per-level feeds too (e.g. "10U B East"/"10U B West", levels 135
+    # /136) once the full season schedule was released. Both the legacy
+    # lumped level and the new native one can still answer live, and
+    # without merging, each would build its own separate payload under
+    # the identical declared label -- two division entries sharing one
+    # ageLabel+levelLabel (duplicate nav links), with whichever happened
+    # to sort first by level_id silently hiding the other's games from
+    # ratings (`findDivision` on the frontend just returns the first
+    # match). Deduped by TTS game id, so a game appearing in both a
+    # legacy lumped feed and its native successor only counts once.
+    raw_games_by_label: dict[str, list[dict]] = {}
+    level_id_by_label: dict[str, int] = {}
+
     for i, (level_id, label) in enumerate(sorted(divisions.items())):
         if i > 0:
             time.sleep(REQUEST_DELAY_SECONDS)
@@ -789,9 +833,17 @@ def main() -> int:
 
         sub_labels = split_physical_division_by_declared_subdivisions(label, games, declared_divisions)
         for sub_label in sub_labels:
-            payload_divisions.append(build_division_payload(level_id, sub_label, games, team_ids))
             if len(sub_labels) > 1:
                 print(f"    -> split into {sub_label!r}", file=sys.stderr)
+            already_seen = sub_label in raw_games_by_label
+            added = merge_raw_games_into_label(raw_games_by_label, level_id_by_label, sub_label, level_id, games)
+            if already_seen:
+                print(f"    -> merged into existing {sub_label!r} payload: +{added} new game(s)", file=sys.stderr)
+
+    payload_divisions = [
+        build_division_payload(level_id_by_label[label], label, raw_games, team_ids)
+        for label, raw_games in raw_games_by_label.items()
+    ]
 
     age_groups = compute_age_group_ratings(payload_divisions, declared_divisions)
     for age_label, group in age_groups.items():

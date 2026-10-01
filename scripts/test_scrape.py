@@ -2,6 +2,7 @@ from scrape import (
     build_division_payload,
     build_team_links,
     compute_age_group_ratings,
+    merge_raw_games_into_label,
     split_physical_division_by_declared_subdivisions,
     tier_of,
 )
@@ -360,3 +361,40 @@ def test_build_division_payload_includes_experimental_offense_defense_rating():
         assert row["experimentalRating"] == round(row["offense"] + row["defense"], 3)
         assert row["experimentalRank"] in (1, 2, 3)
         assert row["experimentalTier"] in ("top", "mid", "low")
+
+
+def test_merge_raw_games_into_label_first_seen_just_stores_the_games():
+    by_label: dict = {}
+    by_level_id: dict = {}
+    games = [_raw_game("A", "B", 5, 2, "g1", "10U B East")]
+
+    added = merge_raw_games_into_label(by_label, by_level_id, "10U B East", 135, games)
+
+    assert added == 1
+    assert by_label["10U B East"] == games
+    assert by_level_id["10U B East"] == 135
+
+
+def test_merge_raw_games_into_label_dedupes_by_game_id_across_physical_levels():
+    # Simulates NorCal exposing a previously lumped level (e.g. "10U B",
+    # level 3) AND its new native successor (e.g. "10U B East", level 135)
+    # at the same time -- the whole point of this function is to fold them
+    # into one payload instead of two duplicate division entries.
+    by_label: dict = {}
+    by_level_id: dict = {}
+    legacy_games = [
+        _raw_game("A", "B", 5, 2, "g1", "10U B East"),
+        _raw_game("C", "D", 1, 1, "g2", "10U B East"),
+    ]
+    merge_raw_games_into_label(by_label, by_level_id, "10U B East", 3, legacy_games)
+
+    native_games = [
+        _raw_game("A", "B", 5, 2, "g1", "10U B East"),  # same game, re-fetched from the native feed
+        _raw_game("E", "F", 3, 0, "g3", "10U B East"),  # genuinely new, regular-season game
+    ]
+    added = merge_raw_games_into_label(by_label, by_level_id, "10U B East", 135, native_games)
+
+    assert added == 1  # only g3 is new; g1 was already present
+    assert {g["game_id"] for g in by_label["10U B East"]} == {"g1", "g2", "g3"}
+    # The later (native) physical level wins as the label's nominal levelId.
+    assert by_level_id["10U B East"] == 135
