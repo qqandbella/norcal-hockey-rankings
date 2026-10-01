@@ -1,26 +1,28 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { ARRIVAL_BUFFER_MINUTES, GAME_DURATION_MINUTES, findScheduleConflicts } from '../lib/conflicts'
-import { teamRoute } from '../lib/grouping'
+import { groupByAge, teamRoute } from '../lib/grouping'
 import { ALL_TYPES } from '../lib/types'
 import type { GameRecord, RankingsData } from '../lib/types'
 
 /** Every team name that appears in any division, grouped by "age level"
  * for the picker -- including teams with no played game yet (schedule
- * conflicts don't depend on a rating existing). */
+ * conflicts don't depend on a rating existing). Group order follows
+ * groupByAge's age-then-hierarchy sort (10U A -> BB -> B East -> B West
+ * -> 12U AA -> ...), the same ordering the nav/picker use everywhere else
+ * on the site, rather than whatever order divisions happen to appear in
+ * the scraped data. */
 function allTeamOptions(data: RankingsData): Map<string, string[]> {
-  const byGroup = new Map<string, Set<string>>()
-  for (const division of data.divisions) {
-    const label = `${division.ageLabel} ${division.levelLabel}`
-    const bucket = division.ratingsByType[ALL_TYPES]
-    const names = byGroup.get(label) ?? new Set<string>()
-    for (const t of bucket?.teams ?? []) names.add(t.name)
-    for (const n of bucket?.unratedTeams ?? []) names.add(n)
-    if (names.size > 0) byGroup.set(label, names)
-  }
   const result = new Map<string, string[]>()
-  for (const [label, names] of byGroup) {
-    result.set(label, Array.from(names).sort())
+  for (const ageGroup of groupByAge(data.divisions)) {
+    for (const division of ageGroup.divisions) {
+      const label = `${division.ageLabel} ${division.levelLabel}`
+      const bucket = division.ratingsByType[ALL_TYPES]
+      const names = new Set<string>()
+      for (const t of bucket?.teams ?? []) names.add(t.name)
+      for (const n of bucket?.unratedTeams ?? []) names.add(n)
+      if (names.size > 0) result.set(label, Array.from(names).sort())
+    }
   }
   return result
 }
