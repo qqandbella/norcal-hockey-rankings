@@ -299,7 +299,7 @@ Three modes, in `src/components/DZoneTrainer.tsx`:
 Data comes from `www.norcalyouthhockey.org` (the NorCal Youth Hockey
 Association's own site), specifically the same `load-tts-schedule.php`
 endpoint its own `Schedules.php` page calls via AJAX on every page load.
-`scripts/scrape.py` runs every 12h via GitHub Actions
+`scripts/scrape.py` runs every 2h via GitHub Actions
 (`.github/workflows/scrape.yml`), writes `public/data/latest.json`, and
 commits it back to `main`, which triggers a rebuild/redeploy
 (`.github/workflows/deploy.yml`).
