@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { HashRouter, Link, Navigate, Route, Routes, useParams } from 'react-router-dom'
+import { ComparePage } from './components/ComparePage'
 import { DivisionNav } from './components/DivisionNav'
 import { DZoneTrainer } from './components/DZoneTrainer'
 import { HelpPage } from './components/HelpPage'
@@ -73,6 +74,9 @@ export default function App() {
           <div className="app__title-row">
             <h1>NorCal Hockey Rankings</h1>
             <span className="app__header-links">
+              <Link to="/compare" className="app__help-link">
+                Compare Schedules
+              </Link>
               <Link to="/dzone" className="app__help-link">
                 D-Zone Trainer
               </Link>
@@ -138,6 +142,7 @@ export default function App() {
                 />
                 <Route path="/predict/:age" element={<PredictPage data={data} ratingMode={ratingMode} />} />
                 <Route path="/unified/:age" element={<UnifiedRankingsPage data={data} ratingMode={ratingMode} />} />
+                <Route path="/compare" element={<ComparePage data={data} />} />
                 <Route path="/help" element={<HelpPage />} />
                 <Route path="/dzone" element={<DZoneTrainer />} />
               </Routes>
