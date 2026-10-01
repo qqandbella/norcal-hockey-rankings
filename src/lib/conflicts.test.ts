@@ -87,6 +87,18 @@ describe('findScheduleConflicts', () => {
     expect(findScheduleConflicts(makeData([gameA, gameB]), 'Team A', 'Team B')).toHaveLength(0)
   })
 
+  it('marks a positive but small gap as "overlap", not "tight", when it is still less than the drive alone takes -- not just short on buffer', () => {
+    // Fresno <-> Dublin is roughly a 3.5-4hr drive; a 15-minute gap is not
+    // "cutting it close", it's not possible at all.
+    const gameA = makeGame({ away: 'Team A', home: 'Opp A', time: '11:45AM', rink: 'Fresno' })
+    const gameB = makeGame({ away: 'Team B', home: 'Opp B', time: '1:30PM', rink: 'Dublin' })
+    const conflicts = findScheduleConflicts(makeData([gameA, gameB]), 'Team A', 'Team B')
+    expect(conflicts).toHaveLength(1)
+    expect(conflicts[0].gapMinutes).toBeGreaterThan(0)
+    expect(conflicts[0].driveMinutes).toBeGreaterThan(conflicts[0].gapMinutes)
+    expect(conflicts[0].severity).toBe('overlap')
+  })
+
   it('does not flag games on different dates', () => {
     const gameA = makeGame({ away: 'Team A', home: 'Opp A', date: '10/10/26', time: '10:00AM' })
     const gameB = makeGame({ away: 'Team B', home: 'Opp B', date: '10/11/26', time: '10:00AM' })

@@ -63,9 +63,16 @@ function pairConflict(
   const gapMinutes = Math.round((laterStart.getTime() - earlierEndMs) / 60_000)
 
   const drive = estimateDrive(earlierGame.rink, laterGame.rink)
-  const requiredMinutes = (drive?.minutes ?? 0) + ARRIVAL_BUFFER_MINUTES
+  const driveMinutes = drive?.minutes ?? 0
+  const requiredMinutes = driveMinutes + ARRIVAL_BUFFER_MINUTES
 
   if (gapMinutes >= requiredMinutes) return null
+
+  // "overlap": the games themselves collide, or the gap isn't even enough
+  // to cover the drive itself -- not just cutting the arrival buffer
+  // close, actually impossible to be at both. "tight": the drive itself
+  // fits, just without the full buffer -- a judgment call.
+  const severity: ConflictSeverity = gapMinutes < driveMinutes ? 'overlap' : 'tight'
 
   return {
     date,
@@ -76,7 +83,7 @@ function pairConflict(
     gapMinutes,
     driveMinutes: drive?.minutes ?? null,
     driveMiles: drive?.miles ?? null,
-    severity: gapMinutes < 0 ? 'overlap' : 'tight',
+    severity,
   }
 }
 
