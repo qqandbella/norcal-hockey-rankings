@@ -1,10 +1,12 @@
 from build_team_ids import collapse_by_name, compute_renames
 from scrape import (
     apply_team_aliases,
+    apply_team_collisions,
     build_division_payload,
     build_team_links,
     compute_age_group_ratings,
     merge_raw_games_into_label,
+    resolve_collided_name,
     split_physical_division_by_declared_subdivisions,
     tier_of,
 )
@@ -446,6 +448,51 @@ def test_apply_team_aliases_is_a_noop_for_unknown_names_and_empty_map():
     games = [_raw_game("A", "B", 5, 2, "g1", "10U B")]
     assert apply_team_aliases(games, {}) == games
     assert apply_team_aliases(games, {"Someone Else": "X"}) == games
+
+
+TRI_VALLEY_COLLISION = {
+    "Tri Valley Blue Devils 10A": {
+        "Tri Valley Blue Devils 10A-1": {"gameIds": ["g1", "g2", "g3"]},
+        "Tri Valley Blue Devils 10A-2": {"gameIds": ["g4", "g5", "g3"]},  # g3 = their head-to-head
+    }
+}
+
+
+def test_resolve_collided_name_picks_the_team_this_game_id_belongs_to():
+    name = "Tri Valley Blue Devils 10A"
+    assert resolve_collided_name(name, "g1", TRI_VALLEY_COLLISION) == "Tri Valley Blue Devils 10A-1"
+    assert resolve_collided_name(name, "g5", TRI_VALLEY_COLLISION) == "Tri Valley Blue Devils 10A-2"
+
+
+def test_resolve_collided_name_leaves_unresolvable_cases_unchanged():
+    name = "Tri Valley Blue Devils 10A"
+    # A genuine head-to-head meeting between the two colliding teams --
+    # claimed by both, can't tell which side is which.
+    assert resolve_collided_name(name, "g3", TRI_VALLEY_COLLISION) == name
+    # A game id not on file yet (e.g. added after the last manual resolve).
+    assert resolve_collided_name(name, "g999", TRI_VALLEY_COLLISION) == name
+    # Not a known collision at all.
+    assert resolve_collided_name("Some Other Team", "g1", TRI_VALLEY_COLLISION) == "Some Other Team"
+
+
+def test_apply_team_collisions_splits_games_by_id_and_leaves_others_untouched():
+    games = [
+        _raw_game("Tri Valley Blue Devils 10A", "Opp", 5, 2, "g1", "10U A"),
+        _raw_game("Opp", "Tri Valley Blue Devils 10A", 1, 3, "g5", "10U A"),
+        _raw_game("Tri Valley Blue Devils 10A", "Tri Valley Blue Devils 10A", 0, 0, "g3", "10U A", played=False),
+        _raw_game("Unrelated A", "Unrelated B", 2, 2, "g9", "10U A"),
+    ]
+    resolved = apply_team_collisions(games, TRI_VALLEY_COLLISION)
+    assert resolved[0]["home"] == "Tri Valley Blue Devils 10A-1"
+    assert resolved[1]["away"] == "Tri Valley Blue Devils 10A-2"
+    assert resolved[2]["home"] == "Tri Valley Blue Devils 10A"  # head-to-head, left ambiguous
+    assert resolved[2]["away"] == "Tri Valley Blue Devils 10A"
+    assert resolved[3] == games[3]  # untouched
+
+
+def test_apply_team_collisions_is_a_noop_when_empty():
+    games = [_raw_game("A", "B", 5, 2, "g1", "10U B")]
+    assert apply_team_collisions(games, {}) == games
 
 
 def test_compute_renames_detects_a_clean_rename():

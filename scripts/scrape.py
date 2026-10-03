@@ -77,6 +77,21 @@ DECLARED_DIVISIONS_PATH = Path(__file__).resolve().parent / "declared_divisions.
 # never "this name doesn't exist."
 TEAM_ALIASES_PATH = Path(__file__).resolve().parent / "team_aliases.json"
 
+# Built by scripts/build_team_ids.py (same manual/rare posture), only for
+# the rare case where TTS renamed two genuinely DIFFERENT teams to the
+# literal identical display string (confirmed 2026-10: two Tri Valley Blue
+# Devils 10U A teams, ids 17/18, both now "Tri Valley Blue Devils 10A").
+# {collided_display_name: {resolved_name: {"gameIds": [...], ...}}} --
+# recovered from each real team's own stable TTS game history (the one
+# place the ambiguous display text doesn't appear: a specific game id
+# belongs to exactly one of them), not guessed. Missing file, missing
+# entries, or a game id that belongs to none/more-than-one resolved name
+# (e.g. a brand new game added after the last manual resolution run, or a
+# genuine head-to-head meeting between the two colliding teams) all mean
+# "can't disambiguate this one -- leave the collided name as-is", never a
+# guess.
+TEAM_COLLISIONS_PATH = Path(__file__).resolve().parent / "team_collisions.json"
+
 
 def load_team_ids() -> dict[str, dict[str, str]]:
     if not TEAM_IDS_PATH.exists():
@@ -113,6 +128,45 @@ def apply_team_aliases(raw_games: list[dict], team_aliases: dict[str, str]) -> l
             **g,
             "home": canonical_team_name(g["home"], team_aliases),
             "away": canonical_team_name(g["away"], team_aliases),
+        }
+        for g in raw_games
+    ]
+
+
+def load_team_collisions() -> dict[str, dict[str, dict]]:
+    if not TEAM_COLLISIONS_PATH.exists():
+        return {}
+    return json.loads(TEAM_COLLISIONS_PATH.read_text())
+
+
+def resolve_collided_name(name: str, game_id: str, team_collisions: dict[str, dict[str, dict]]) -> str:
+    """If `name` is a known collided display name (see TEAM_COLLISIONS_PATH),
+    returns whichever real team's own game history this specific `game_id`
+    belongs to. Falls back to `name` unchanged if `name` isn't a known
+    collision, or if `game_id` isn't uniquely claimed by exactly one of the
+    resolved names (not yet resolved, or a genuine head-to-head meeting
+    between the two colliding teams -- TTS itself can't disambiguate those
+    either until they're played)."""
+    candidates = team_collisions.get(name)
+    if not candidates:
+        return name
+    matches = [resolved for resolved, info in candidates.items() if game_id in info.get("gameIds", [])]
+    return matches[0] if len(matches) == 1 else name
+
+
+def apply_team_collisions(raw_games: list[dict], team_collisions: dict[str, dict[str, dict]]) -> list[dict]:
+    """Splits a collided display name back into the distinct real teams it
+    stands for, per game (see resolve_collided_name). Must run BEFORE
+    apply_team_aliases, so a resolved name like "Tri Valley Blue Devils
+    10A-1" can still pick up any ordinary (non-colliding) rename of its
+    own later. A no-op when `team_collisions` is empty."""
+    if not team_collisions:
+        return raw_games
+    return [
+        {
+            **g,
+            "home": resolve_collided_name(g["home"], g["game_id"], team_collisions),
+            "away": resolve_collided_name(g["away"], g["game_id"], team_collisions),
         }
         for g in raw_games
     ]
@@ -857,6 +911,7 @@ def main() -> int:
         return 1
     team_ids = load_team_ids()
     team_aliases = load_team_aliases()
+    team_collisions = load_team_collisions()
     # declared_divisions.json is keyed by whatever name was current when it
     # was last hand-built -- canonicalize its keys the same way raw game
     # names get canonicalized below, so a renamed team's declared placement
@@ -886,7 +941,9 @@ def main() -> int:
     for i, (level_id, label) in enumerate(sorted(divisions.items())):
         if i > 0:
             time.sleep(REQUEST_DELAY_SECONDS)
-        games = apply_team_aliases(fetch_division_games(session, level_id), team_aliases)
+        games = fetch_division_games(session, level_id)
+        games = apply_team_collisions(games, team_collisions)
+        games = apply_team_aliases(games, team_aliases)
         print(f"  {label} (level={level_id}): {len(games)} games", file=sys.stderr)
 
         sub_labels = split_physical_division_by_declared_subdivisions(label, games, declared_divisions)
