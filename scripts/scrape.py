@@ -698,6 +698,7 @@ def _apply_declared_roster_and_unified_rating(
         declared_key = f"{division['ageLabel']} {division['levelLabel']}"
         all_rows = division["ratingsByType"]["All"]["teams"]
         present = {row["name"] for row in all_rows}
+        synthesized_names = set()
         for name, declared in declared_divisions.items():
             if declared != declared_key or name in present:
                 continue
@@ -726,6 +727,17 @@ def _apply_declared_roster_and_unified_rating(
                     "experimentalTier": "mid",
                 }
             )
+            synthesized_names.add(name)
+
+        if synthesized_names:
+            # A synthesized row's name came from this bucket's own
+            # `unratedTeams` (its only PLAYED evidence is in a different
+            # division's games -- see this function's docstring), so
+            # without this it would show up as both a rated row AND an
+            # "unrated" team simultaneously.
+            division["ratingsByType"]["All"]["unratedTeams"] = [
+                n for n in division["ratingsByType"]["All"]["unratedTeams"] if n not in synthesized_names
+            ]
 
         for row in all_rows:
             unified = teams.get(row["name"])

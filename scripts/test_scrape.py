@@ -229,6 +229,38 @@ def test_age_group_ratings_adds_promoted_team_with_no_row_in_new_division():
     assert "B1" not in {row["name"] for row in division_b["ratingsByType"]["All"]["teams"]}
 
 
+def test_age_group_ratings_synthesized_row_is_removed_from_unrated_teams():
+    # B1's declared division is BB. Its only PLAYED evidence is filed under
+    # B's schedule (a cross-division test), same as the promoted-team case
+    # above -- but B1 ALSO appears as a participant in a scheduled-but-not
+    # -yet-played game filed under BB's own native feed, which is exactly
+    # what makes BB's own _build_team_rows list it in `unratedTeams` before
+    # any synthesis happens. Once synthesized into BB's `teams` with real
+    # stats, it must not also linger in `unratedTeams` -- a team can't be
+    # simultaneously "rated with a real record" and "hasn't played yet".
+    division_b = _division(
+        3, "10U B",
+        [
+            _raw_game("B1", "B2", 5, 2, "g1", "10U B"),
+            _raw_game("B1", "BB1", 6, 3, "g2", "10U B"),  # B1 hosts, filed under B
+        ],
+    )
+    division_bb = _division(
+        55, "10U BB",
+        [
+            _raw_game("BB1", "BB2", 4, 1, "g3", "10U BB"),
+            _raw_game("B1", "BB2", 0, 0, "g4", "10U BB", played=False),  # B1's own future BB test
+        ],
+    )
+    declared = {"B1": "10U BB", "B2": "10U B", "BB1": "10U BB", "BB2": "10U BB"}
+
+    compute_age_group_ratings([division_b, division_bb], declared_divisions=declared)
+
+    bb_all = division_bb["ratingsByType"]["All"]
+    assert "B1" in {row["name"] for row in bb_all["teams"]}
+    assert "B1" not in bb_all["unratedTeams"]
+
+
 def test_split_physical_division_by_declared_subdivisions_detects_a_real_split():
     raw_games = [_raw_game("B1", "B2", 5, 2, "g1", "10U B"), _raw_game("B3", "B4", 1, 1, "g2", "10U B")]
     declared = {"B1": "10U B East", "B2": "10U B West", "B3": "10U B East", "B4": "10U B West"}
@@ -424,10 +456,12 @@ def test_compute_renames_detects_a_clean_rename():
     assert warnings == []
 
 
-def test_compute_renames_skips_an_ambiguous_collision():
+def test_compute_renames_aliases_a_collision_when_declared_divisions_agree():
     # Two different real teams (ids 17, 18) renamed to the exact same
-    # string -- aliasing either old name into it would wrongly merge two
-    # teams' histories, so neither gets an alias; both are reported instead.
+    # string -- their rating/schedule history is already irrecoverably
+    # merged at the source regardless of what this function does, so
+    # aliasing is still a strict improvement for DIVISION ROUTING as long
+    # as both old names agree on where they're declared to play.
     # `new_rows` must carry BOTH ids under the identical name (as the raw,
     # uncollapsed resolve() output does) for this collision to be visible
     # at all -- collapsing by name first would already have dropped one.
@@ -439,10 +473,40 @@ def test_compute_renames_skips_an_ambiguous_collision():
         ("18", "33", "Tri Valley Blue Devils 10A"),
         ("17", "33", "Tri Valley Blue Devils 10A"),
     ]
-    aliases, warnings = compute_renames(old, new_rows)
+    declared = {
+        "Tri Valley Blue Devils 10-1": "10U A",
+        "Tri Valley Blue Devils 10-2": "10U A",
+    }
+    aliases, warnings = compute_renames(old, new_rows, declared)
+    assert aliases == {
+        "Tri Valley Blue Devils 10-1": "Tri Valley Blue Devils 10A",
+        "Tri Valley Blue Devils 10-2": "Tri Valley Blue Devils 10A",
+    }
+    assert warnings == []
+
+
+def test_compute_renames_skips_a_collision_when_declared_divisions_disagree():
+    old = {
+        "Team X 10-1": {"teamId": "18", "season": "33"},
+        "Team X 10-2": {"teamId": "17", "season": "33"},
+    }
+    new_rows = [("18", "33", "Team X 10A"), ("17", "33", "Team X 10A")]
+    declared = {"Team X 10-1": "10U A", "Team X 10-2": "10U BB"}  # disagree
+    aliases, warnings = compute_renames(old, new_rows, declared)
     assert aliases == {}
-    assert len(warnings) == 2  # one per old name that would have collided
-    assert all("Tri Valley Blue Devils 10A" in w for w in warnings)
+    assert len(warnings) == 2
+    assert all("Team X 10A" in w for w in warnings)
+
+
+def test_compute_renames_skips_a_collision_with_no_declared_divisions_at_all():
+    old = {
+        "Team X 10-1": {"teamId": "18", "season": "33"},
+        "Team X 10-2": {"teamId": "17", "season": "33"},
+    }
+    new_rows = [("18", "33", "Team X 10A"), ("17", "33", "Team X 10A")]
+    aliases, warnings = compute_renames(old, new_rows)  # no declared_divisions passed
+    assert aliases == {}
+    assert len(warnings) == 2
 
 
 def test_compute_renames_ignores_teams_with_no_name_change():

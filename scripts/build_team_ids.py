@@ -35,10 +35,35 @@ One real collision exists in TTS's own data (confirmed 2026-10): two
 genuinely different Tri Valley Blue Devils 10U A teams (ids 17 and 18, were
 "10-1"/"10-2") were both renamed to the literal same string "Tri Valley Blue
 Devils 10A" -- the live schedule feed can no longer distinguish them at all,
-with or without this script. Aliasing into an ambiguous (multiply-claimed)
-new name would silently merge two different teams' histories, which is
-worse than leaving them fractured, so any such new name is skipped and
-reported instead of aliased.
+with or without this script; their rating/schedule history is already
+irrecoverably merged at the source, regardless of what this script does.
+
+Aliasing into a collided name is still safe for DIVISION ROUTING purposes
+specifically if every old name behind the collision agrees on the same
+declared_divisions.json placement (true for the Tri Valley case: both
+"10-1" and "10-2" declare "10U A") -- confirmed 2026-10-03: leaving them
+unaliased made declared_divisions.json's keys permanently stale against the
+live feed's text, which defaults `filter_roster_to_declared` to "unknown,
+keep it" and let the collided name leak into every division it ever played
+a cross-division test game in (observed: it showed up in BB's roster too).
+Only when the old names *disagree* on declared placement (or declared_divisions
+.json has no entry at all) does aliasing stay skipped -- that's the one case
+where guessing would misroute a team rather than just merge its history
+(which is already merged upstream either way).
+
+CAVEAT: this consensus check only works if team_ids.json STILL has the old
+pre-collision names on file at diff time. collapse_by_name is last-id-wins,
+so once a collision has gone through even one run, the losing id's old name
+is gone from team_ids.json for good -- there is nothing left to diff against
+on the next run, even with the consensus logic in place. This bit the Tri
+Valley pair here: the FIRST fix (before this consensus logic existed)
+already collapsed away "10-1"/"10-2" from team_ids.json, so a later run
+with the fixed logic still found no collision to resolve. Their aliases
+were added to team_aliases.json by hand instead, using the same evidence
+(both declare "10U A") -- safe for the same reason, just reconstructed from
+declared_divisions.json directly rather than rediscovered automatically.
+Run this script promptly after a rename is suspected, not just once a
+season, to avoid repeating this for a future collision.
 """
 
 from __future__ import annotations
@@ -91,16 +116,28 @@ def collapse_by_name(rows: list[tuple[str, str, str]]) -> dict[str, dict[str, st
 
 
 def compute_renames(
-    old_mapping: dict[str, dict[str, str]], new_rows: list[tuple[str, str, str]]
+    old_mapping: dict[str, dict[str, str]],
+    new_rows: list[tuple[str, str, str]],
+    declared_divisions: dict[str, str] | None = None,
 ) -> tuple[dict[str, str], list[str]]:
     """Returns (aliases, collision_warnings). `aliases` maps an old display
     name to its current canonical one, for every id whose display name
-    changed -- except where the new name is claimed by more than one id
-    (an upstream naming collision, see module docstring), which is
-    reported in `collision_warnings` instead of aliased. `new_rows` must
-    be the uncollapsed id-level rows from `resolve()`, not a name-keyed
-    dict -- collapsing by name first would already have thrown away the
-    very collision this needs to detect."""
+    changed. `new_rows` must be the uncollapsed id-level rows from
+    `resolve()`, not a name-keyed dict -- collapsing by name first would
+    already have thrown away the very collision this needs to detect.
+
+    Where the new name is claimed by more than one id (an upstream naming
+    collision, see module docstring), aliasing is still safe for DIVISION
+    ROUTING if every old name behind the collision agrees on the same
+    `declared_divisions` placement -- their rating/schedule history is
+    already irrecoverably merged upstream either way, so routing them
+    correctly is a strict improvement over leaving them unaliased (which
+    makes declared_divisions.json's keys permanently stale and lets the
+    collided name leak into any division it played a cross-division game
+    in, see scrape.py's filter_roster_to_declared). Only when the old
+    names disagree on declared placement, or none has a declared entry at
+    all, does it stay skipped and reported in `collision_warnings`."""
+    declared_divisions = declared_divisions or {}
     old_names_by_id: dict[str, list[str]] = {}
     for name, info in old_mapping.items():
         old_names_by_id.setdefault(info["teamId"], []).append(name)
@@ -122,10 +159,16 @@ def compute_renames(
             if old_name == new_name:
                 continue
             if len(colliding_ids) > 1:
+                all_old_names = {n for tid in colliding_ids for n in old_names_by_id.get(tid, [])}
+                declared_values = {declared_divisions[n] for n in all_old_names if n in declared_divisions}
+                if len(declared_values) == 1:
+                    aliases[old_name] = new_name
+                    continue
                 warnings.append(
                     f"{old_name!r} (id={team_id}) -> {new_name!r}: skipped, "
                     f"{new_name!r} is now shared by {len(colliding_ids)} different ids "
-                    f"{sorted(colliding_ids)} -- can't tell them apart in the schedule feed"
+                    f"{sorted(colliding_ids)} with no consistent declared_divisions.json "
+                    f"placement to safely route by -- can't tell them apart in the schedule feed"
                 )
                 continue
             aliases[old_name] = new_name
@@ -138,15 +181,19 @@ def load_json(path: Path) -> dict:
     return json.loads(path.read_text())
 
 
+DECLARED_DIVISIONS_PATH = Path(__file__).resolve().parent / "declared_divisions.json"
+
+
 def main() -> int:
     old_mapping = load_json(TEAM_IDS_PATH)
+    declared_divisions = load_json(DECLARED_DIVISIONS_PATH)
     new_rows = resolve()
     if not new_rows:
         print("No team links found -- aborting without overwriting team_ids.json", file=sys.stderr)
         return 1
     new_mapping = collapse_by_name(new_rows)
 
-    aliases, warnings = compute_renames(old_mapping, new_rows)
+    aliases, warnings = compute_renames(old_mapping, new_rows, declared_divisions)
     for w in warnings:
         print(f"WARNING: {w}", file=sys.stderr)
 

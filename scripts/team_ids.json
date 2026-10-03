@@ -1,4 +1,12 @@
 {
+  "Capital Thunder 08-1": {
+    "season": "33",
+    "teamId": "654"
+  },
+  "Capital Thunder 08-2": {
+    "season": "33",
+    "teamId": "4274"
+  },
   "Capital Thunder 10B": {
     "season": "33",
     "teamId": "3094"
@@ -11,9 +19,21 @@
     "season": "33",
     "teamId": "134"
   },
-  "Capital Thunder 14-1": {
+  "Capital Thunder 14A": {
     "season": "33",
     "teamId": "132"
+  },
+  "Cupertino Cougars 08-1": {
+    "season": "33",
+    "teamId": "14"
+  },
+  "Cupertino Cougars 08-2": {
+    "season": "33",
+    "teamId": "481"
+  },
+  "Cupertino Cougars 08-3": {
+    "season": "33",
+    "teamId": "4449"
   },
   "Cupertino Cougars 10A": {
     "season": "33",
@@ -31,7 +51,7 @@
     "season": "33",
     "teamId": "371"
   },
-  "Cupertino Cougars 14-1": {
+  "Cupertino Cougars 14BB": {
     "season": "33",
     "teamId": "124"
   },
@@ -39,9 +59,21 @@
     "season": "33",
     "teamId": "122"
   },
+  "Delta Knights 08-1": {
+    "season": "33",
+    "teamId": "4630"
+  },
   "Delta Knights 12AA": {
     "season": "33",
     "teamId": "4344"
+  },
+  "Fresno Jr Monsters 08-1": {
+    "season": "33",
+    "teamId": "13"
+  },
+  "Fresno Jr Monsters 08-2": {
+    "season": "33",
+    "teamId": "663"
   },
   "Fresno Jr Monsters 10BB": {
     "season": "33",
@@ -51,13 +83,21 @@
     "season": "33",
     "teamId": "113"
   },
-  "Fresno Jr Monsters 14-1": {
+  "Fresno Jr Monsters 14BB": {
     "season": "33",
     "teamId": "112"
   },
   "Fresno Jr Monsters Girls 10B": {
     "season": "33",
     "teamId": "4558"
+  },
+  "Lake Tahoe Grizzlies 08-1": {
+    "season": "33",
+    "teamId": "279"
+  },
+  "Lake Tahoe Grizzlies 08-2": {
+    "season": "33",
+    "teamId": "572"
   },
   "Lake Tahoe Grizzlies 10B": {
     "season": "33",
@@ -71,9 +111,17 @@
     "season": "33",
     "teamId": "668"
   },
-  "Lake Tahoe Grizzlies 14-1": {
+  "Lake Tahoe Grizzlies 14BB": {
     "season": "33",
     "teamId": "374"
+  },
+  "Oakland Bears 08-1": {
+    "season": "33",
+    "teamId": "87"
+  },
+  "Oakland Bears 08-2": {
+    "season": "33",
+    "teamId": "670"
   },
   "Oakland Bears 10B": {
     "season": "33",
@@ -91,29 +139,57 @@
     "season": "33",
     "teamId": "693"
   },
-  "Oakland Bears 14-1": {
+  "Oakland Bears 14A": {
     "season": "33",
     "teamId": "84"
   },
-  "Oakland Bears 14-2": {
+  "Oakland Bears 14BB": {
     "season": "33",
     "teamId": "671"
+  },
+  "Reno Ice 08-1": {
+    "season": "33",
+    "teamId": "4458"
   },
   "Reno Ice 10BB": {
     "season": "33",
     "teamId": "3657"
   },
-  "Reno Ice 12-1 12AA": {
+  "Reno Ice 12AA": {
     "season": "33",
     "teamId": "3658"
   },
-  "Reno Ice 14-1": {
+  "Reno Ice 14A": {
     "season": "33",
     "teamId": "3659"
   },
   "Reno Ice 16A": {
     "season": "33",
     "teamId": "4560"
+  },
+  "San Francisco Sabercats 08-1": {
+    "season": "33",
+    "teamId": "65"
+  },
+  "San Francisco Sabercats 08-2": {
+    "season": "33",
+    "teamId": "659"
+  },
+  "San Francisco Sabercats 08-3": {
+    "season": "33",
+    "teamId": "677"
+  },
+  "San Francisco Sabercats 08-4": {
+    "season": "33",
+    "teamId": "4451"
+  },
+  "San Francisco Sabercats 08-5": {
+    "season": "33",
+    "teamId": "4452"
+  },
+  "San Francisco Sabercats 08-6": {
+    "season": "33",
+    "teamId": "4453"
   },
   "San Francisco Sabercats 10B": {
     "season": "33",
@@ -131,7 +207,7 @@
     "season": "33",
     "teamId": "63"
   },
-  "San Francisco Sabercats 14-1": {
+  "San Francisco Sabercats 14A": {
     "season": "33",
     "teamId": "545"
   },
@@ -183,11 +259,11 @@
     "season": "33",
     "teamId": "56"
   },
-  "San Jose Jr Sharks 14-1": {
+  "San Jose Jr Sharks 14A-1": {
     "season": "33",
     "teamId": "51"
   },
-  "San Jose Jr Sharks 14-2": {
+  "San Jose Jr Sharks 14A-2": {
     "season": "33",
     "teamId": "701"
   },
@@ -199,6 +275,34 @@
     "season": "33",
     "teamId": "4268"
   },
+  "San Jose Jr Sharks 2018 08-1": {
+    "season": "33",
+    "teamId": "60"
+  },
+  "San Jose Jr Sharks 2018 08-2": {
+    "season": "33",
+    "teamId": "4051"
+  },
+  "San Jose Jr Sharks 2018 08-3": {
+    "season": "33",
+    "teamId": "4052"
+  },
+  "San Jose Jr Sharks 2019 08-1": {
+    "season": "33",
+    "teamId": "4232"
+  },
+  "San Jose Jr Sharks 2019 08-2": {
+    "season": "33",
+    "teamId": "4233"
+  },
+  "San Jose Jr Sharks Girls 08-1": {
+    "season": "33",
+    "teamId": "548"
+  },
+  "San Jose Jr Sharks Girls 08-2": {
+    "season": "33",
+    "teamId": "4631"
+  },
   "San Jose Jr Sharks Girls 10B": {
     "season": "33",
     "teamId": "57"
@@ -206,6 +310,22 @@
   "San Jose Jr Sharks Girls 12AAA": {
     "season": "33",
     "teamId": "52"
+  },
+  "San Mateo Black Stars 08-1": {
+    "season": "33",
+    "teamId": "81"
+  },
+  "San Mateo Black Stars 08-2": {
+    "season": "33",
+    "teamId": "673"
+  },
+  "San Mateo Black Stars 08-3": {
+    "season": "33",
+    "teamId": "3116"
+  },
+  "San Mateo Black Stars 08-4": {
+    "season": "33",
+    "teamId": "4632"
   },
   "San Mateo Black Stars 10A": {
     "season": "33",
@@ -223,9 +343,17 @@
     "season": "33",
     "teamId": "79"
   },
-  "San Mateo Black Stars 14-1": {
+  "San Mateo Black Stars 14BB": {
     "season": "33",
     "teamId": "436"
+  },
+  "Santa Clara Blackhawks 08-1": {
+    "season": "33",
+    "teamId": "12"
+  },
+  "Santa Clara Blackhawks 08-2": {
+    "season": "33",
+    "teamId": "4454"
   },
   "Santa Clara Blackhawks 10B": {
     "season": "33",
@@ -243,13 +371,21 @@
     "season": "33",
     "teamId": "76"
   },
-  "Santa Clara Blackhawks 14-1": {
+  "Santa Clara Blackhawks 14BB": {
     "season": "33",
     "teamId": "72"
   },
   "Santa Clara Blackhawks 16A": {
     "season": "33",
     "teamId": "71"
+  },
+  "Santa Rosa Flyers 08-1": {
+    "season": "33",
+    "teamId": "11"
+  },
+  "Santa Rosa Flyers 08-2": {
+    "season": "33",
+    "teamId": "538"
   },
   "Santa Rosa Flyers 10B": {
     "season": "33",
@@ -267,13 +403,21 @@
     "season": "33",
     "teamId": "38"
   },
-  "Santa Rosa Flyers 14-1": {
+  "Santa Rosa Flyers 14A": {
     "season": "33",
     "teamId": "37"
   },
-  "Santa Rosa Flyers 14-2": {
+  "Santa Rosa Flyers 14BB": {
     "season": "33",
     "teamId": "3696"
+  },
+  "Stockton Colts 08-1": {
+    "season": "33",
+    "teamId": "308"
+  },
+  "Stockton Colts 08-2": {
+    "season": "33",
+    "teamId": "685"
   },
   "Stockton Colts 10BB": {
     "season": "33",
@@ -283,7 +427,7 @@
     "season": "33",
     "teamId": "365"
   },
-  "Stockton Colts 14-1": {
+  "Stockton Colts 14A": {
     "season": "33",
     "teamId": "33"
   },
@@ -315,21 +459,45 @@
     "season": "33",
     "teamId": "340"
   },
-  "Tri Valley Blue Devils 14-1": {
+  "Tri Valley Blue Devils 14A": {
     "season": "33",
     "teamId": "21"
   },
-  "Tri Valley Blue Devils 14-2": {
+  "Tri Valley Blue Devils 14BB": {
     "season": "33",
     "teamId": "309"
   },
-  "Tri Valley Bulls": {
+  "Tri Valley Blue Devils 16A": {
     "season": "33",
     "teamId": "4580"
   },
   "Tri Valley Lady Blue Devils 10BB": {
     "season": "33",
     "teamId": "2924"
+  },
+  "Tri-Valley Blue Devils 08-1": {
+    "season": "33",
+    "teamId": "576"
+  },
+  "Tri-Valley Blue Devils 08-2": {
+    "season": "33",
+    "teamId": "577"
+  },
+  "Tri-Valley Blue Devils 08-3": {
+    "season": "33",
+    "teamId": "29"
+  },
+  "Tri-Valley Blue Devils 08-4": {
+    "season": "33",
+    "teamId": "16"
+  },
+  "Vacaville Jets 08-1": {
+    "season": "33",
+    "teamId": "15"
+  },
+  "Vacaville Jets 08-2": {
+    "season": "33",
+    "teamId": "689"
   },
   "Vacaville Jets 10B": {
     "season": "33",
@@ -347,7 +515,7 @@
     "season": "33",
     "teamId": "27"
   },
-  "Vacaville Jets 14-1": {
+  "Vacaville Jets 14A": {
     "season": "33",
     "teamId": "320"
   },
