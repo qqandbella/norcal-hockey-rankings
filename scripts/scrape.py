@@ -67,6 +67,16 @@ TTS_TEAM_URL = "https://stats.caha.timetoscore.com/display-schedule?team={team_i
 # -- don't filter that team out," never "assume it doesn't belong anywhere."
 DECLARED_DIVISIONS_PATH = Path(__file__).resolve().parent / "declared_divisions.json"
 
+# Built by scripts/build_team_ids.py (same manual/rare posture) by diffing
+# TTS's own stable numeric team id against its current display name.
+# {old_display_name: current_display_name} -- TTS renames a team's display
+# text mid-season (confirmed 2026-10: ~60 teams, "10-2" -> "10B" style)
+# with no warning and no id exposed anywhere in the regular schedule feed,
+# which otherwise fractures that team's history across two unrelated-
+# looking names. Missing file or missing entries means "no known rename,"
+# never "this name doesn't exist."
+TEAM_ALIASES_PATH = Path(__file__).resolve().parent / "team_aliases.json"
+
 
 def load_team_ids() -> dict[str, dict[str, str]]:
     if not TEAM_IDS_PATH.exists():
@@ -78,6 +88,34 @@ def load_declared_divisions() -> dict[str, str]:
     if not DECLARED_DIVISIONS_PATH.exists():
         return {}
     return json.loads(DECLARED_DIVISIONS_PATH.read_text())
+
+
+def load_team_aliases() -> dict[str, str]:
+    if not TEAM_ALIASES_PATH.exists():
+        return {}
+    return json.loads(TEAM_ALIASES_PATH.read_text())
+
+
+def canonical_team_name(name: str, team_aliases: dict[str, str]) -> str:
+    return team_aliases.get(name, name)
+
+
+def apply_team_aliases(raw_games: list[dict], team_aliases: dict[str, str]) -> list[dict]:
+    """Rewrites every game's home/away to its current canonical name, so a
+    team renamed mid-season (see TEAM_ALIASES_PATH) reads as one continuous
+    team everywhere downstream -- rosters, ratings, declared-division
+    matching, cross-division splitting -- instead of two unrelated names
+    with fractured histories. A no-op when `team_aliases` is empty."""
+    if not team_aliases:
+        return raw_games
+    return [
+        {
+            **g,
+            "home": canonical_team_name(g["home"], team_aliases),
+            "away": canonical_team_name(g["away"], team_aliases),
+        }
+        for g in raw_games
+    ]
 
 
 def build_team_links(team_names: set[str], team_ids: dict[str, dict[str, str]]) -> dict[str, str]:
@@ -806,7 +844,15 @@ def main() -> int:
         print("No divisions discovered -- aborting without overwriting data/latest.json", file=sys.stderr)
         return 1
     team_ids = load_team_ids()
-    declared_divisions = load_declared_divisions()
+    team_aliases = load_team_aliases()
+    # declared_divisions.json is keyed by whatever name was current when it
+    # was last hand-built -- canonicalize its keys the same way raw game
+    # names get canonicalized below, so a renamed team's declared placement
+    # still matches post-rename games instead of silently stopping.
+    declared_divisions = {
+        canonical_team_name(name, team_aliases): division
+        for name, division in load_declared_divisions().items()
+    }
 
     # label -> its raw games, merged across every physical level that
     # contributes to it. Keyed by label (not level_id) because NorCal has,
@@ -828,7 +874,7 @@ def main() -> int:
     for i, (level_id, label) in enumerate(sorted(divisions.items())):
         if i > 0:
             time.sleep(REQUEST_DELAY_SECONDS)
-        games = fetch_division_games(session, level_id)
+        games = apply_team_aliases(fetch_division_games(session, level_id), team_aliases)
         print(f"  {label} (level={level_id}): {len(games)} games", file=sys.stderr)
 
         sub_labels = split_physical_division_by_declared_subdivisions(label, games, declared_divisions)

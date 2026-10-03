@@ -1,4 +1,6 @@
+from build_team_ids import collapse_by_name, compute_renames
 from scrape import (
+    apply_team_aliases,
     build_division_payload,
     build_team_links,
     compute_age_group_ratings,
@@ -398,3 +400,62 @@ def test_merge_raw_games_into_label_dedupes_by_game_id_across_physical_levels():
     assert {g["game_id"] for g in by_label["10U B East"]} == {"g1", "g2", "g3"}
     # The later (native) physical level wins as the label's nominal levelId.
     assert by_level_id["10U B East"] == 135
+
+
+def test_apply_team_aliases_rewrites_home_and_away():
+    games = [_raw_game("Capital Thunder 10-2", "Opp", 5, 2, "g1", "10U B")]
+    aliases = {"Capital Thunder 10-2": "Capital Thunder 10B"}
+    rewritten = apply_team_aliases(games, aliases)
+    assert rewritten[0]["home"] == "Capital Thunder 10B"
+    assert rewritten[0]["away"] == "Opp"  # not in the alias map -- left untouched
+
+
+def test_apply_team_aliases_is_a_noop_for_unknown_names_and_empty_map():
+    games = [_raw_game("A", "B", 5, 2, "g1", "10U B")]
+    assert apply_team_aliases(games, {}) == games
+    assert apply_team_aliases(games, {"Someone Else": "X"}) == games
+
+
+def test_compute_renames_detects_a_clean_rename():
+    old = {"Capital Thunder 10-2": {"teamId": "3094", "season": "33"}}
+    new_rows = [("3094", "33", "Capital Thunder 10B")]
+    aliases, warnings = compute_renames(old, new_rows)
+    assert aliases == {"Capital Thunder 10-2": "Capital Thunder 10B"}
+    assert warnings == []
+
+
+def test_compute_renames_skips_an_ambiguous_collision():
+    # Two different real teams (ids 17, 18) renamed to the exact same
+    # string -- aliasing either old name into it would wrongly merge two
+    # teams' histories, so neither gets an alias; both are reported instead.
+    # `new_rows` must carry BOTH ids under the identical name (as the raw,
+    # uncollapsed resolve() output does) for this collision to be visible
+    # at all -- collapsing by name first would already have dropped one.
+    old = {
+        "Tri Valley Blue Devils 10-1": {"teamId": "18", "season": "33"},
+        "Tri Valley Blue Devils 10-2": {"teamId": "17", "season": "33"},
+    }
+    new_rows = [
+        ("18", "33", "Tri Valley Blue Devils 10A"),
+        ("17", "33", "Tri Valley Blue Devils 10A"),
+    ]
+    aliases, warnings = compute_renames(old, new_rows)
+    assert aliases == {}
+    assert len(warnings) == 2  # one per old name that would have collided
+    assert all("Tri Valley Blue Devils 10A" in w for w in warnings)
+
+
+def test_compute_renames_ignores_teams_with_no_name_change():
+    old = {"Stable Name": {"teamId": "1", "season": "33"}}
+    new_rows = [("1", "33", "Stable Name")]
+    aliases, warnings = compute_renames(old, new_rows)
+    assert aliases == {}
+    assert warnings == []
+
+
+def test_collapse_by_name_last_one_wins_on_collision():
+    # This is the lossy step compute_renames must run BEFORE collapsing,
+    # not after -- documented here so the two functions' contracts don't
+    # drift apart silently.
+    rows = [("18", "33", "Tri Valley Blue Devils 10A"), ("17", "33", "Tri Valley Blue Devils 10A")]
+    assert collapse_by_name(rows) == {"Tri Valley Blue Devils 10A": {"teamId": "17", "season": "33"}}
