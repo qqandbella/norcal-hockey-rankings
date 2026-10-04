@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { LEVEL_ORDER, divisionRoute } from '../lib/grouping'
+import { LEVEL_ORDER, divisionRoute, groupByAge } from '../lib/grouping'
 import { collectTeamGames } from '../lib/schedule'
 import type { Division, RankingsData, TeamRow } from '../lib/types'
 import { ALL_TYPES } from '../lib/types'
@@ -26,6 +26,19 @@ function collectRatings(data: RankingsData, teamName: string): DivisionRating[] 
   })
 }
 
+/** The division to show as this team's "home" for display purposes
+ * (predict-page link, cross-level highlighting, the no-ratings-yet
+ * fallback link) -- resolved from the team's own current ratings/
+ * schedule, never from the URL. A team's games can carry a `levelLabel`
+ * naming a division that no longer exists as its own page (TTS's raw
+ * per-game "Division" column text, stale once a legacy level gets split
+ * -- see teamRoute's own doc comment), so this must never trust that. */
+function primaryDivision(data: RankingsData, teamName: string, ratings: DivisionRating[]): Division | undefined {
+  if (ratings.length > 0) return ratings[0].division
+  const sortedDivisions = groupByAge(data.divisions).flatMap((g) => g.divisions)
+  return sortedDivisions.find((d) => d.games.some((g) => g.home === teamName || g.away === teamName))
+}
+
 function findTeamLink(data: RankingsData, teamName: string): string | undefined {
   for (const division of data.divisions) {
     if (division.teamLinks[teamName]) return division.teamLinks[teamName]
@@ -33,15 +46,7 @@ function findTeamLink(data: RankingsData, teamName: string): string | undefined 
   return undefined
 }
 
-export function TeamPage({
-  data,
-  homeDivision,
-  ratingMode,
-}: {
-  data: RankingsData
-  homeDivision: Division
-  ratingMode: 'classic' | 'experimental'
-}) {
+export function TeamPage({ data, ratingMode }: { data: RankingsData; ratingMode: 'classic' | 'experimental' }) {
   const { team: encodedTeam } = useParams()
   const teamName = encodedTeam ? decodeURIComponent(encodedTeam) : ''
   const teamGames = collectTeamGames(data, teamName)
@@ -51,6 +56,11 @@ export function TeamPage({
   if (teamGames.length === 0) {
     return <p className="empty-state">No games found for {teamName}.</p>
   }
+
+  // teamGames is non-empty, and every one of its games comes from some
+  // division's own games list, so primaryDivision's fallback always finds
+  // at least one match.
+  const homeDivision = primaryDivision(data, teamName, ratings)!
 
   return (
     <section>

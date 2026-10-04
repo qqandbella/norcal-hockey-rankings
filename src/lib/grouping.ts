@@ -39,6 +39,13 @@ export function divisionRoute(div: Pick<Division, 'ageLabel' | 'levelLabel'>): s
   return `/${encodeURIComponent(div.ageLabel)}/${encodeURIComponent(div.levelLabel)}`
 }
 
-export function teamRoute(div: Pick<Division, 'ageLabel' | 'levelLabel'>, teamName: string): string {
-  return `${divisionRoute(div)}/team/${encodeURIComponent(teamName)}`
+/** Team pages are indexed purely by team name, never by a division --
+ * a game's own `levelLabel` is TTS's raw per-game "Division" column text,
+ * which can name a division that no longer exists as its own page (e.g.
+ * "B" for a game filed before a legacy level got split into "B East"/"B
+ * West") even though the team itself is still very much on the site.
+ * TeamPage resolves its own current division(s) internally instead of
+ * trusting whatever division happened to be in the URL. */
+export function teamRoute(teamName: string): string {
+  return `/team/${encodeURIComponent(teamName)}`
 }

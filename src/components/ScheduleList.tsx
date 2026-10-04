@@ -129,10 +129,10 @@ export function ScheduleList({
                   <td>{game.date}</td>
                   <td>{game.time}</td>
                   <td className={game.away === perspectiveTeam ? 'schedule-table__me' : undefined}>
-                    <Link to={teamRoute(game, game.away)}>{game.away}</Link>
+                    <Link to={teamRoute(game.away)}>{game.away}</Link>
                   </td>
                   <td className={game.home === perspectiveTeam ? 'schedule-table__me' : undefined}>
-                    <Link to={teamRoute(game, game.home)}>{game.home}</Link>
+                    <Link to={teamRoute(game.home)}>{game.home}</Link>
                   </td>
                   <td>
                     {hasScore ? (

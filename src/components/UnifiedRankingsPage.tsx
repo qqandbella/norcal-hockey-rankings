@@ -37,10 +37,6 @@ interface UnifiedRow {
    * cross-tested team (the same team playing in two divisions this
    * season). */
   tiers: string[]
-  /** Whichever of its divisions it's played the most games in, for the
-   * team-page link -- there's no single "home" division field for a
-   * cross-tested team, so pick the one with the most evidence. */
-  linkDivision: Division
   wins: number
   losses: number
   ties: number
@@ -69,7 +65,6 @@ function buildUnifiedRows(data: RankingsData, ageLabel: string, experimental: bo
     if (matches.length === 0) continue // rated (via a bridge) but no local "All" row -- shouldn't happen, skip defensively
 
     const tiers = [...new Set(matches.map((m) => m.div.levelLabel))].sort((a, b) => tierSortKey(a) - tierSortKey(b))
-    const linkDivision = matches.reduce((best, m) => (m.row.gamesPlayed > best.row.gamesPlayed ? m : best)).div
 
     const agg = matches.reduce(
       (acc, m) => ({
@@ -88,7 +83,6 @@ function buildUnifiedRows(data: RankingsData, ageLabel: string, experimental: bo
       rating: unified.rating,
       gamesPlayed: unified.gamesPlayed,
       tiers,
-      linkDivision,
       ...agg,
       goalDiff: agg.goalsFor - agg.goalsAgainst,
     })
@@ -220,7 +214,7 @@ export function UnifiedRankingsPage({ data, ratingMode }: UnifiedRankingsPagePro
               <tr key={row.name}>
                 <td>{i + 1}</td>
                 <td>
-                  <Link to={teamRoute(row.linkDivision, row.name)}>{row.name}</Link>
+                  <Link to={teamRoute(row.name)}>{row.name}</Link>
                 </td>
                 <td>{row.tiers.join(' + ')}</td>
                 <td className="rankings-table__rating">{row.rating > 0 ? `+${row.rating}` : row.rating}</td>

@@ -417,10 +417,12 @@ describe('App', () => {
     const crossLevelRow = screen.getByText('Sat Sep 12').closest('tr')
     expect(crossLevelRow).toHaveTextContent('10U BB')
 
-    // The opponent from that cross-division game links using ITS own
-    // division (BB), not Fresno's home division (B).
+    // The opponent link is indexed by team name alone, not by this game's
+    // division (BB) or Fresno's home division (B) -- a game's own
+    // levelLabel is TTS's raw per-game text and can name a division that
+    // no longer exists as its own page once a legacy level gets split.
     const opponentLink = screen.getByRole('link', { name: 'Santa Clara Blackhawks 10-1' })
-    expect(opponentLink).toHaveAttribute('href', '#/10U/BB/team/Santa%20Clara%20Blackhawks%2010-1')
+    expect(opponentLink).toHaveAttribute('href', '#/team/Santa%20Clara%20Blackhawks%2010-1')
   })
 
   it('filters a team schedule by result', async () => {

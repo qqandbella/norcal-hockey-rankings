@@ -47,15 +47,6 @@ function DivisionPage({ data, ratingMode }: { data: RankingsData; ratingMode: Ra
   )
 }
 
-function TeamPageRoute({ data, ratingMode }: { data: RankingsData; ratingMode: RatingMode }) {
-  const { age, level } = useParams()
-  const division = findDivision(data, age, level)
-  if (!division) {
-    return <p className="empty-state">No data for {age} {level}.</p>
-  }
-  return <TeamPage data={data} homeDivision={division} ratingMode={ratingMode} />
-}
-
 function Overview({ data }: { data: RankingsData }) {
   const firstDivision = data.divisions[0]
   if (!firstDivision) return <p className="empty-state">No divisions found.</p>
@@ -136,10 +127,7 @@ export default function App() {
               <Routes>
                 <Route path="/" element={<Overview data={data} />} />
                 <Route path="/:age/:level" element={<DivisionPage data={data} ratingMode={ratingMode} />} />
-                <Route
-                  path="/:age/:level/team/:team"
-                  element={<TeamPageRoute data={data} ratingMode={ratingMode} />}
-                />
+                <Route path="/team/:team" element={<TeamPage data={data} ratingMode={ratingMode} />} />
                 <Route path="/predict/:age" element={<PredictPage data={data} ratingMode={ratingMode} />} />
                 <Route path="/unified/:age" element={<UnifiedRankingsPage data={data} ratingMode={ratingMode} />} />
                 <Route path="/compare" element={<ComparePage data={data} />} />

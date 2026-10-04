@@ -174,7 +174,7 @@ export function RankingsTable({ division, selectedType, onSelectedTypeChange, ra
                   <tr key={team.name}>
                     <td>{i + 1}</td>
                     <td>
-                      <Link to={teamRoute(division, team.name)}>{team.name}</Link>
+                      <Link to={teamRoute(team.name)}>{team.name}</Link>
                     </td>
                     <td>
                       <span className={`tier-badge tier-badge--${tier}`}>{TIER_LABEL[tier]}</span>
@@ -201,7 +201,7 @@ export function RankingsTable({ division, selectedType, onSelectedTypeChange, ra
               {bucket.unratedTeams.map((name, i) => (
                 <span key={name}>
                   {i > 0 && ', '}
-                  <Link to={teamRoute(division, name)}>{name}</Link>
+                  <Link to={teamRoute(name)}>{name}</Link>
                 </span>
               ))}
             </p>

@@ -117,10 +117,10 @@ export function ComparePage({ data }: { data: RankingsData }) {
               return (
                 <tr key={i} className={`compare__row--${c.severity}`}>
                   <td>
-                    <Link to={teamRoute(gameForA, teamA)}>{describeGame(gameForA, teamA)}</Link>
+                    <Link to={teamRoute(teamA)}>{describeGame(gameForA, teamA)}</Link>
                   </td>
                   <td>
-                    <Link to={teamRoute(gameForB, teamB)}>{describeGame(gameForB, teamB)}</Link>
+                    <Link to={teamRoute(teamB)}>{describeGame(gameForB, teamB)}</Link>
                   </td>
                   <td>
                     {c.driveMiles !== null && c.driveMinutes !== null
