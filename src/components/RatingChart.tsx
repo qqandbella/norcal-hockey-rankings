@@ -63,37 +63,100 @@ function tooltipPosition(wrapRef: RefObject<HTMLDivElement | null>, el: Element,
   }
 }
 
+/** "Nice" round-number tick values spanning [min, max], same idea as a
+ * standard d3-style tick generator -- a step of 1/2/5 x 10^n, snapped
+ * outward so the ticks fully cover the data (see marks-and-anatomy.md:
+ * "round to clean numbers"). */
+function niceTicks(min: number, max: number, targetCount: number): number[] {
+  if (min === max) {
+    min -= 1
+    max += 1
+  }
+  const rawStep = (max - min) / targetCount
+  const magnitude = 10 ** Math.floor(Math.log10(rawStep))
+  const residual = rawStep / magnitude
+  const niceResidual = residual > 5 ? 10 : residual > 2 ? 5 : residual > 1 ? 2 : 1
+  const step = niceResidual * magnitude
+  const niceMin = Math.floor(min / step) * step
+  const niceMax = Math.ceil(max / step) * step
+  const ticks: number[] = []
+  for (let v = niceMin; v <= niceMax + step / 2; v += step) ticks.push(Math.round(v * 100) / 100)
+  return ticks
+}
+
+/** Short "M/D" form of a stored "MM/DD/YY" date -- compact enough for an
+ * x-axis tick. */
+function shortDate(date: string): string {
+  const [mm, dd] = date.split('/')
+  return `${Number(mm)}/${Number(dd)}`
+}
+
+/** Indices to label on the x-axis -- all of them if few enough, otherwise
+ * an even subsample (always including the first and last) so labels
+ * don't collide. */
+function pickLabelIndices(n: number, maxLabels: number): number[] {
+  if (n <= maxLabels) return Array.from({ length: n }, (_, i) => i)
+  const step = (n - 1) / (maxLabels - 1)
+  const indices = new Set<number>()
+  for (let i = 0; i < maxLabels; i++) indices.add(Math.round(i * step))
+  return Array.from(indices).sort((a, b) => a - b)
+}
+
 function TrajectoryChart({ trajectory, teamName }: { trajectory: TrajectoryPoint[]; teamName: string }) {
   const wrapRef = useRef<HTMLDivElement>(null)
   const [tooltip, setTooltip] = useState<TooltipState | null>(null)
 
   const values = trajectory.map((t) => t.runningRating)
-  const min = Math.min(...values)
-  const max = Math.max(...values)
-  const pad = Math.max(0.5, (max - min) * 0.15)
-  const domainMin = min - pad
-  const domainMax = max + pad
+  const yTicks = niceTicks(Math.min(...values), Math.max(...values), 4)
+  const domainMin = yTicks[0]
+  const domainMax = yTicks[yTicks.length - 1]
 
   const slotWidth = 28
   const height = 220
-  const marginTop = 16
+  const marginTop = 10
   const marginBottom = 24
+  const marginLeft = 40
+  const marginRight = 10
   const innerHeight = height - marginTop - marginBottom
-  const width = Math.max(320, trajectory.length * slotWidth + 16)
+  const width = Math.max(320, marginLeft + marginRight + trajectory.length * slotWidth)
 
-  const xFor = (i: number) => 8 + i * slotWidth + slotWidth / 2
+  const xFor = (i: number) => marginLeft + i * slotWidth + slotWidth / 2
   const yFor = (v: number) => marginTop + innerHeight - ((v - domainMin) / (domainMax - domainMin)) * innerHeight
 
-  const zeroVisible = domainMin < 0 && domainMax > 0
   const linePath = trajectory.map((t, i) => `${i === 0 ? 'M' : 'L'} ${xFor(i)} ${yFor(t.runningRating)}`).join(' ')
   const areaPath = `${linePath} L ${xFor(trajectory.length - 1)} ${yFor(domainMin)} L ${xFor(0)} ${yFor(domainMin)} Z`
+  const xLabelIndices = pickLabelIndices(trajectory.length, 6)
 
   const showTooltip = (index: number, el: SVGCircleElement) => setTooltip(tooltipPosition(wrapRef, el, index))
 
   return (
     <div className="rating-chart__wrap" ref={wrapRef}>
       <svg viewBox={`0 0 ${width} ${height}`} className="rating-chart__svg" role="img" aria-label={`Rating trajectory for ${teamName}`}>
-        {zeroVisible && <line x1={0} y1={yFor(0)} x2={width} y2={yFor(0)} className="rating-chart__baseline" />}
+        {yTicks.map((tick) => (
+          <g key={tick}>
+            <line
+              x1={marginLeft}
+              y1={yFor(tick)}
+              x2={width - marginRight}
+              y2={yFor(tick)}
+              className="rating-chart__gridline"
+            />
+            <text x={marginLeft - 6} y={yFor(tick)} dy="0.32em" textAnchor="end" className="rating-chart__axis-label">
+              {tick > 0 ? `+${tick}` : tick}
+            </text>
+          </g>
+        ))}
+        {xLabelIndices.map((i) => (
+          <text
+            key={trajectory[i].game.gameId}
+            x={xFor(i)}
+            y={height - marginBottom + 16}
+            textAnchor="middle"
+            className="rating-chart__axis-label"
+          >
+            {shortDate(trajectory[i].game.date)}
+          </text>
+        ))}
         <path d={areaPath} fill={LINE_COLOR} opacity={0.1} stroke="none" />
         <path d={linePath} fill="none" stroke={LINE_COLOR} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         {trajectory.map((t, i) => (

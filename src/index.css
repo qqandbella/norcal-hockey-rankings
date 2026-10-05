@@ -578,9 +578,15 @@ body {
   display: block;
 }
 
-.rating-chart__baseline {
+.rating-chart__gridline {
   stroke: var(--border);
   stroke-width: 1;
+}
+
+.rating-chart__axis-label {
+  fill: currentColor;
+  opacity: 0.6;
+  font-size: 9px;
 }
 
 .rating-chart__dot {
