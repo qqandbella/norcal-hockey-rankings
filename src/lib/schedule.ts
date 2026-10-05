@@ -39,3 +39,19 @@ export function collectTeamGames(data: RankingsData, teamName: string): GameReco
   }
   return Array.from(byId.values()).sort((a, b) => gameSortKey(a) - gameSortKey(b))
 }
+
+export type Outcome = 'win' | 'lose' | 'tie'
+
+/** Outcome for `perspectiveTeam` in this game, or null if unplayed, not
+ * yet scored, or `perspectiveTeam` isn't actually in it. */
+export function outcomeFor(game: GameRecord, perspectiveTeam: string | undefined): Outcome | null {
+  if (!perspectiveTeam || !game.played || game.awayGoals === null || game.homeGoals === null) return null
+  const isHome = game.home === perspectiveTeam
+  const isAway = game.away === perspectiveTeam
+  if (!isHome && !isAway) return null
+  const mine = isHome ? game.homeGoals : game.awayGoals
+  const theirs = isHome ? game.awayGoals : game.homeGoals
+  if (mine > theirs) return 'win'
+  if (mine < theirs) return 'lose'
+  return 'tie'
+}

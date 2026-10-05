@@ -2,9 +2,10 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { teamRoute } from '../lib/grouping'
 import { predictMatchup } from '../lib/predict'
+import { outcomeFor } from '../lib/schedule'
+import type { Outcome } from '../lib/schedule'
 import type { AgeGroupRatings, GameRecord } from '../lib/types'
 
-type Outcome = 'win' | 'lose' | 'tie'
 type ResultFilter = 'all' | 'win' | 'lose' | 'winOrTie'
 
 const RESULT_FILTER_LABEL: Record<ResultFilter, string> = {
@@ -16,19 +17,6 @@ const RESULT_FILTER_LABEL: Record<ResultFilter, string> = {
 
 function predictRoute(game: GameRecord): string {
   return `/predict/${encodeURIComponent(game.ageLabel)}?a=${encodeURIComponent(game.away)}&b=${encodeURIComponent(game.home)}`
-}
-
-/** Outcome for `perspectiveTeam` in this game, or null if unplayed / team isn't in it. */
-function outcomeFor(game: GameRecord, perspectiveTeam: string | undefined): Outcome | null {
-  if (!perspectiveTeam || !game.played || game.awayGoals === null || game.homeGoals === null) return null
-  const isHome = game.home === perspectiveTeam
-  const isAway = game.away === perspectiveTeam
-  if (!isHome && !isAway) return null
-  const mine = isHome ? game.homeGoals : game.awayGoals
-  const theirs = isHome ? game.awayGoals : game.homeGoals
-  if (mine > theirs) return 'win'
-  if (mine < theirs) return 'lose'
-  return 'tie'
 }
 
 function matchesFilter(outcome: Outcome | null, filter: ResultFilter): boolean {

@@ -1,8 +1,10 @@
 import { Link, useParams } from 'react-router-dom'
 import { LEVEL_ORDER, divisionRoute, groupByAge } from '../lib/grouping'
+import { collectGameContributions, collectTrajectory } from '../lib/ratingContributions'
 import { collectTeamGames } from '../lib/schedule'
 import type { Division, RankingsData, TeamRow } from '../lib/types'
 import { ALL_TYPES } from '../lib/types'
+import { RatingChart } from './RatingChart'
 import { ScheduleList } from './ScheduleList'
 
 interface DivisionRating {
@@ -61,6 +63,14 @@ export function TeamPage({ data, ratingMode }: { data: RankingsData; ratingMode:
   // division's own games list, so primaryDivision's fallback always finds
   // at least one match.
   const homeDivision = primaryDivision(data, teamName, ratings)!
+
+  // ratings[0].row.rating is already the unified, cross-division number
+  // (every division's "All" bucket row gets overwritten to it -- see
+  // _apply_declared_roster_and_unified_rating in scrape.py), so it's the
+  // same value shown in every dl block above, cross-tested or not.
+  const finalRating = ratings.length > 0 ? (ratingMode === 'experimental' ? ratings[0].row.experimentalRating : ratings[0].row.rating) : null
+  const contributions = finalRating !== null ? collectGameContributions(teamGames, teamName, data.ageGroups, ratingMode) : []
+  const trajectory = finalRating !== null ? collectTrajectory(contributions, finalRating) : []
 
   return (
     <section>
@@ -126,6 +136,10 @@ export function TeamPage({ data, ratingMode }: { data: RankingsData; ratingMode:
           No games played yet in <Link to={divisionRoute(homeDivision)}>{homeDivision.ageLabel} {homeDivision.levelLabel}</Link> or
           any other division (see full schedule below).
         </p>
+      )}
+
+      {finalRating !== null && contributions.length > 0 && (
+        <RatingChart contributions={contributions} trajectory={trajectory} teamName={teamName} finalRating={finalRating} />
       )}
 
       <h3>Schedule</h3>
