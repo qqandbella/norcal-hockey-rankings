@@ -89,6 +89,26 @@ describe('collectTrajectory', () => {
     expect(trajectory[trajectory.length - 1].runningRating).toBeCloseTo(7.5, 5)
   })
 
+  it('is a plain unshrunk running average, not the ridge-shrunk formula the official model uses', () => {
+    // Two games against the same opponent at the same rating/margin --
+    // with finalRating set to equal the true unweighted mean (so
+    // calibration is a no-op), each running point must equal the plain
+    // arithmetic mean of implied values so far. In particular, the FIRST
+    // point must equal that one game's own implied value exactly, not a
+    // heavily shrunk-toward-zero fraction of it (shrinkage divides by
+    // n+k=1+3=4 for a lone game -- confirmed confusing to a reader
+    // expecting "opponent rating + margin" for game one).
+    const games = [
+      makeGame({ away: 'Us', home: 'Cougars', awayGoals: 10, homeGoals: 2 }),
+      makeGame({ away: 'Us', home: 'Cougars', awayGoals: 10, homeGoals: 2 }),
+    ]
+    const contributions = collectGameContributions(games, 'Us', ageGroups({ Cougars: 24 }))
+    // implied = 24 + 7 (capped) = 31 for both games; true mean = 31.
+    const trajectory = collectTrajectory(contributions, 31)
+    expect(trajectory[0].runningRating).toBeCloseTo(31, 5)
+    expect(trajectory[1].runningRating).toBeCloseTo(31, 5)
+  })
+
   it('keeps one trajectory point per contribution, in the same order', () => {
     const games = [
       makeGame({ away: 'Us', home: 'A' }),

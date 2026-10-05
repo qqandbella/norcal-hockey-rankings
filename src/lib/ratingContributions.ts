@@ -1,11 +1,7 @@
 import type { AgeGroupRatings, GameRecord } from './types'
 
-// Mirrors scripts/ratings.py's own constants -- keep in sync if either changes.
+// Mirrors scripts/ratings.py's own goal cap -- keep in sync if it changes.
 export const GOAL_CAP = 7
-const SHRINKAGE_K = 3.0
-const MIN_SHRINKAGE_RATIO = 0.1
-const MAX_SHRINKAGE_RATIO = 8.0
-const REFERENCE_VARIANCE = (2 * GOAL_CAP) ** 2 / 12
 
 function cappedMargin(myGoals: number, theirGoals: number): number {
   return Math.max(-GOAL_CAP, Math.min(GOAL_CAP, myGoals - theirGoals))
@@ -60,26 +56,6 @@ export function collectGameContributions(
   return contributions
 }
 
-function pvariance(values: number[]): number {
-  const mean = values.reduce((a, b) => a + b, 0) / values.length
-  return values.reduce((a, v) => a + (v - mean) ** 2, 0) / values.length
-}
-
-/** Same shrunk-mean formula compute_ratings uses (variance-aware ridge
- * toward 0), applied to a single team's own implied values in isolation --
- * a legitimate simplification only because opponent ratings are held
- * fixed at their current values rather than co-solved, see module doc. */
-function shrunkMean(implied: number[]): number {
-  if (implied.length === 0) return 0
-  let k = SHRINKAGE_K
-  if (implied.length >= 2) {
-    const ratio = pvariance(implied) / REFERENCE_VARIANCE
-    k = SHRINKAGE_K * Math.max(MIN_SHRINKAGE_RATIO, Math.min(MAX_SHRINKAGE_RATIO, ratio))
-  }
-  const sum = implied.reduce((a, b) => a + b, 0)
-  return sum / (implied.length + k)
-}
-
 export interface TrajectoryPoint {
   contribution: GameContribution
   /** This team's own running rating after this game (and every game
@@ -90,25 +66,36 @@ export interface TrajectoryPoint {
 /**
  * A running, game-by-game rating trajectory for one team -- "how would my
  * rating have looked after each game, if every opponent were valued at
- * today's strength the whole time." Deliberately NOT a true walk-forward
- * re-derivation (that would need re-solving the whole division's ratings
- * as of each date, same technique scripts/backtest.py uses for
- * validation, not implemented here) -- opponent ratings are held at their
- * final values throughout, so this shows accumulation of evidence, not a
- * historically accurate snapshot. Calibrated so the final point lands
+ * today's strength the whole time." A **plain, unshrunk running mean** of
+ * `implied` (opponent rating + capped margin) over the games so far --
+ * deliberately NOT the official model's ridge-shrinkage formula (see
+ * scripts/ratings.py's compute_ratings): that formula divides by `n+k`
+ * (k=3.0 flat for a single game), which makes an early point look far
+ * more conservative than simply "today's opponent rating + this game's
+ * margin" -- confirmed confusing in practice (a team's very first game
+ * read as barely a quarter of its implied value). This chart is already
+ * an approximation (opponent ratings aren't re-solved as of each date,
+ * see below), so matching naive per-game intuition beats mirroring a
+ * regularization term out of context. Calibrated so the final point lands
  * exactly on `finalRating` (the one number known to be correct): the
  * whole uncalibrated curve is shifted by the gap between its own last
  * point and `finalRating`, since this simplified running mean isn't
  * centered/unified the same way the official rating is.
+ *
+ * Also NOT a true walk-forward re-derivation (that would need re-solving
+ * the whole division's ratings as of each date, same technique scripts/
+ * backtest.py uses for validation, not implemented here) -- opponent
+ * ratings are held at their final values throughout, so this shows
+ * accumulation of evidence, not a historically accurate snapshot.
  */
 export function collectTrajectory(contributions: GameContribution[], finalRating: number): TrajectoryPoint[] {
   if (contributions.length === 0) return []
   const raw: number[] = []
-  const implied: number[] = []
-  for (const c of contributions) {
-    implied.push(c.implied)
-    raw.push(shrunkMean(implied))
-  }
+  let sum = 0
+  contributions.forEach((c, i) => {
+    sum += c.implied
+    raw.push(sum / (i + 1))
+  })
   const calibration = finalRating - raw[raw.length - 1]
   return contributions.map((contribution, i) => ({
     contribution,

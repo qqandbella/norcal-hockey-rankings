@@ -144,9 +144,9 @@ export function RatingChart({ trajectory, teamName }: { trajectory: TrajectoryPo
       </div>
 
       <p className="rating-chart__caption">
-        An approximate running rating after each game, using today's opponent ratings throughout (not re-derived as
-        of each date) -- shows the shape of the season, calibrated to land exactly on {teamName}'s current rating at
-        the last game.
+        A running average of each game's implied value (today's opponent rating + that game's capped margin), using
+        today's opponent ratings throughout rather than re-deriving them as of each date -- shows the shape of the
+        season, calibrated to land exactly on {teamName}'s current rating at the last game.
       </p>
       <TrajectoryChart trajectory={trajectory} teamName={teamName} />
 
