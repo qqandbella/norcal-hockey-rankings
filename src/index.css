@@ -545,9 +545,9 @@ body {
   margin-bottom: 0.5rem;
 }
 
-.rating-chart__tabs {
-  display: flex;
-  gap: 0.4rem;
+.rating-chart__title {
+  margin: 0;
+  font-size: 1rem;
 }
 
 .rating-chart__table-toggle {
@@ -567,26 +567,6 @@ body {
   margin: 0 0 0.5rem;
 }
 
-.rating-chart__legend {
-  display: flex;
-  gap: 1rem;
-  font-size: 0.8rem;
-  margin-bottom: 0.5rem;
-}
-
-.rating-chart__legend-item {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-}
-
-.rating-chart__legend-swatch {
-  display: inline-block;
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-}
-
 .rating-chart__wrap {
   position: relative;
   overflow-x: auto;
@@ -601,20 +581,6 @@ body {
 .rating-chart__baseline {
   stroke: var(--border);
   stroke-width: 1;
-}
-
-.rating-chart__bar {
-  cursor: pointer;
-  outline: none;
-}
-
-.rating-chart__bar--active {
-  opacity: 0.8;
-}
-
-.rating-chart__bar:focus-visible {
-  outline: 2px solid currentColor;
-  outline-offset: 1px;
 }
 
 .rating-chart__dot {
@@ -645,6 +611,10 @@ body {
   pointer-events: none;
   white-space: nowrap;
   z-index: 10;
+}
+
+.rating-chart__tooltip--below {
+  transform: translate(-50%, 0) translateY(8px);
 }
 
 .rating-chart__tooltip-date {

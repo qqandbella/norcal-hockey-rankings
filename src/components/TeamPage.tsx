@@ -138,9 +138,7 @@ export function TeamPage({ data, ratingMode }: { data: RankingsData; ratingMode:
         </p>
       )}
 
-      {finalRating !== null && contributions.length > 0 && (
-        <RatingChart contributions={contributions} trajectory={trajectory} teamName={teamName} finalRating={finalRating} />
-      )}
+      {finalRating !== null && trajectory.length > 0 && <RatingChart trajectory={trajectory} teamName={teamName} />}
 
       <h3>Schedule</h3>
       <ScheduleList
