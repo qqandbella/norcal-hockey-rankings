@@ -1,7 +1,8 @@
 import { useRef, useState } from 'react'
 import type { RefObject } from 'react'
-import type { GameContribution, TrajectoryPoint } from '../lib/ratingContributions'
+import type { TrajectoryPoint } from '../lib/ratingTrajectory'
 import { outcomeFor } from '../lib/schedule'
+import type { GameRecord } from '../lib/types'
 
 const OUTCOME_LABEL = { win: 'W', lose: 'L', tie: 'T' } as const
 
@@ -11,7 +12,7 @@ const OUTCOME_LABEL = { win: 'W', lose: 'L', tie: 'T' } as const
 // drawn in raw SVG, same approach the rest of the app's CSS vars don't reach.
 const LINE_COLOR = '#256abf'
 
-function scoreText(game: GameContribution['game'], teamName: string): string {
+function scoreText(game: GameRecord, teamName: string): string {
   const isHome = game.home === teamName
   const mine = isHome ? game.homeGoals : game.awayGoals
   const theirs = isHome ? game.awayGoals : game.homeGoals
@@ -19,17 +20,16 @@ function scoreText(game: GameContribution['game'], teamName: string): string {
 }
 
 function TrajectoryTooltipContent({ point, teamName }: { point: TrajectoryPoint; teamName: string }) {
-  const { contribution: c, runningRating } = point
-  const outcome = outcomeFor(c.game, teamName)
+  const outcome = outcomeFor(point.game, teamName)
   return (
     <>
-      <div className="rating-chart__tooltip-date">{c.game.date}</div>
+      <div className="rating-chart__tooltip-date">{point.game.date}</div>
       <div>
         {outcome && <strong className={`rating-chart__tooltip-outcome rating-chart__tooltip-outcome--${outcome}`}>{OUTCOME_LABEL[outcome]}</strong>}
-        {' '}vs {c.opponent} ({scoreText(c.game, teamName)}, opponent {c.opponentRating > 0 ? `+${c.opponentRating}` : c.opponentRating})
+        {' '}vs {point.opponent} ({scoreText(point.game, teamName)}, opponent as of then {point.opponentRating > 0 ? `+${point.opponentRating}` : point.opponentRating})
       </div>
       <div className="rating-chart__tooltip-value">
-        rating after this game: {runningRating > 0 ? `+${runningRating}` : runningRating}
+        rating after this game: {point.runningRating > 0 ? `+${point.runningRating}` : point.runningRating}
       </div>
     </>
   )
@@ -98,7 +98,7 @@ function TrajectoryChart({ trajectory, teamName }: { trajectory: TrajectoryPoint
         <path d={linePath} fill="none" stroke={LINE_COLOR} strokeWidth={2} strokeLinejoin="round" strokeLinecap="round" />
         {trajectory.map((t, i) => (
           <circle
-            key={t.contribution.game.gameId}
+            key={t.game.gameId}
             cx={xFor(i)}
             cy={yFor(t.runningRating)}
             r={5}
@@ -106,7 +106,7 @@ function TrajectoryChart({ trajectory, teamName }: { trajectory: TrajectoryPoint
             strokeWidth={2}
             tabIndex={0}
             role="img"
-            aria-label={`${t.contribution.game.date} vs ${t.contribution.opponent}, rating ${t.runningRating > 0 ? '+' : ''}${t.runningRating}`}
+            aria-label={`${t.game.date} vs ${t.opponent}, rating ${t.runningRating > 0 ? '+' : ''}${t.runningRating}`}
             className={tooltip?.index === i ? 'rating-chart__dot rating-chart__dot--active' : 'rating-chart__dot'}
             onMouseEnter={(e) => showTooltip(i, e.currentTarget)}
             onFocus={(e) => showTooltip(i, e.currentTarget)}
@@ -144,9 +144,10 @@ export function RatingChart({ trajectory, teamName }: { trajectory: TrajectoryPo
       </div>
 
       <p className="rating-chart__caption">
-        A running average of each game's implied value (today's opponent rating + that game's capped margin), using
-        today's opponent ratings throughout rather than re-deriving them as of each date -- shows the shape of the
-        season, calibrated to land exactly on {teamName}'s current rating at the last game.
+        A true walk-forward rating: at each game, re-solved from only the games played up to that date, so an early
+        point reflects what was actually knowable then -- not today's fully-matured opponent ratings applied
+        backward. Classic (within-division) model only; may not exactly match {teamName}'s current cross-division
+        rating shown above if it's been cross-tested in more than one division.
       </p>
       <TrajectoryChart trajectory={trajectory} teamName={teamName} />
 
@@ -156,22 +157,21 @@ export function RatingChart({ trajectory, teamName }: { trajectory: TrajectoryPo
             <tr>
               <th>Date</th>
               <th>Opponent</th>
-              <th>Opponent rating</th>
+              <th>Opponent rating (as of then)</th>
               <th>Result</th>
-              <th>Running rating</th>
+              <th>Rating (as of then)</th>
             </tr>
           </thead>
           <tbody>
             {trajectory.map((t) => {
-              const c = t.contribution
-              const outcome = outcomeFor(c.game, teamName)
+              const outcome = outcomeFor(t.game, teamName)
               return (
-                <tr key={c.game.gameId}>
-                  <td>{c.game.date}</td>
-                  <td>{c.opponent}</td>
-                  <td>{c.opponentRating > 0 ? `+${c.opponentRating}` : c.opponentRating}</td>
+                <tr key={t.game.gameId}>
+                  <td>{t.game.date}</td>
+                  <td>{t.opponent}</td>
+                  <td>{t.opponentRating > 0 ? `+${t.opponentRating}` : t.opponentRating}</td>
                   <td>
-                    {outcome ? OUTCOME_LABEL[outcome] : '?'} {scoreText(c.game, teamName)}
+                    {outcome ? OUTCOME_LABEL[outcome] : '?'} {scoreText(t.game, teamName)}
                   </td>
                   <td>{t.runningRating > 0 ? `+${t.runningRating}` : t.runningRating}</td>
                 </tr>
