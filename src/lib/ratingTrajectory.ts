@@ -1,89 +1,90 @@
-import { computeRatings } from './computeRatings'
-import type { RatingGame } from './computeRatings'
-import { gameSortKey } from './schedule'
-import type { GameRecord, RankingsData } from './types'
+import type { AgeGroupRatings, GameRecord } from './types'
 
-export { GOAL_CAP } from './computeRatings'
+// Mirrors scripts/ratings.py's own goal cap -- keep in sync if it changes.
+export const GOAL_CAP = 7
+
+function cappedMargin(myGoals: number, theirGoals: number): number {
+  return Math.max(-GOAL_CAP, Math.min(GOAL_CAP, myGoals - theirGoals))
+}
 
 export interface TrajectoryPoint {
   game: GameRecord
   opponent: string
-  /** The opponent's own rating as of this exact date -- re-solved from
-   * scratch (see computeRatings), not looked up from today's final
-   * numbers. */
+  /** The opponent's CURRENT (today's, fully converged) rating -- not an
+   * as-of-date re-derivation, see module doc for why. */
   opponentRating: number
-  /** This team's own rating as of this exact date, from the same re-solve
-   * -- a true walk-forward snapshot: "what would my rating have been if
-   * the season had stopped here," using only what was knowable then. */
+  /** This team's own running rating after this game (and every game
+   * before it), using today's opponent ratings throughout. */
   runningRating: number
 }
 
-function toRatingGame(g: GameRecord): RatingGame {
-  return { home: g.home, away: g.away, homeGoals: g.homeGoals!, awayGoals: g.awayGoals! }
-}
-
 /**
- * A true walk-forward rating trajectory for one team: at each of its
- * played games, re-solves the CONTAINING DIVISION's ratings (computeRatings,
- * an exact port of scripts/ratings.py's compute_ratings -- see
- * computeRatings.test.ts for cross-validation against the real Python
- * output) using only that division's games up to and including that date.
+ * A running, game-by-game rating trajectory for one team: a plain
+ * (unshrunk) running mean of each played game's implied value (today's
+ * opponent rating + that game's capped margin), calibrated so the final
+ * point lands exactly on the team's known-correct current rating.
  *
- * This exists specifically because the simpler alternative -- averaging
- * each game's (today's opponent rating + capped margin) -- applies
- * knowledge from the rest of the season backward onto early games: an
- * opponent's CURRENT rating reflects games played long after this one, so
- * "today's opponent rating" isn't what was actually knowable at the time.
- * Confirmed concretely: San Jose Jr Sharks 10A-1's first and fourth played
- * games were both identical 10-2 wins over the same opponent, yet a
- * today's-ratings approximation showed wildly different values for the
- * two points -- an artifact of mixing time periods, not a real signal.
- * Walk-forward removes that mixing entirely: every number in a given
- * point is computed from games that had actually been played by that
- * date, nothing later.
- *
- * Deliberately scoped to ONLY this chart -- scripts/ratings.py and the
- * site's own real ratings (shipped in latest.json) are untouched; this
- * re-solve happens entirely client-side, from data already shipped, and
- * never feeds back into the official numbers.
- *
- * A division is identified per-game by TTS game id (not by the game's own
- * `levelLabel` text, which can name a division that no longer exists as
- * its own page once a legacy level gets split -- see teamRoute's doc
- * comment for the same lesson learned the hard way). Each point's
- * `runningRating`/`opponentRating` are this WITHIN-division classic
- * rating as of that date -- not the cross-division unified number shown
- * elsewhere on the team page, since replicating the full unified/tier-
- * offset pipeline walk-forward is out of scope here (see module caption
- * in RatingChart.tsx). For a team that's only ever played within one
- * division, the two numbers are usually close; for a heavily cross-
- * tested team, they can diverge -- the chart's caption says so.
+ * Deliberately uses each opponent's CURRENT rating throughout, not a
+ * walk-forward re-derivation of what the opponent's rating was as of
+ * that date (an earlier version of this chart did exactly that, porting
+ * scripts/ratings.py's solver to re-solve each division at every cutoff
+ * -- removed, see below). A team's rating trajectory is shaped by three
+ * things: (1) small-sample noise early in the season, (2) game-to-game
+ * performance variance, and (3) genuine developmental-pace differences
+ * between teams over the season. Walk-forward only buys a more accurate
+ * read of (3) -- and pays for it by reintroducing (1) at every single
+ * cutoff: an opponent's as-of-date rating, computed from whatever handful
+ * of division games had been played by then, is itself barely more
+ * trustworthy than the team's own early rating, so walk-forward was
+ * compounding noise on noise. With a short season (few games/team) and
+ * peer teams developing at roughly the same pace -- especially true
+ * early season -- (3) is small relative to the stability a fully-mature,
+ * many-games current rating gives every opponent lookup. Using today's
+ * ratings throughout trades a small, mostly-irrelevant bias for a large
+ * reduction in variance -- the better trade here.
  */
-export function collectWalkForwardTrajectory(data: RankingsData, teamName: string, teamGames: GameRecord[]): TrajectoryPoint[] {
-  const played = teamGames
-    .filter((g) => g.played && g.homeGoals !== null && g.awayGoals !== null && (g.home === teamName || g.away === teamName))
-    .sort((a, b) => gameSortKey(a) - gameSortKey(b))
+export function collectTrajectory(
+  teamGames: GameRecord[],
+  teamName: string,
+  ageGroups: Record<string, AgeGroupRatings>,
+  finalRating: number,
+  ratingMode: 'classic' | 'experimental' = 'classic',
+): TrajectoryPoint[] {
+  const implied: number[] = []
+  const points: Omit<TrajectoryPoint, 'runningRating'>[] = []
 
-  const points: TrajectoryPoint[] = []
-  for (const game of played) {
-    const division = data.divisions.find((d) => d.games.some((g) => g.gameId === game.gameId))
-    if (!division) continue
-
-    const cutoff = gameSortKey(game)
-    const cutoffGames = division.games
-      .filter((g) => g.played && g.homeGoals !== null && g.awayGoals !== null && gameSortKey(g) <= cutoff)
-      .map(toRatingGame)
-
-    const solved = computeRatings(cutoffGames)
-    const myRating = solved[teamName]
-    if (myRating === undefined) continue
-
+  for (const game of teamGames) {
+    if (!game.played || game.homeGoals === null || game.awayGoals === null) continue
     const isHome = game.home === teamName
+    const isAway = game.away === teamName
+    if (!isHome && !isAway) continue
     const opponent = isHome ? game.away : game.home
-    const opponentRating = solved[opponent]
+    const myGoals = isHome ? game.homeGoals : game.awayGoals
+    const theirGoals = isHome ? game.awayGoals : game.homeGoals
+
+    const group = ageGroups[game.ageLabel]
+    const teams = ratingMode === 'experimental' ? group?.experimentalTeams : group?.teams
+    const opponentRating = teams?.[opponent]?.rating
     if (opponentRating === undefined) continue
 
-    points.push({ game, opponent, opponentRating, runningRating: myRating })
+    const margin = cappedMargin(myGoals, theirGoals)
+    implied.push(opponentRating + margin)
+    points.push({ game, opponent, opponentRating })
   }
-  return points
+
+  if (points.length === 0) return []
+
+  const raw: number[] = []
+  let sum = 0
+  implied.forEach((v, i) => {
+    sum += v
+    raw.push(sum / (i + 1))
+  })
+  const calibration = finalRating - raw[raw.length - 1]
+
+  return points.map((point, i) => ({
+    ...point,
+    runningRating: Math.round((raw[i] + calibration) * 1000) / 1000,
+  }))
 }
+

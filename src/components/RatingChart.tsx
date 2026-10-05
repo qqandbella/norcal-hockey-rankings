@@ -26,7 +26,7 @@ function TrajectoryTooltipContent({ point, teamName }: { point: TrajectoryPoint;
       <div className="rating-chart__tooltip-date">{point.game.date}</div>
       <div>
         {outcome && <strong className={`rating-chart__tooltip-outcome rating-chart__tooltip-outcome--${outcome}`}>{OUTCOME_LABEL[outcome]}</strong>}
-        {' '}vs {point.opponent} ({scoreText(point.game, teamName)}, opponent as of then {point.opponentRating > 0 ? `+${point.opponentRating}` : point.opponentRating})
+        {' '}vs {point.opponent} ({scoreText(point.game, teamName)}, opponent {point.opponentRating > 0 ? `+${point.opponentRating}` : point.opponentRating})
       </div>
       <div className="rating-chart__tooltip-value">
         rating after this game: {point.runningRating > 0 ? `+${point.runningRating}` : point.runningRating}
@@ -144,10 +144,9 @@ export function RatingChart({ trajectory, teamName }: { trajectory: TrajectoryPo
       </div>
 
       <p className="rating-chart__caption">
-        A true walk-forward rating: at each game, re-solved from only the games played up to that date, so an early
-        point reflects what was actually knowable then -- not today's fully-matured opponent ratings applied
-        backward. Classic (within-division) model only; may not exactly match {teamName}'s current cross-division
-        rating shown above if it's been cross-tested in more than one division.
+        A running average of each game's implied value (today's opponent rating + that game's capped margin), using
+        today's opponent ratings throughout rather than re-deriving them as of each date -- shows the shape of the
+        season, calibrated to land exactly on {teamName}'s current rating at the last game.
       </p>
       <TrajectoryChart trajectory={trajectory} teamName={teamName} />
 
@@ -157,9 +156,9 @@ export function RatingChart({ trajectory, teamName }: { trajectory: TrajectoryPo
             <tr>
               <th>Date</th>
               <th>Opponent</th>
-              <th>Opponent rating (as of then)</th>
+              <th>Opponent rating</th>
               <th>Result</th>
-              <th>Rating (as of then)</th>
+              <th>Running rating</th>
             </tr>
           </thead>
           <tbody>

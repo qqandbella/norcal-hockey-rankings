@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
 import { LEVEL_ORDER, divisionRoute, groupByAge } from '../lib/grouping'
-import { collectWalkForwardTrajectory } from '../lib/ratingTrajectory'
+import { collectTrajectory } from '../lib/ratingTrajectory'
 import { collectTeamGames } from '../lib/schedule'
 import type { Division, RankingsData, TeamRow } from '../lib/types'
 import { ALL_TYPES } from '../lib/types'
@@ -64,7 +64,12 @@ export function TeamPage({ data, ratingMode }: { data: RankingsData; ratingMode:
   // at least one match.
   const homeDivision = primaryDivision(data, teamName, ratings)!
 
-  const trajectory = collectWalkForwardTrajectory(data, teamName, teamGames)
+  // ratings[0].row.rating is already the unified, cross-division number
+  // (every division's "All" bucket row gets overwritten to it -- see
+  // _apply_declared_roster_and_unified_rating in scrape.py), so it's the
+  // same value shown in every dl block above, cross-tested or not.
+  const finalRating = ratings.length > 0 ? (ratingMode === 'experimental' ? ratings[0].row.experimentalRating : ratings[0].row.rating) : null
+  const trajectory = finalRating !== null ? collectTrajectory(teamGames, teamName, data.ageGroups, finalRating, ratingMode) : []
 
   return (
     <section>
