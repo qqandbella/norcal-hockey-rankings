@@ -1,5 +1,7 @@
+from bs4 import BeautifulSoup
 from build_team_ids import collapse_by_name, compute_renames
 from scrape import (
+    _parse_table,
     apply_team_aliases,
     apply_team_collisions,
     build_division_payload,
@@ -12,10 +14,10 @@ from scrape import (
 )
 
 
-def _raw_game(home, away, home_goals, away_goals, game_id, division_label, played=True):
+def _raw_game(home, away, home_goals, away_goals, game_id, division_label, played=True, date="01/01/26"):
     return {
         "game_id": game_id,
-        "date": "01/01/26",
+        "date": date,
         "day": "Thu",
         "time": "5:00 PM",
         "rink": "Rink",
@@ -366,6 +368,36 @@ def test_age_group_ratings_routes_within_rating_by_declared_tier_not_division_ti
     assert offsets["BB"]["evidenceCount"] == 1  # the BB1-vs-B1 bridge, correctly attributed to B East
 
 
+def test_age_group_ratings_undeclared_team_prefers_split_tier_over_legacy_b():
+    # Real production bug (2026-10): an undeclared team ("Sharks") with
+    # games split close to evenly between the retired legacy "10U B" tag
+    # and the native "10U B East" tag fell back to "B" on a vote tie --
+    # a tier no declared opponent shares -- so every one of its games got
+    # classified as bridge evidence instead of real within-division
+    # competition, even games against opponents explicitly declared
+    # "10U B East". "B East"/"B West" evidence must win outright whenever
+    # present, regardless of vote count, since it's strictly more specific
+    # and more current than the legacy lumped label.
+    raw_games = [
+        # 3 games tagged with the legacy "10U B" label (majority).
+        _raw_game("Sharks", "Opp1", 5, 2, "g1", "10U B"),
+        _raw_game("Sharks", "Opp2", 6, 1, "g2", "10U B"),
+        _raw_game("Sharks", "Opp3", 4, 3, "g3", "10U B"),
+        # 1 game tagged with the native "10U B East" label (minority).
+        _raw_game("Sharks", "Opp1", 7, 0, "g4", "10U B East", date="02/01/26"),
+        # Real within-division evidence for the declared opponents.
+        _raw_game("Opp1", "Opp2", 3, 3, "g5", "10U B East"),
+    ]
+    declared = {"Opp1": "10U B East", "Opp2": "10U B East", "Opp3": "10U B East"}  # Sharks deliberately undeclared
+
+    division = build_division_payload(135, "10U B East", raw_games, {})
+    age_groups = compute_age_group_ratings([division], declared_divisions=declared)
+
+    # Sharks must land in the "B East" within-tier pool (4 games), not get
+    # entirely swallowed by the bridge-evidence pathway.
+    assert age_groups["10U"]["teams"]["Sharks"]["gamesPlayed"] == 4
+
+
 def test_age_group_ratings_missing_declared_entry_is_not_dropped():
     # A team absent from declared_divisions.json entirely (stale/incomplete
     # file) must be kept, not silently filtered out.
@@ -570,3 +602,51 @@ def test_collapse_by_name_last_one_wins_on_collision():
     # drift apart silently.
     rows = [("18", "33", "Tri Valley Blue Devils 10A"), ("17", "33", "Tri Valley Blue Devils 10A")]
     assert collapse_by_name(rows) == {"Tri Valley Blue Devils 10A": {"teamId": "17", "season": "33"}}
+
+
+def _table_html(rows: list[tuple[str, ...]]) -> str:
+    def row_html(cells: tuple[str, ...]) -> str:
+        return "<tr>" + "".join(f"<td>{c}</td>" for c in cells) + "</tr>"
+
+    return "<table><tbody>" + "".join(row_html(r) for r in rows) + "</tbody></table>"
+
+
+def _real_row(game_id: str, away: str, home: str, score: str = "2-1") -> tuple[str, ...]:
+    return ("09/05/26", "Sat", "5:00PM", "Rink", "Norcal", "10U B", "Preseason", game_id, away, home, score)
+
+
+def test_parse_table_drops_a_placeholder_tournament_bracket_slot():
+    # Confirmed real case: an unseeded tournament bracket match shows the
+    # literal word "Away" as the opponent, sometimes even with a 0-0
+    # "played" score -- must not become a phantom team.
+    html = _table_html(
+        [
+            _real_row("1", "Real Team A", "Real Team B"),
+            ("11/06/26", "Fri", "11:50AM", "Washington", "Norcal", "10U B East", "Tournament", "2", "Away", "Capital Thunder 10B", "0-0"),
+        ]
+    )
+    table = BeautifulSoup(html, "html.parser").find("table")
+    games = _parse_table(table)
+    assert len(games) == 1
+    assert games[0]["game_id"] == "1"
+
+
+def test_parse_table_drops_placeholder_names_case_insensitively():
+    html = _table_html(
+        [
+            ("11/06/26", "Fri", "11:50AM", "Washington", "Norcal", "10U B East", "Tournament", "3", "HOME", "Capital Thunder 10B", ""),
+            ("11/06/26", "Fri", "11:50AM", "Washington", "Norcal", "10U B East", "Tournament", "4", "TBD", "Capital Thunder 10B", ""),
+            ("11/06/26", "Fri", "11:50AM", "Washington", "Norcal", "10U B East", "Tournament", "5", "Bye", "Capital Thunder 10B", ""),
+        ]
+    )
+    table = BeautifulSoup(html, "html.parser").find("table")
+    assert _parse_table(table) == []
+
+
+def test_parse_table_keeps_a_real_team_whose_name_merely_contains_a_placeholder_word():
+    # Exact match only -- "Hometown Hawks" must not be caught by "home".
+    html = _table_html([_real_row("6", "Hometown Hawks", "Real Team B")])
+    table = BeautifulSoup(html, "html.parser").find("table")
+    games = _parse_table(table)
+    assert len(games) == 1
+    assert games[0]["away"] == "Hometown Hawks"

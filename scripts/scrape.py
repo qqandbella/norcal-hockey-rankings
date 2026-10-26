@@ -216,6 +216,19 @@ def _clean_text(text: str) -> str:
     return re.sub(r"\s+", " ", text).strip()
 
 
+# Confirmed 2026-10: NorCal's own tournament-bracket feed prints the
+# literal column-header word "Away" as the opponent for a not-yet-seeded
+# bracket slot, instead of leaving it blank or "TBD" -- and sometimes even
+# ships a 0-0 "played" result for it. Left unfiltered, this creates a
+# phantom "team" (exact string match across every division/age group,
+# since it's identical placeholder text everywhere) that racks up free
+# ties against whichever real teams happen to share a bracket with an
+# unseeded slot, floating to the top of the rankings with a perfect,
+# fictional record. Case-insensitive exact match (not substring) so a
+# real team name that merely contains one of these words is never caught.
+PLACEHOLDER_TEAM_NAMES = {"away", "home", "tbd", "bye"}
+
+
 def _parse_table(table) -> list[dict]:
     games = []
     rows = table.find("tbody").find_all("tr") if table.find("tbody") else []
@@ -237,6 +250,8 @@ def _parse_table(table) -> list[dict]:
             score,
         ) = cells[:11]
         if not away and not home:
+            continue
+        if away.lower() in PLACEHOLDER_TEAM_NAMES or home.lower() in PLACEHOLDER_TEAM_NAMES:
             continue
         away_goals, home_goals = _parse_goals(score)
         games.append(
@@ -508,6 +523,23 @@ def _compute_unified_and_patch(
         for name in (g["home"], g["away"]):
             counts = fallback_tier_counts.setdefault(name, {})
             counts[division_tier] = counts.get(division_tier, 0) + 1
+
+    # "B" is a retired, pre-split label (see KNOWN_MISSING_LEVELS/the legacy
+    # level-3 merge in main()) -- a team's own older games can still carry
+    # it even after the league splits that tier into "B East"/"B West",
+    # since a game's levelLabel is frozen at whatever NorCal tagged it with
+    # at the time. Confirmed in production: an undeclared team (declared_
+    # divisions.json briefly missing an entry) with games split close to
+    # evenly between "B" and "B East" fell back to "B" on a vote tie-break
+    # -- a tier NO currently-declared opponent shares -- so literally every
+    # one of its games got misclassified as cross-tier bridge evidence
+    # instead of real within-division competition, producing a wildly
+    # wrong rating. "B East"/"B West" evidence for the same team is always
+    # more specific and more current, so it wins outright whenever present.
+    for counts in fallback_tier_counts.values():
+        if ("B East" in counts or "B West" in counts) and "B" in counts:
+            del counts["B"]
+
     fallback_tier_by_name = {name: max(counts.items(), key=lambda kv: kv[1])[0] for name, counts in fallback_tier_counts.items()}
 
     def _team_tier(name: str) -> str | None:
