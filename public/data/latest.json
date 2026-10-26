@@ -1,5 +1,5 @@
 {
-  "scraped_at": "2026-10-25T23:59:20+00:00",
+  "scraped_at": "2026-10-26T04:33:21+00:00",
   "source": "https://www.norcalyouthhockey.org/load-tts-schedule.php",
   "divisions": [
     {
@@ -11,7 +11,7 @@
           "teams": [
             {
               "name": "San Jose Jr Sharks 10A-1",
-              "rating": 27.917,
+              "rating": 28.001,
               "rank": 1,
               "tier": "top",
               "gamesPlayed": 6,
@@ -24,13 +24,13 @@
               "goalDiff": 66,
               "offense": 3.205,
               "defense": 2.386,
-              "experimentalRating": 26.1,
+              "experimentalRating": 26.207,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "Cupertino Cougars 10A",
-              "rating": 23.272,
+              "rating": 23.356,
               "rank": 2,
               "tier": "mid",
               "gamesPlayed": 8,
@@ -43,13 +43,13 @@
               "goalDiff": 13,
               "offense": 1.944,
               "defense": -0.148,
-              "experimentalRating": 22.236,
+              "experimentalRating": 22.343,
               "experimentalRank": 3,
               "experimentalTier": "mid"
             },
             {
               "name": "San Jose Jr Sharks 10A-2",
-              "rating": 22.554,
+              "rating": 22.638,
               "rank": 3,
               "tier": "mid",
               "gamesPlayed": 7,
@@ -62,13 +62,13 @@
               "goalDiff": 19,
               "offense": 0.989,
               "defense": 0.824,
-              "experimentalRating": 22.258,
+              "experimentalRating": 22.365,
               "experimentalRank": 2,
               "experimentalTier": "mid"
             },
             {
               "name": "Away",
-              "rating": 22.195,
+              "rating": 22.279,
               "rank": 4,
               "tier": "mid",
               "gamesPlayed": 2,
@@ -81,13 +81,13 @@
               "goalDiff": 0,
               "offense": -2.112,
               "defense": 3.622,
-              "experimentalRating": 22.133,
+              "experimentalRating": 22.24,
               "experimentalRank": 4,
               "experimentalTier": "mid"
             },
             {
               "name": "Tri Valley Blue Devils 10A-2",
-              "rating": 21.007,
+              "rating": 21.091,
               "rank": 5,
               "tier": "mid",
               "gamesPlayed": 8,
@@ -100,13 +100,13 @@
               "goalDiff": -8,
               "offense": 2.154,
               "defense": -1.279,
-              "experimentalRating": 21.376,
+              "experimentalRating": 21.483,
               "experimentalRank": 5,
               "experimentalTier": "mid"
             },
             {
               "name": "Tri Valley Blue Devils 10A-1",
-              "rating": 19.409,
+              "rating": 19.493,
               "rank": 6,
               "tier": "low",
               "gamesPlayed": 8,
@@ -119,13 +119,13 @@
               "goalDiff": -25,
               "offense": -1.0,
               "defense": -0.764,
-              "experimentalRating": 18.751,
+              "experimentalRating": 18.858,
               "experimentalRank": 6,
               "experimentalTier": "low"
             },
             {
               "name": "San Mateo Black Stars 10A",
-              "rating": 18.947,
+              "rating": 19.031,
               "rank": 7,
               "tier": "low",
               "gamesPlayed": 7,
@@ -138,7 +138,7 @@
               "goalDiff": -33,
               "offense": -1.813,
               "defense": -1.015,
-              "experimentalRating": 17.682,
+              "experimentalRating": 17.789,
               "experimentalRank": 7,
               "experimentalTier": "low"
             }
@@ -1477,12 +1477,12 @@
         }
       ],
       "teamLinks": {
-        "Oakland Bears 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=541&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 10A-1": "https://stats.caha.timetoscore.com/display-schedule?team=58&season=33&league=3&stat_class=1",
-        "San Mateo Black Stars 10A": "https://stats.caha.timetoscore.com/display-schedule?team=373&season=33&league=3&stat_class=1",
-        "San Francisco Sabercats 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=64&season=33&league=3&stat_class=1",
         "Cupertino Cougars 10A": "https://stats.caha.timetoscore.com/display-schedule?team=129&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 10A-2": "https://stats.caha.timetoscore.com/display-schedule?team=679&season=33&league=3&stat_class=1"
+        "Oakland Bears 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=541&season=33&league=3&stat_class=1",
+        "San Mateo Black Stars 10A": "https://stats.caha.timetoscore.com/display-schedule?team=373&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 10A-2": "https://stats.caha.timetoscore.com/display-schedule?team=679&season=33&league=3&stat_class=1",
+        "San Francisco Sabercats 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=64&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 10A-1": "https://stats.caha.timetoscore.com/display-schedule?team=58&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -1494,7 +1494,7 @@
           "teams": [
             {
               "name": "Away",
-              "rating": 22.195,
+              "rating": 22.279,
               "rank": 1,
               "tier": "top",
               "gamesPlayed": 2,
@@ -1505,15 +1505,15 @@
               "goalsFor": 0,
               "goalsAgainst": 0,
               "goalDiff": 0,
-              "offense": -3.629,
-              "defense": 3.959,
-              "experimentalRating": 22.133,
+              "offense": -3.635,
+              "defense": 3.962,
+              "experimentalRating": 22.24,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "Cupertino Cougars 10B",
-              "rating": 11.717,
+              "rating": 11.784,
               "rank": 2,
               "tier": "mid",
               "gamesPlayed": 9,
@@ -1524,15 +1524,15 @@
               "goalsFor": 53,
               "goalsAgainst": 69,
               "goalDiff": -16,
-              "offense": 2.755,
-              "defense": 0.972,
-              "experimentalRating": 11.011,
+              "offense": 2.803,
+              "defense": 0.922,
+              "experimentalRating": 11.038,
               "experimentalRank": 2,
               "experimentalTier": "mid"
             },
             {
               "name": "Santa Clara Blackhawks 10B",
-              "rating": 9.912,
+              "rating": 9.978,
               "rank": 3,
               "tier": "mid",
               "gamesPlayed": 8,
@@ -1543,35 +1543,16 @@
               "goalsFor": 50,
               "goalsAgainst": 36,
               "goalDiff": 14,
-              "offense": 2.055,
-              "defense": 1.134,
-              "experimentalRating": 10.128,
+              "offense": 2.07,
+              "defense": 1.139,
+              "experimentalRating": 10.143,
               "experimentalRank": 3,
               "experimentalTier": "mid"
             },
             {
-              "name": "San Jose Jr Sharks 10B-1",
-              "rating": 7.952,
-              "rank": 4,
-              "tier": "mid",
-              "gamesPlayed": 8,
-              "wins": 6,
-              "losses": 2,
-              "ties": 0,
-              "points": 12,
-              "goalsFor": 57,
-              "goalsAgainst": 26,
-              "goalDiff": 31,
-              "offense": 1.655,
-              "defense": 1.159,
-              "experimentalRating": 8.036,
-              "experimentalRank": 4,
-              "experimentalTier": "mid"
-            },
-            {
               "name": "Capital Thunder 10B",
-              "rating": 7.918,
-              "rank": 5,
+              "rating": 8.013,
+              "rank": 4,
               "tier": "mid",
               "gamesPlayed": 10,
               "wins": 3,
@@ -1581,15 +1562,34 @@
               "goalsFor": 35,
               "goalsAgainst": 58,
               "goalDiff": -23,
-              "offense": 0.634,
-              "defense": -0.237,
-              "experimentalRating": 7.806,
+              "offense": 0.642,
+              "defense": -0.25,
+              "experimentalRating": 7.953,
               "experimentalRank": 5,
               "experimentalTier": "mid"
             },
             {
+              "name": "San Jose Jr Sharks 10B-1",
+              "rating": 7.972,
+              "rank": 5,
+              "tier": "mid",
+              "gamesPlayed": 8,
+              "wins": 6,
+              "losses": 2,
+              "ties": 0,
+              "points": 12,
+              "goalsFor": 57,
+              "goalsAgainst": 26,
+              "goalDiff": 31,
+              "offense": 1.703,
+              "defense": 1.155,
+              "experimentalRating": 8.036,
+              "experimentalRank": 4,
+              "experimentalTier": "mid"
+            },
+            {
               "name": "San Francisco Sabercats 10B",
-              "rating": 5.393,
+              "rating": 5.483,
               "rank": 6,
               "tier": "low",
               "gamesPlayed": 7,
@@ -1600,35 +1600,54 @@
               "goalsFor": 30,
               "goalsAgainst": 31,
               "goalDiff": -1,
-              "offense": -0.382,
-              "defense": -0.006,
-              "experimentalRating": 5.398,
+              "offense": -0.358,
+              "defense": -0.062,
+              "experimentalRating": 5.491,
               "experimentalRank": 7,
               "experimentalTier": "low"
             },
             {
               "name": "Tri Valley Blue Devils 10B",
-              "rating": 5.288,
+              "rating": 5.278,
               "rank": 7,
               "tier": "low",
-              "gamesPlayed": 7,
+              "gamesPlayed": 8,
               "wins": 2,
               "losses": 5,
-              "ties": 0,
-              "points": 4,
-              "goalsFor": 27,
-              "goalsAgainst": 43,
+              "ties": 1,
+              "points": 5,
+              "goalsFor": 30,
+              "goalsAgainst": 46,
               "goalDiff": -16,
-              "offense": -1.104,
-              "defense": -0.625,
-              "experimentalRating": 5.948,
+              "offense": -1.099,
+              "defense": -0.452,
+              "experimentalRating": 5.721,
               "experimentalRank": 6,
               "experimentalTier": "low"
             },
             {
-              "name": "San Jose Jr Sharks 10B-2",
-              "rating": 4.923,
+              "name": "San Mateo Black Stars 10B-1",
+              "rating": 4.999,
               "rank": 8,
+              "tier": "low",
+              "gamesPlayed": 10,
+              "wins": 2,
+              "losses": 6,
+              "ties": 2,
+              "points": 6,
+              "goalsFor": 32,
+              "goalsAgainst": 67,
+              "goalDiff": -35,
+              "offense": -0.161,
+              "defense": -0.199,
+              "experimentalRating": 4.846,
+              "experimentalRank": 8,
+              "experimentalTier": "low"
+            },
+            {
+              "name": "San Jose Jr Sharks 10B-2",
+              "rating": 4.903,
+              "rank": 9,
               "tier": "low",
               "gamesPlayed": 8,
               "wins": 4,
@@ -1638,28 +1657,9 @@
               "goalsFor": 44,
               "goalsAgainst": 36,
               "goalDiff": 8,
-              "offense": 0.744,
-              "defense": 0.601,
-              "experimentalRating": 4.844,
-              "experimentalRank": 8,
-              "experimentalTier": "low"
-            },
-            {
-              "name": "San Mateo Black Stars 10B-1",
-              "rating": 4.873,
-              "rank": 9,
-              "tier": "low",
-              "gamesPlayed": 9,
-              "wins": 2,
-              "losses": 6,
-              "ties": 1,
-              "points": 5,
-              "goalsFor": 29,
-              "goalsAgainst": 64,
-              "goalDiff": -35,
-              "offense": 0.044,
-              "defense": -0.192,
-              "experimentalRating": 4.549,
+              "offense": 0.735,
+              "defense": 0.61,
+              "experimentalRating": 4.823,
               "experimentalRank": 9,
               "experimentalTier": "low"
             }
@@ -1670,7 +1670,7 @@
           "teams": [
             {
               "name": "Cupertino Cougars 10B",
-              "rating": 0.707,
+              "rating": 0.637,
               "rank": 1,
               "tier": "top",
               "gamesPlayed": 1,
@@ -1681,15 +1681,15 @@
               "goalsFor": 11,
               "goalsAgainst": 8,
               "goalDiff": 3,
-              "offense": 0.783,
-              "defense": -0.783,
+              "offense": 1.143,
+              "defense": -1.143,
               "experimentalRating": 0.0,
               "experimentalRank": 3,
               "experimentalTier": "mid"
             },
             {
               "name": "Santa Clara Blackhawks 10B",
-              "rating": 0.401,
+              "rating": 0.366,
               "rank": 2,
               "tier": "top",
               "gamesPlayed": 1,
@@ -1700,15 +1700,15 @@
               "goalsFor": 4,
               "goalsAgainst": 3,
               "goalDiff": 1,
-              "offense": -0.901,
-              "defense": 2.219,
-              "experimentalRating": 1.318,
+              "offense": -0.498,
+              "defense": 1.948,
+              "experimentalRating": 1.45,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "Capital Thunder 10B",
-              "rating": 0.283,
+              "rating": 0.353,
               "rank": 3,
               "tier": "top",
               "gamesPlayed": 2,
@@ -1719,15 +1719,15 @@
               "goalsFor": 10,
               "goalsAgainst": 9,
               "goalDiff": 1,
-              "offense": 0.386,
-              "defense": 0.196,
-              "experimentalRating": 0.582,
+              "offense": 0.851,
+              "defense": -0.111,
+              "experimentalRating": 0.74,
               "experimentalRank": 2,
-              "experimentalTier": "mid"
+              "experimentalTier": "top"
             },
             {
               "name": "San Francisco Sabercats 10B",
-              "rating": -0.115,
+              "rating": -0.114,
               "rank": 4,
               "tier": "mid",
               "gamesPlayed": 1,
@@ -1738,16 +1738,35 @@
               "goalsFor": 5,
               "goalsAgainst": 5,
               "goalDiff": 0,
-              "offense": -1.31,
-              "defense": 0.446,
-              "experimentalRating": -0.864,
+              "offense": -0.831,
+              "defense": 0.146,
+              "experimentalRating": -0.685,
+              "experimentalRank": 6,
+              "experimentalTier": "low"
+            },
+            {
+              "name": "Tri Valley Blue Devils 10B",
+              "rating": -0.114,
+              "rank": 5,
+              "tier": "mid",
+              "gamesPlayed": 1,
+              "wins": 0,
+              "losses": 0,
+              "ties": 1,
+              "points": 1,
+              "goalsFor": 3,
+              "goalsAgainst": 3,
+              "goalDiff": 0,
+              "offense": -2.497,
+              "defense": 1.813,
+              "experimentalRating": -0.684,
               "experimentalRank": 5,
               "experimentalTier": "low"
             },
             {
               "name": "San Jose Jr Sharks 10B-2",
-              "rating": -0.493,
-              "rank": 5,
+              "rating": -0.563,
+              "rank": 6,
               "tier": "low",
               "gamesPlayed": 1,
               "wins": 0,
@@ -1757,35 +1776,34 @@
               "goalsFor": 8,
               "goalsAgainst": 11,
               "goalDiff": -3,
-              "offense": 0.783,
-              "defense": -0.783,
+              "offense": 1.143,
+              "defense": -1.143,
               "experimentalRating": 0.0,
               "experimentalRank": 4,
               "experimentalTier": "mid"
             },
             {
               "name": "San Mateo Black Stars 10B-1",
-              "rating": -0.783,
-              "rank": 6,
+              "rating": -0.565,
+              "rank": 7,
               "tier": "low",
-              "gamesPlayed": 2,
+              "gamesPlayed": 3,
               "wins": 0,
               "losses": 1,
-              "ties": 1,
-              "points": 1,
-              "goalsFor": 10,
-              "goalsAgainst": 12,
+              "ties": 2,
+              "points": 2,
+              "goalsFor": 13,
+              "goalsAgainst": 15,
               "goalDiff": -2,
-              "offense": 0.258,
-              "defense": -1.295,
-              "experimentalRating": -1.037,
-              "experimentalRank": 6,
+              "offense": 0.689,
+              "defense": -1.51,
+              "experimentalRating": -0.821,
+              "experimentalRank": 7,
               "experimentalTier": "low"
             }
           ],
           "unratedTeams": [
-            "San Jose Jr Sharks 10B-1",
-            "Tri Valley Blue Devils 10B"
+            "San Jose Jr Sharks 10B-1"
           ]
         },
         "Preseason": {
@@ -2125,7 +2143,8 @@
             }
           ],
           "unratedTeams": [
-            "San Jose Jr Sharks 10B-1"
+            "San Jose Jr Sharks 10B-1",
+            "Santa Clara Blackhawks 10B"
           ]
         }
       },
@@ -2654,21 +2673,6 @@
           "played": true,
           "ageLabel": "10U",
           "levelLabel": "B"
-        },
-        {
-          "gameId": "57440",
-          "date": "10/25/26",
-          "day": "Sun",
-          "time": "5:00PM",
-          "rink": "Dublin",
-          "type": "Exhibition",
-          "away": "San Mateo Black Stars 10B-1",
-          "home": "Tri Valley Blue Devils 10B",
-          "awayGoals": null,
-          "homeGoals": null,
-          "played": false,
-          "ageLabel": "10U",
-          "levelLabel": "B East"
         },
         {
           "gameId": "56710",
@@ -3451,6 +3455,21 @@
           "levelLabel": "B East"
         },
         {
+          "gameId": "57440",
+          "date": "10/25/26",
+          "day": "Sun",
+          "time": "5:00PM",
+          "rink": "Dublin",
+          "type": "Exhibition",
+          "away": "San Mateo Black Stars 10B-1",
+          "home": "Tri Valley Blue Devils 10B",
+          "awayGoals": 3,
+          "homeGoals": 3,
+          "played": true,
+          "ageLabel": "10U",
+          "levelLabel": "B East"
+        },
+        {
           "gameId": "60087",
           "date": "10/25/26",
           "day": "Sun",
@@ -3616,6 +3635,36 @@
           "levelLabel": "B East"
         },
         {
+          "gameId": "63317",
+          "date": "10/11/26",
+          "day": "Sun",
+          "time": "7:04AM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 10B",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "10U",
+          "levelLabel": "B East"
+        },
+        {
+          "gameId": "63316",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "5:07PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 10B",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "10U",
+          "levelLabel": "B East"
+        },
+        {
           "gameId": "57376",
           "date": "10/10/26",
           "day": "Sat",
@@ -3627,6 +3676,36 @@
           "awayGoals": 10,
           "homeGoals": 1,
           "played": true,
+          "ageLabel": "10U",
+          "levelLabel": "B East"
+        },
+        {
+          "gameId": "63315",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "10:00AM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 10B",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "10U",
+          "levelLabel": "B East"
+        },
+        {
+          "gameId": "63314",
+          "date": "10/09/26",
+          "day": "Fri",
+          "time": "7:00PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 10B",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
           "ageLabel": "10U",
           "levelLabel": "B East"
         },
@@ -3692,24 +3771,24 @@
         }
       ],
       "teamLinks": {
-        "Fresno Jr Monsters 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1",
-        "Fresno Jr Monsters Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4558&season=33&league=3&stat_class=1",
-        "Oakland Bears 10B": "https://stats.caha.timetoscore.com/display-schedule?team=86&season=33&league=3&stat_class=1",
-        "Stockton Colts 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=593&season=33&league=3&stat_class=1",
-        "Santa Clara Blackhawks 10B": "https://stats.caha.timetoscore.com/display-schedule?team=78&season=33&league=3&stat_class=1",
         "Tri Valley Blue Devils 10B": "https://stats.caha.timetoscore.com/display-schedule?team=566&season=33&league=3&stat_class=1",
-        "Santa Rosa Flyers 10B": "https://stats.caha.timetoscore.com/display-schedule?team=39&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=57&season=33&league=3&stat_class=1",
-        "San Mateo Black Stars 10B-2": "https://stats.caha.timetoscore.com/display-schedule?team=2907&season=33&league=3&stat_class=1",
-        "San Francisco Sabercats 10B": "https://stats.caha.timetoscore.com/display-schedule?team=2897&season=33&league=3&stat_class=1",
-        "Lake Tahoe Grizzlies 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4411&season=33&league=3&stat_class=1",
-        "Vacaville Jets 10B": "https://stats.caha.timetoscore.com/display-schedule?team=28&season=33&league=3&stat_class=1",
-        "Capital Thunder 10B": "https://stats.caha.timetoscore.com/display-schedule?team=3094&season=33&league=3&stat_class=1",
         "Cupertino Cougars 10B": "https://stats.caha.timetoscore.com/display-schedule?team=130&season=33&league=3&stat_class=1",
-        "San Mateo Black Stars 10B-1": "https://stats.caha.timetoscore.com/display-schedule?team=2906&season=33&league=3&stat_class=1",
+        "San Francisco Sabercats 10B": "https://stats.caha.timetoscore.com/display-schedule?team=2897&season=33&league=3&stat_class=1",
+        "Santa Rosa Flyers 10B": "https://stats.caha.timetoscore.com/display-schedule?team=39&season=33&league=3&stat_class=1",
+        "Stockton Colts 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=593&season=33&league=3&stat_class=1",
         "Stockton Colts Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4269&season=33&league=3&stat_class=1",
+        "Vacaville Jets 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=694&season=33&league=3&stat_class=1",
+        "Fresno Jr Monsters 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1",
+        "Vacaville Jets 10B": "https://stats.caha.timetoscore.com/display-schedule?team=28&season=33&league=3&stat_class=1",
         "Tri Valley Lady Blue Devils 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=2924&season=33&league=3&stat_class=1",
-        "Vacaville Jets 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=694&season=33&league=3&stat_class=1"
+        "San Mateo Black Stars 10B-2": "https://stats.caha.timetoscore.com/display-schedule?team=2907&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=57&season=33&league=3&stat_class=1",
+        "Capital Thunder 10B": "https://stats.caha.timetoscore.com/display-schedule?team=3094&season=33&league=3&stat_class=1",
+        "Lake Tahoe Grizzlies 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4411&season=33&league=3&stat_class=1",
+        "Santa Clara Blackhawks 10B": "https://stats.caha.timetoscore.com/display-schedule?team=78&season=33&league=3&stat_class=1",
+        "San Mateo Black Stars 10B-1": "https://stats.caha.timetoscore.com/display-schedule?team=2906&season=33&league=3&stat_class=1",
+        "Fresno Jr Monsters Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4558&season=33&league=3&stat_class=1",
+        "Oakland Bears 10B": "https://stats.caha.timetoscore.com/display-schedule?team=86&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -3721,7 +3800,7 @@
           "teams": [
             {
               "name": "San Jose Jr Sharks 10B-1",
-              "rating": 7.952,
+              "rating": 7.972,
               "rank": 1,
               "tier": "top",
               "gamesPlayed": 8,
@@ -3732,15 +3811,15 @@
               "goalsFor": 57,
               "goalsAgainst": 26,
               "goalDiff": 31,
-              "offense": 0.196,
-              "defense": 0.94,
+              "offense": 0.191,
+              "defense": 0.931,
               "experimentalRating": 8.036,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks 10B-2",
-              "rating": 4.923,
+              "rating": 4.903,
               "rank": 2,
               "tier": "top",
               "gamesPlayed": 8,
@@ -3751,54 +3830,35 @@
               "goalsFor": 44,
               "goalsAgainst": 36,
               "goalDiff": 8,
-              "offense": 1.129,
-              "defense": 0.748,
-              "experimentalRating": 4.844,
+              "offense": 1.046,
+              "defense": 0.69,
+              "experimentalRating": 4.823,
               "experimentalRank": 2,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks Girls 10B",
-              "rating": 2.65,
+              "rating": 3.225,
               "rank": 3,
               "tier": "mid",
-              "gamesPlayed": 7,
-              "wins": 5,
+              "gamesPlayed": 8,
+              "wins": 6,
               "losses": 2,
               "ties": 0,
-              "points": 10,
-              "goalsFor": 38,
-              "goalsAgainst": 30,
-              "goalDiff": 8,
-              "offense": -1.131,
-              "defense": -0.231,
-              "experimentalRating": 2.214,
-              "experimentalRank": 4,
-              "experimentalTier": "mid"
-            },
-            {
-              "name": "Vacaville Jets 10B",
-              "rating": 2.004,
-              "rank": 4,
-              "tier": "mid",
-              "gamesPlayed": 9,
-              "wins": 4,
-              "losses": 4,
-              "ties": 1,
-              "points": 9,
-              "goalsFor": 56,
-              "goalsAgainst": 52,
-              "goalDiff": 4,
-              "offense": -0.745,
-              "defense": -1.111,
-              "experimentalRating": 2.247,
+              "points": 12,
+              "goalsFor": 46,
+              "goalsAgainst": 32,
+              "goalDiff": 14,
+              "offense": -0.879,
+              "defense": -0.039,
+              "experimentalRating": 2.709,
               "experimentalRank": 3,
               "experimentalTier": "mid"
             },
             {
               "name": "Lake Tahoe Grizzlies 10B",
-              "rating": 1.992,
-              "rank": 5,
+              "rating": 1.993,
+              "rank": 4,
               "tier": "mid",
               "gamesPlayed": 7,
               "wins": 4,
@@ -3808,35 +3868,35 @@
               "goalsFor": 54,
               "goalsAgainst": 28,
               "goalDiff": 26,
-              "offense": -0.587,
-              "defense": -0.585,
-              "experimentalRating": 2.089,
+              "offense": -0.601,
+              "defense": -0.613,
+              "experimentalRating": 2.099,
+              "experimentalRank": 4,
+              "experimentalTier": "mid"
+            },
+            {
+              "name": "Vacaville Jets 10B",
+              "rating": 1.786,
+              "rank": 5,
+              "tier": "mid",
+              "gamesPlayed": 9,
+              "wins": 4,
+              "losses": 4,
+              "ties": 1,
+              "points": 9,
+              "goalsFor": 56,
+              "goalsAgainst": 52,
+              "goalDiff": 4,
+              "offense": -0.838,
+              "defense": -1.178,
+              "experimentalRating": 2.041,
               "experimentalRank": 5,
               "experimentalTier": "mid"
             },
             {
-              "name": "Santa Rosa Flyers 10B",
-              "rating": 1.573,
-              "rank": 6,
-              "tier": "mid",
-              "gamesPlayed": 8,
-              "wins": 3,
-              "losses": 5,
-              "ties": 0,
-              "points": 6,
-              "goalsFor": 49,
-              "goalsAgainst": 50,
-              "goalDiff": -1,
-              "offense": -0.555,
-              "defense": -2.019,
-              "experimentalRating": 0.764,
-              "experimentalRank": 8,
-              "experimentalTier": "mid"
-            },
-            {
               "name": "Oakland Bears 10B",
-              "rating": 1.134,
-              "rank": 7,
+              "rating": 1.33,
+              "rank": 6,
               "tier": "mid",
               "gamesPlayed": 10,
               "wins": 2,
@@ -3846,15 +3906,34 @@
               "goalsFor": 36,
               "goalsAgainst": 61,
               "goalDiff": -25,
-              "offense": -0.902,
-              "defense": -1.105,
-              "experimentalRating": 1.019,
+              "offense": -0.848,
+              "defense": -1.04,
+              "experimentalRating": 1.201,
               "experimentalRank": 6,
               "experimentalTier": "mid"
             },
             {
+              "name": "Santa Rosa Flyers 10B",
+              "rating": 1.072,
+              "rank": 7,
+              "tier": "mid",
+              "gamesPlayed": 9,
+              "wins": 3,
+              "losses": 6,
+              "ties": 0,
+              "points": 6,
+              "goalsFor": 51,
+              "goalsAgainst": 58,
+              "goalDiff": -7,
+              "offense": -0.728,
+              "defense": -2.251,
+              "experimentalRating": 0.315,
+              "experimentalRank": 8,
+              "experimentalTier": "mid"
+            },
+            {
               "name": "Stockton Colts Girls 10B",
-              "rating": 0.733,
+              "rating": 0.635,
               "rank": 8,
               "tier": "mid",
               "gamesPlayed": 9,
@@ -3865,15 +3944,15 @@
               "goalsFor": 53,
               "goalsAgainst": 46,
               "goalDiff": 7,
-              "offense": -1.154,
-              "defense": -1.532,
-              "experimentalRating": 0.955,
+              "offense": -1.191,
+              "defense": -1.572,
+              "experimentalRating": 0.871,
               "experimentalRank": 7,
               "experimentalTier": "mid"
             },
             {
               "name": "Fresno Jr Monsters Girls 10B",
-              "rating": -4.782,
+              "rating": -4.762,
               "rank": 9,
               "tier": "low",
               "gamesPlayed": 8,
@@ -3885,14 +3964,14 @@
               "goalsAgainst": 94,
               "goalDiff": -84,
               "offense": -3.795,
-              "defense": -3.751,
-              "experimentalRating": -4.114,
+              "defense": -3.74,
+              "experimentalRating": -4.091,
               "experimentalRank": 9,
               "experimentalTier": "low"
             },
             {
               "name": "San Mateo Black Stars 10B-2",
-              "rating": -5.303,
+              "rating": -5.279,
               "rank": 10,
               "tier": "low",
               "gamesPlayed": 7,
@@ -3903,9 +3982,9 @@
               "goalsFor": 5,
               "goalsAgainst": 85,
               "goalDiff": -80,
-              "offense": -4.341,
-              "defense": -3.512,
-              "experimentalRating": -5.173,
+              "offense": -4.338,
+              "defense": -3.49,
+              "experimentalRating": -5.144,
               "experimentalRank": 10,
               "experimentalTier": "low"
             }
@@ -4232,9 +4311,28 @@
         "Regular": {
           "teams": [
             {
-              "name": "Vacaville Jets 10B",
-              "rating": 2.551,
+              "name": "San Jose Jr Sharks Girls 10B",
+              "rating": 2.765,
               "rank": 1,
+              "tier": "top",
+              "gamesPlayed": 2,
+              "wins": 2,
+              "losses": 0,
+              "ties": 0,
+              "points": 4,
+              "goalsFor": 12,
+              "goalsAgainst": 4,
+              "goalDiff": 8,
+              "offense": 0.958,
+              "defense": 1.784,
+              "experimentalRating": 2.742,
+              "experimentalRank": 1,
+              "experimentalTier": "top"
+            },
+            {
+              "name": "Vacaville Jets 10B",
+              "rating": 1.916,
+              "rank": 2,
               "tier": "top",
               "gamesPlayed": 4,
               "wins": 4,
@@ -4244,16 +4342,16 @@
               "goalsFor": 36,
               "goalsAgainst": 9,
               "goalDiff": 27,
-              "offense": 1.223,
-              "defense": 0.974,
-              "experimentalRating": 2.197,
-              "experimentalRank": 1,
+              "offense": 0.77,
+              "defense": 1.055,
+              "experimentalRating": 1.825,
+              "experimentalRank": 2,
               "experimentalTier": "top"
             },
             {
               "name": "Lake Tahoe Grizzlies 10B",
-              "rating": 1.321,
-              "rank": 2,
+              "rating": 1.236,
+              "rank": 3,
               "tier": "top",
               "gamesPlayed": 3,
               "wins": 2,
@@ -4263,16 +4361,16 @@
               "goalsFor": 31,
               "goalsAgainst": 4,
               "goalDiff": 27,
-              "offense": 0.247,
-              "defense": 0.574,
-              "experimentalRating": 0.821,
+              "offense": 0.266,
+              "defense": 0.588,
+              "experimentalRating": 0.854,
               "experimentalRank": 4,
               "experimentalTier": "top"
             },
             {
               "name": "Stockton Colts Girls 10B",
-              "rating": 1.183,
-              "rank": 3,
+              "rating": 0.987,
+              "rank": 4,
               "tier": "top",
               "gamesPlayed": 3,
               "wins": 2,
@@ -4282,36 +4380,17 @@
               "goalsFor": 16,
               "goalsAgainst": 9,
               "goalDiff": 7,
-              "offense": 0.74,
-              "defense": 0.231,
-              "experimentalRating": 0.971,
+              "offense": 0.762,
+              "defense": 0.153,
+              "experimentalRating": 0.915,
               "experimentalRank": 3,
               "experimentalTier": "top"
             },
             {
-              "name": "San Jose Jr Sharks Girls 10B",
-              "rating": 0.944,
-              "rank": 4,
-              "tier": "top",
-              "gamesPlayed": 1,
-              "wins": 1,
-              "losses": 0,
-              "ties": 0,
-              "points": 2,
-              "goalsFor": 4,
-              "goalsAgainst": 2,
-              "goalDiff": 2,
-              "offense": 0.103,
-              "defense": 1.726,
-              "experimentalRating": 1.829,
-              "experimentalRank": 2,
-              "experimentalTier": "top"
-            },
-            {
               "name": "Oakland Bears 10B",
-              "rating": 0.184,
+              "rating": 0.602,
               "rank": 5,
-              "tier": "mid",
+              "tier": "top",
               "gamesPlayed": 3,
               "wins": 0,
               "losses": 2,
@@ -4320,34 +4399,34 @@
               "goalsFor": 9,
               "goalsAgainst": 12,
               "goalDiff": -3,
-              "offense": 0.153,
-              "defense": 0.041,
-              "experimentalRating": 0.194,
+              "offense": -0.016,
+              "defense": 0.488,
+              "experimentalRating": 0.472,
               "experimentalRank": 5,
-              "experimentalTier": "mid"
+              "experimentalTier": "top"
             },
             {
               "name": "Santa Rosa Flyers 10B",
-              "rating": -1.191,
+              "rating": -2.244,
               "rank": 6,
               "tier": "mid",
-              "gamesPlayed": 2,
+              "gamesPlayed": 3,
               "wins": 0,
-              "losses": 2,
+              "losses": 3,
               "ties": 0,
               "points": 0,
-              "goalsFor": 6,
-              "goalsAgainst": 14,
-              "goalDiff": -8,
-              "offense": 0.213,
-              "defense": -0.942,
-              "experimentalRating": -0.729,
+              "goalsFor": 8,
+              "goalsAgainst": 22,
+              "goalDiff": -14,
+              "offense": 0.1,
+              "defense": -1.539,
+              "experimentalRating": -1.439,
               "experimentalRank": 6,
               "experimentalTier": "mid"
             },
             {
               "name": "Fresno Jr Monsters Girls 10B",
-              "rating": -4.992,
+              "rating": -5.262,
               "rank": 7,
               "tier": "low",
               "gamesPlayed": 4,
@@ -4358,9 +4437,9 @@
               "goalsFor": 1,
               "goalsAgainst": 53,
               "goalDiff": -52,
-              "offense": -2.679,
-              "defense": -2.604,
-              "experimentalRating": -5.283,
+              "offense": -2.84,
+              "defense": -2.53,
+              "experimentalRating": -5.37,
               "experimentalRank": 7,
               "experimentalTier": "low"
             }
@@ -4895,21 +4974,6 @@
           "played": true,
           "ageLabel": "10U",
           "levelLabel": "B"
-        },
-        {
-          "gameId": "56377",
-          "date": "10/25/26",
-          "day": "Sun",
-          "time": "3:45PM",
-          "rink": "Santa Rosa",
-          "type": "Regular",
-          "away": "San Jose Jr Sharks Girls 10B",
-          "home": "Santa Rosa Flyers 10B",
-          "awayGoals": null,
-          "homeGoals": null,
-          "played": false,
-          "ageLabel": "10U",
-          "levelLabel": "B West"
         },
         {
           "gameId": "57564",
@@ -5722,6 +5786,21 @@
           "levelLabel": "B West"
         },
         {
+          "gameId": "56377",
+          "date": "10/25/26",
+          "day": "Sun",
+          "time": "3:45PM",
+          "rink": "Santa Rosa",
+          "type": "Regular",
+          "away": "San Jose Jr Sharks Girls 10B",
+          "home": "Santa Rosa Flyers 10B",
+          "awayGoals": 8,
+          "homeGoals": 2,
+          "played": true,
+          "ageLabel": "10U",
+          "levelLabel": "B West"
+        },
+        {
           "gameId": "57562",
           "date": "10/25/26",
           "day": "Sun",
@@ -5978,23 +6057,23 @@
         }
       ],
       "teamLinks": {
-        "Lake Tahoe Grizzlies 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4411&season=33&league=3&stat_class=1",
-        "Vacaville Jets 10B": "https://stats.caha.timetoscore.com/display-schedule?team=28&season=33&league=3&stat_class=1",
-        "Fresno Jr Monsters 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1",
-        "Fresno Jr Monsters Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4558&season=33&league=3&stat_class=1",
-        "Oakland Bears 10B": "https://stats.caha.timetoscore.com/display-schedule?team=86&season=33&league=3&stat_class=1",
-        "Stockton Colts 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=593&season=33&league=3&stat_class=1",
-        "Capital Thunder 10B": "https://stats.caha.timetoscore.com/display-schedule?team=3094&season=33&league=3&stat_class=1",
-        "San Mateo Black Stars 10B-1": "https://stats.caha.timetoscore.com/display-schedule?team=2906&season=33&league=3&stat_class=1",
-        "Santa Clara Blackhawks 10B": "https://stats.caha.timetoscore.com/display-schedule?team=78&season=33&league=3&stat_class=1",
-        "Tri Valley Blue Devils 10B": "https://stats.caha.timetoscore.com/display-schedule?team=566&season=33&league=3&stat_class=1",
-        "Stockton Colts Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4269&season=33&league=3&stat_class=1",
-        "Santa Rosa Flyers 10B": "https://stats.caha.timetoscore.com/display-schedule?team=39&season=33&league=3&stat_class=1",
-        "Tri Valley Lady Blue Devils 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=2924&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=57&season=33&league=3&stat_class=1",
         "San Mateo Black Stars 10B-2": "https://stats.caha.timetoscore.com/display-schedule?team=2907&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=57&season=33&league=3&stat_class=1",
+        "Tri Valley Blue Devils 10B": "https://stats.caha.timetoscore.com/display-schedule?team=566&season=33&league=3&stat_class=1",
+        "Capital Thunder 10B": "https://stats.caha.timetoscore.com/display-schedule?team=3094&season=33&league=3&stat_class=1",
+        "San Francisco Sabercats 10B": "https://stats.caha.timetoscore.com/display-schedule?team=2897&season=33&league=3&stat_class=1",
+        "Santa Rosa Flyers 10B": "https://stats.caha.timetoscore.com/display-schedule?team=39&season=33&league=3&stat_class=1",
+        "Stockton Colts 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=593&season=33&league=3&stat_class=1",
+        "Stockton Colts Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4269&season=33&league=3&stat_class=1",
         "Vacaville Jets 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=694&season=33&league=3&stat_class=1",
-        "San Francisco Sabercats 10B": "https://stats.caha.timetoscore.com/display-schedule?team=2897&season=33&league=3&stat_class=1"
+        "Fresno Jr Monsters 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1",
+        "Lake Tahoe Grizzlies 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4411&season=33&league=3&stat_class=1",
+        "Santa Clara Blackhawks 10B": "https://stats.caha.timetoscore.com/display-schedule?team=78&season=33&league=3&stat_class=1",
+        "Vacaville Jets 10B": "https://stats.caha.timetoscore.com/display-schedule?team=28&season=33&league=3&stat_class=1",
+        "San Mateo Black Stars 10B-1": "https://stats.caha.timetoscore.com/display-schedule?team=2906&season=33&league=3&stat_class=1",
+        "Fresno Jr Monsters Girls 10B": "https://stats.caha.timetoscore.com/display-schedule?team=4558&season=33&league=3&stat_class=1",
+        "Tri Valley Lady Blue Devils 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=2924&season=33&league=3&stat_class=1",
+        "Oakland Bears 10B": "https://stats.caha.timetoscore.com/display-schedule?team=86&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -6006,7 +6085,7 @@
           "teams": [
             {
               "name": "San Jose Jr Sharks 12AA-3",
-              "rating": 14.379,
+              "rating": 14.44,
               "rank": 1,
               "tier": "top",
               "gamesPlayed": 7,
@@ -6017,15 +6096,15 @@
               "goalsFor": 63,
               "goalsAgainst": 10,
               "goalDiff": 53,
-              "offense": 1.279,
-              "defense": 2.192,
-              "experimentalRating": 13.978,
+              "offense": 1.507,
+              "defense": 2.017,
+              "experimentalRating": 14.065,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "Vacaville Jets 12A",
-              "rating": 12.774,
+              "rating": 12.677,
               "rank": 2,
               "tier": "mid",
               "gamesPlayed": 9,
@@ -6036,54 +6115,73 @@
               "goalsFor": 58,
               "goalsAgainst": 15,
               "goalDiff": 43,
-              "offense": 1.525,
-              "defense": 0.609,
-              "experimentalRating": 12.684,
+              "offense": 1.629,
+              "defense": 0.401,
+              "experimentalRating": 12.618,
               "experimentalRank": 2,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks 12A",
-              "rating": 12.344,
+              "rating": 12.089,
               "rank": 3,
               "tier": "mid",
-              "gamesPlayed": 7,
-              "wins": 6,
+              "gamesPlayed": 8,
+              "wins": 7,
               "losses": 1,
               "ties": 0,
-              "points": 12,
-              "goalsFor": 32,
-              "goalsAgainst": 16,
-              "goalDiff": 16,
-              "offense": 0.705,
-              "defense": 1.11,
-              "experimentalRating": 12.336,
+              "points": 14,
+              "goalsFor": 39,
+              "goalsAgainst": 20,
+              "goalDiff": 19,
+              "offense": 1.085,
+              "defense": 0.431,
+              "experimentalRating": 12.079,
               "experimentalRank": 3,
-              "experimentalTier": "top"
+              "experimentalTier": "mid"
             },
             {
               "name": "Santa Clara Blackhawks 12A",
               "rating": 11.867,
               "rank": 4,
               "tier": "mid",
-              "gamesPlayed": 9,
+              "gamesPlayed": 11,
               "wins": 3,
               "losses": 5,
-              "ties": 1,
-              "points": 7,
+              "ties": 3,
+              "points": 9,
               "goalsFor": 33,
               "goalsAgainst": 42,
               "goalDiff": -9,
-              "offense": 0.322,
-              "defense": 0.209,
-              "experimentalRating": 11.165,
+              "offense": 0.539,
+              "defense": -0.058,
+              "experimentalRating": 11.154,
               "experimentalRank": 4,
               "experimentalTier": "mid"
             },
             {
-              "name": "Cupertino Cougars 12A",
-              "rating": 11.199,
+              "name": "Away",
+              "rating": 11.705,
               "rank": 5,
+              "tier": "mid",
+              "gamesPlayed": 2,
+              "wins": 0,
+              "losses": 0,
+              "ties": 2,
+              "points": 2,
+              "goalsFor": 0,
+              "goalsAgainst": 0,
+              "goalDiff": 0,
+              "offense": -2.703,
+              "defense": 3.14,
+              "experimentalRating": 11.116,
+              "experimentalRank": 5,
+              "experimentalTier": "mid"
+            },
+            {
+              "name": "Cupertino Cougars 12A",
+              "rating": 11.162,
+              "rank": 6,
               "tier": "mid",
               "gamesPlayed": 9,
               "wins": 4,
@@ -6093,16 +6191,16 @@
               "goalsFor": 26,
               "goalsAgainst": 19,
               "goalDiff": 7,
-              "offense": -0.882,
-              "defense": 1.379,
-              "experimentalRating": 11.059,
-              "experimentalRank": 5,
+              "offense": -0.71,
+              "defense": 1.145,
+              "experimentalRating": 11.034,
+              "experimentalRank": 6,
               "experimentalTier": "mid"
             },
             {
               "name": "Tri Valley Blue Devils 12A",
-              "rating": 8.972,
-              "rank": 6,
+              "rating": 8.984,
+              "rank": 7,
               "tier": "low",
               "gamesPlayed": 8,
               "wins": 2,
@@ -6112,16 +6210,16 @@
               "goalsFor": 18,
               "goalsAgainst": 56,
               "goalDiff": -38,
-              "offense": -0.747,
-              "defense": -1.218,
-              "experimentalRating": 8.759,
-              "experimentalRank": 6,
+              "offense": -0.481,
+              "defense": -1.5,
+              "experimentalRating": 8.781,
+              "experimentalRank": 7,
               "experimentalTier": "low"
             },
             {
               "name": "Fresno Jr Monsters 12A",
-              "rating": 8.702,
-              "rank": 7,
+              "rating": 8.657,
+              "rank": 8,
               "tier": "low",
               "gamesPlayed": 9,
               "wins": 3,
@@ -6131,29 +6229,29 @@
               "goalsFor": 37,
               "goalsAgainst": 61,
               "goalDiff": -24,
-              "offense": 0.269,
-              "defense": -2.105,
-              "experimentalRating": 8.583,
-              "experimentalRank": 7,
+              "offense": 0.43,
+              "defense": -2.334,
+              "experimentalRating": 8.553,
+              "experimentalRank": 8,
               "experimentalTier": "low"
             },
             {
               "name": "Santa Rosa Flyers 12A",
-              "rating": 7.162,
-              "rank": 8,
+              "rating": 7.366,
+              "rank": 9,
               "tier": "low",
-              "gamesPlayed": 7,
+              "gamesPlayed": 8,
               "wins": 0,
-              "losses": 7,
+              "losses": 8,
               "ties": 0,
               "points": 0,
-              "goalsFor": 10,
-              "goalsAgainst": 49,
-              "goalDiff": -39,
-              "offense": -1.422,
-              "defense": -2.104,
-              "experimentalRating": 7.028,
-              "experimentalRank": 8,
+              "goalsFor": 14,
+              "goalsAgainst": 56,
+              "goalDiff": -42,
+              "offense": -0.823,
+              "defense": -2.522,
+              "experimentalRating": 7.243,
+              "experimentalRank": 9,
               "experimentalTier": "low"
             }
           ],
@@ -6163,26 +6261,26 @@
           "teams": [
             {
               "name": "San Jose Jr Sharks 12A",
-              "rating": 0.721,
+              "rating": 1.25,
               "rank": 1,
               "tier": "top",
-              "gamesPlayed": 2,
-              "wins": 2,
+              "gamesPlayed": 3,
+              "wins": 3,
               "losses": 0,
               "ties": 0,
-              "points": 4,
-              "goalsFor": 7,
-              "goalsAgainst": 5,
-              "goalDiff": 2,
-              "offense": 1.183,
-              "defense": -0.306,
-              "experimentalRating": 0.877,
+              "points": 6,
+              "goalsFor": 14,
+              "goalsAgainst": 9,
+              "goalDiff": 5,
+              "offense": 1.886,
+              "defense": -0.568,
+              "experimentalRating": 1.318,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "Fresno Jr Monsters 12A",
-              "rating": 0.065,
+              "rating": 0.269,
               "rank": 2,
               "tier": "mid",
               "gamesPlayed": 2,
@@ -6193,15 +6291,15 @@
               "goalsFor": 9,
               "goalsAgainst": 9,
               "goalDiff": 0,
-              "offense": 2.124,
-              "defense": -2.092,
-              "experimentalRating": 0.032,
+              "offense": 1.43,
+              "defense": -1.075,
+              "experimentalRating": 0.355,
               "experimentalRank": 2,
               "experimentalTier": "mid"
             },
             {
               "name": "Cupertino Cougars 12A",
-              "rating": -0.311,
+              "rating": -0.258,
               "rank": 3,
               "tier": "low",
               "gamesPlayed": 1,
@@ -6212,15 +6310,15 @@
               "goalsFor": 0,
               "goalsAgainst": 1,
               "goalDiff": -1,
-              "offense": -2.159,
-              "defense": 2.057,
-              "experimentalRating": -0.102,
+              "offense": -2.909,
+              "defense": 3.174,
+              "experimentalRating": 0.265,
               "experimentalRank": 3,
               "experimentalTier": "mid"
             },
             {
               "name": "Tri Valley Blue Devils 12A",
-              "rating": -0.475,
+              "rating": -0.503,
               "rank": 4,
               "tier": "low",
               "gamesPlayed": 1,
@@ -6231,16 +6329,34 @@
               "goalsFor": 3,
               "goalsAgainst": 4,
               "goalDiff": -1,
-              "offense": -1.148,
-              "defense": 0.341,
-              "experimentalRating": -0.807,
+              "offense": -0.832,
+              "defense": 0.294,
+              "experimentalRating": -0.538,
               "experimentalRank": 4,
+              "experimentalTier": "low"
+            },
+            {
+              "name": "Santa Rosa Flyers 12A",
+              "rating": -0.758,
+              "rank": 5,
+              "tier": "low",
+              "gamesPlayed": 1,
+              "wins": 0,
+              "losses": 1,
+              "ties": 0,
+              "points": 0,
+              "goalsFor": 4,
+              "goalsAgainst": 7,
+              "goalDiff": -3,
+              "offense": 0.424,
+              "defense": -1.826,
+              "experimentalRating": -1.402,
+              "experimentalRank": 5,
               "experimentalTier": "low"
             }
           ],
           "unratedTeams": [
             "Santa Clara Blackhawks 12A",
-            "Santa Rosa Flyers 12A",
             "Vacaville Jets 12A"
           ]
         },
@@ -6538,24 +6654,52 @@
             }
           ],
           "unratedTeams": []
+        },
+        "Tournament": {
+          "teams": [
+            {
+              "name": "Away",
+              "rating": 0.0,
+              "rank": 1,
+              "tier": "mid",
+              "gamesPlayed": 2,
+              "wins": 0,
+              "losses": 0,
+              "ties": 2,
+              "points": 2,
+              "goalsFor": 0,
+              "goalsAgainst": 0,
+              "goalDiff": 0,
+              "offense": 0.0,
+              "defense": 0.0,
+              "experimentalRating": 0.0,
+              "experimentalRank": 1,
+              "experimentalTier": "mid"
+            },
+            {
+              "name": "Santa Clara Blackhawks 12A",
+              "rating": 0.0,
+              "rank": 2,
+              "tier": "mid",
+              "gamesPlayed": 2,
+              "wins": 0,
+              "losses": 0,
+              "ties": 2,
+              "points": 2,
+              "goalsFor": 0,
+              "goalsAgainst": 0,
+              "goalDiff": 0,
+              "offense": 0.0,
+              "defense": 0.0,
+              "experimentalRating": 0.0,
+              "experimentalRank": 2,
+              "experimentalTier": "mid"
+            }
+          ],
+          "unratedTeams": []
         }
       },
       "games": [
-        {
-          "gameId": "56378",
-          "date": "10/25/26",
-          "day": "Sun",
-          "time": "5:30PM",
-          "rink": "Santa Rosa",
-          "type": "Exhibition",
-          "away": "San Jose Jr Sharks 12A",
-          "home": "Santa Rosa Flyers 12A",
-          "awayGoals": null,
-          "homeGoals": null,
-          "played": false,
-          "ageLabel": "12U",
-          "levelLabel": "A"
-        },
         {
           "gameId": "60104",
           "date": "11/01/26",
@@ -7217,6 +7361,21 @@
           "levelLabel": "A"
         },
         {
+          "gameId": "56378",
+          "date": "10/25/26",
+          "day": "Sun",
+          "time": "5:30PM",
+          "rink": "Santa Rosa",
+          "type": "Exhibition",
+          "away": "San Jose Jr Sharks 12A",
+          "home": "Santa Rosa Flyers 12A",
+          "awayGoals": 7,
+          "homeGoals": 4,
+          "played": true,
+          "ageLabel": "12U",
+          "levelLabel": "A"
+        },
+        {
           "gameId": "60904",
           "date": "10/25/26",
           "day": "Sun",
@@ -7337,6 +7496,21 @@
           "levelLabel": "A"
         },
         {
+          "gameId": "63313",
+          "date": "10/11/26",
+          "day": "Sun",
+          "time": "8:20AM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 12A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "12U",
+          "levelLabel": "A"
+        },
+        {
           "gameId": "56427",
           "date": "10/10/26",
           "day": "Sat",
@@ -7347,6 +7521,51 @@
           "home": "Santa Rosa Flyers 12A",
           "awayGoals": 4,
           "homeGoals": 2,
+          "played": true,
+          "ageLabel": "12U",
+          "levelLabel": "A"
+        },
+        {
+          "gameId": "63312",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "4:00PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 12A",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "12U",
+          "levelLabel": "A"
+        },
+        {
+          "gameId": "63311",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "7:00AM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 12A",
+          "awayGoals": 0,
+          "homeGoals": 0,
+          "played": true,
+          "ageLabel": "12U",
+          "levelLabel": "A"
+        },
+        {
+          "gameId": "63310",
+          "date": "10/09/26",
+          "day": "Fri",
+          "time": "4:20PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 12A",
+          "awayGoals": 0,
+          "homeGoals": 0,
           "played": true,
           "ageLabel": "12U",
           "levelLabel": "A"
@@ -7623,16 +7842,16 @@
         }
       ],
       "teamLinks": {
-        "Tri Valley Blue Devils 12A": "https://stats.caha.timetoscore.com/display-schedule?team=19&season=33&league=3&stat_class=1",
-        "Santa Clara Blackhawks 12A": "https://stats.caha.timetoscore.com/display-schedule?team=75&season=33&league=3&stat_class=1",
         "Santa Clara Blackhawks 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=76&season=33&league=3&stat_class=1",
-        "Santa Rosa Flyers 12A": "https://stats.caha.timetoscore.com/display-schedule?team=38&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 12AA-3": "https://stats.caha.timetoscore.com/display-schedule?team=56&season=33&league=3&stat_class=1",
-        "Cupertino Cougars 12A": "https://stats.caha.timetoscore.com/display-schedule?team=125&season=33&league=3&stat_class=1",
         "Fresno Jr Monsters 12A": "https://stats.caha.timetoscore.com/display-schedule?team=113&season=33&league=3&stat_class=1",
-        "Vacaville Jets 12A": "https://stats.caha.timetoscore.com/display-schedule?team=27&season=33&league=3&stat_class=1",
         "San Jose Jr Sharks 12A": "https://stats.caha.timetoscore.com/display-schedule?team=54&season=33&league=3&stat_class=1",
-        "Reno Ice 12AA": "https://stats.caha.timetoscore.com/display-schedule?team=3658&season=33&league=3&stat_class=1"
+        "Reno Ice 12AA": "https://stats.caha.timetoscore.com/display-schedule?team=3658&season=33&league=3&stat_class=1",
+        "Vacaville Jets 12A": "https://stats.caha.timetoscore.com/display-schedule?team=27&season=33&league=3&stat_class=1",
+        "Tri Valley Blue Devils 12A": "https://stats.caha.timetoscore.com/display-schedule?team=19&season=33&league=3&stat_class=1",
+        "Santa Rosa Flyers 12A": "https://stats.caha.timetoscore.com/display-schedule?team=38&season=33&league=3&stat_class=1",
+        "Cupertino Cougars 12A": "https://stats.caha.timetoscore.com/display-schedule?team=125&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 12AA-3": "https://stats.caha.timetoscore.com/display-schedule?team=56&season=33&league=3&stat_class=1",
+        "Santa Clara Blackhawks 12A": "https://stats.caha.timetoscore.com/display-schedule?team=75&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -9058,7 +9277,7 @@
           "teams": [
             {
               "name": "Tri Valley Blue Devils 12AA-1",
-              "rating": 20.372,
+              "rating": 20.414,
               "rank": 1,
               "tier": "top",
               "gamesPlayed": 6,
@@ -9071,13 +9290,13 @@
               "goalDiff": 52,
               "offense": 2.495,
               "defense": 1.982,
-              "experimentalRating": 19.476,
+              "experimentalRating": 19.516,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks 12AA-1",
-              "rating": 18.793,
+              "rating": 18.835,
               "rank": 2,
               "tier": "mid",
               "gamesPlayed": 5,
@@ -9090,13 +9309,13 @@
               "goalDiff": 10,
               "offense": 1.271,
               "defense": 1.548,
-              "experimentalRating": 17.972,
+              "experimentalRating": 18.012,
               "experimentalRank": 2,
               "experimentalTier": "top"
             },
             {
               "name": "Cupertino Cougars 12AA",
-              "rating": 14.917,
+              "rating": 14.959,
               "rank": 3,
               "tier": "low",
               "gamesPlayed": 9,
@@ -9109,13 +9328,13 @@
               "goalDiff": -9,
               "offense": 0.168,
               "defense": -0.74,
-              "experimentalRating": 14.716,
+              "experimentalRating": 14.756,
               "experimentalRank": 3,
               "experimentalTier": "mid"
             },
             {
               "name": "Tri Valley Blue Devils 12AA-2",
-              "rating": 14.416,
+              "rating": 14.458,
               "rank": 4,
               "tier": "low",
               "gamesPlayed": 10,
@@ -9128,13 +9347,13 @@
               "goalDiff": -10,
               "offense": -1.135,
               "defense": -0.016,
-              "experimentalRating": 13.98,
+              "experimentalRating": 14.02,
               "experimentalRank": 4,
               "experimentalTier": "mid"
             },
             {
               "name": "Reno Ice 12AA",
-              "rating": 13.75,
+              "rating": 13.792,
               "rank": 5,
               "tier": "low",
               "gamesPlayed": 9,
@@ -9147,13 +9366,13 @@
               "goalDiff": 26,
               "offense": -1.095,
               "defense": -0.436,
-              "experimentalRating": 13.347,
+              "experimentalRating": 13.387,
               "experimentalRank": 5,
               "experimentalTier": "low"
             },
             {
               "name": "San Jose Jr Sharks 12AA-2",
-              "rating": 13.465,
+              "rating": 13.507,
               "rank": 6,
               "tier": "low",
               "gamesPlayed": 10,
@@ -9166,7 +9385,7 @@
               "goalDiff": -43,
               "offense": -0.905,
               "defense": -0.878,
-              "experimentalRating": 13.125,
+              "experimentalRating": 13.165,
               "experimentalRank": 6,
               "experimentalTier": "low"
             }
@@ -10719,14 +10938,14 @@
         }
       ],
       "teamLinks": {
-        "Santa Clara Blackhawks 12A": "https://stats.caha.timetoscore.com/display-schedule?team=75&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 12AA-2": "https://stats.caha.timetoscore.com/display-schedule?team=524&season=33&league=3&stat_class=1",
-        "Tri Valley Blue Devils 12AA-1": "https://stats.caha.timetoscore.com/display-schedule?team=3664&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 12AA-3": "https://stats.caha.timetoscore.com/display-schedule?team=56&season=33&league=3&stat_class=1",
         "San Jose Jr Sharks 12AA-1": "https://stats.caha.timetoscore.com/display-schedule?team=3102&season=33&league=3&stat_class=1",
-        "Cupertino Cougars 12AA": "https://stats.caha.timetoscore.com/display-schedule?team=371&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 12AA-2": "https://stats.caha.timetoscore.com/display-schedule?team=524&season=33&league=3&stat_class=1",
+        "Reno Ice 12AA": "https://stats.caha.timetoscore.com/display-schedule?team=3658&season=33&league=3&stat_class=1",
         "Tri Valley Blue Devils 12AA-2": "https://stats.caha.timetoscore.com/display-schedule?team=20&season=33&league=3&stat_class=1",
-        "Reno Ice 12AA": "https://stats.caha.timetoscore.com/display-schedule?team=3658&season=33&league=3&stat_class=1"
+        "Cupertino Cougars 12AA": "https://stats.caha.timetoscore.com/display-schedule?team=371&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 12AA-3": "https://stats.caha.timetoscore.com/display-schedule?team=56&season=33&league=3&stat_class=1",
+        "Tri Valley Blue Devils 12AA-1": "https://stats.caha.timetoscore.com/display-schedule?team=3664&season=33&league=3&stat_class=1",
+        "Santa Clara Blackhawks 12A": "https://stats.caha.timetoscore.com/display-schedule?team=75&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -13227,19 +13446,19 @@
         }
       ],
       "teamLinks": {
-        "San Francisco Sabercats 14A": "https://stats.caha.timetoscore.com/display-schedule?team=545&season=33&league=3&stat_class=1",
-        "Reno Ice 14A": "https://stats.caha.timetoscore.com/display-schedule?team=3659&season=33&league=3&stat_class=1",
-        "Santa Rosa Flyers 14A": "https://stats.caha.timetoscore.com/display-schedule?team=37&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 14A-2": "https://stats.caha.timetoscore.com/display-schedule?team=701&season=33&league=3&stat_class=1",
-        "Oakland Bears 14A": "https://stats.caha.timetoscore.com/display-schedule?team=84&season=33&league=3&stat_class=1",
-        "Tri Valley Blue Devils 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=309&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 14A-1": "https://stats.caha.timetoscore.com/display-schedule?team=51&season=33&league=3&stat_class=1",
-        "Capital Thunder 14A": "https://stats.caha.timetoscore.com/display-schedule?team=132&season=33&league=3&stat_class=1",
-        "Stockton Colts 14A": "https://stats.caha.timetoscore.com/display-schedule?team=33&season=33&league=3&stat_class=1",
         "Vacaville Jets 14A": "https://stats.caha.timetoscore.com/display-schedule?team=320&season=33&league=3&stat_class=1",
-        "Lake Tahoe Grizzlies 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=374&season=33&league=3&stat_class=1",
+        "San Francisco Sabercats 14A": "https://stats.caha.timetoscore.com/display-schedule?team=545&season=33&league=3&stat_class=1",
         "Tri Valley Blue Devils 14A": "https://stats.caha.timetoscore.com/display-schedule?team=21&season=33&league=3&stat_class=1",
-        "Santa Clara Blackhawks 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=72&season=33&league=3&stat_class=1"
+        "Capital Thunder 14A": "https://stats.caha.timetoscore.com/display-schedule?team=132&season=33&league=3&stat_class=1",
+        "Santa Clara Blackhawks 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=72&season=33&league=3&stat_class=1",
+        "Tri Valley Blue Devils 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=309&season=33&league=3&stat_class=1",
+        "Lake Tahoe Grizzlies 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=374&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 14A-2": "https://stats.caha.timetoscore.com/display-schedule?team=701&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 14A-1": "https://stats.caha.timetoscore.com/display-schedule?team=51&season=33&league=3&stat_class=1",
+        "Santa Rosa Flyers 14A": "https://stats.caha.timetoscore.com/display-schedule?team=37&season=33&league=3&stat_class=1",
+        "Reno Ice 14A": "https://stats.caha.timetoscore.com/display-schedule?team=3659&season=33&league=3&stat_class=1",
+        "Stockton Colts 14A": "https://stats.caha.timetoscore.com/display-schedule?team=33&season=33&league=3&stat_class=1",
+        "Oakland Bears 14A": "https://stats.caha.timetoscore.com/display-schedule?team=84&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -13251,7 +13470,7 @@
           "teams": [
             {
               "name": "San Francisco Sabercats 16A",
-              "rating": 3.302,
+              "rating": 3.312,
               "rank": 1,
               "tier": "top",
               "gamesPlayed": 7,
@@ -13262,34 +13481,34 @@
               "goalsFor": 43,
               "goalsAgainst": 7,
               "goalDiff": 36,
-              "offense": 1.554,
-              "defense": 2.383,
-              "experimentalRating": 3.937,
+              "offense": 1.574,
+              "defense": 2.328,
+              "experimentalRating": 3.902,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks 16A-1",
-              "rating": 2.84,
+              "rating": 2.877,
               "rank": 2,
               "tier": "top",
-              "gamesPlayed": 3,
-              "wins": 3,
+              "gamesPlayed": 4,
+              "wins": 4,
               "losses": 0,
               "ties": 0,
-              "points": 6,
-              "goalsFor": 23,
-              "goalsAgainst": 4,
-              "goalDiff": 19,
-              "offense": 1.116,
-              "defense": 1.718,
-              "experimentalRating": 2.834,
+              "points": 8,
+              "goalsFor": 41,
+              "goalsAgainst": 5,
+              "goalDiff": 36,
+              "offense": 1.173,
+              "defense": 1.427,
+              "experimentalRating": 2.6,
               "experimentalRank": 2,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks 16A-2",
-              "rating": 2.426,
+              "rating": 2.407,
               "rank": 3,
               "tier": "top",
               "gamesPlayed": 6,
@@ -13300,15 +13519,15 @@
               "goalsFor": 49,
               "goalsAgainst": 14,
               "goalDiff": 35,
-              "offense": 1.592,
-              "defense": 0.946,
-              "experimentalRating": 2.538,
+              "offense": 1.513,
+              "defense": 1.052,
+              "experimentalRating": 2.565,
               "experimentalRank": 3,
               "experimentalTier": "top"
             },
             {
               "name": "Reno Ice 16A",
-              "rating": 0.936,
+              "rating": 0.91,
               "rank": 4,
               "tier": "mid",
               "gamesPlayed": 3,
@@ -13319,15 +13538,15 @@
               "goalsFor": 22,
               "goalsAgainst": 4,
               "goalDiff": 18,
-              "offense": 0.521,
-              "defense": 0.072,
-              "experimentalRating": 0.593,
+              "offense": 0.404,
+              "defense": 0.331,
+              "experimentalRating": 0.735,
               "experimentalRank": 5,
               "experimentalTier": "mid"
             },
             {
               "name": "Tri Valley Blue Devils 16A",
-              "rating": 0.487,
+              "rating": 0.508,
               "rank": 5,
               "tier": "mid",
               "gamesPlayed": 5,
@@ -13338,15 +13557,15 @@
               "goalsFor": 20,
               "goalsAgainst": 20,
               "goalDiff": 0,
-              "offense": 0.99,
-              "defense": -0.122,
-              "experimentalRating": 0.868,
+              "offense": 0.924,
+              "defense": -0.126,
+              "experimentalRating": 0.798,
               "experimentalRank": 4,
               "experimentalTier": "mid"
             },
             {
               "name": "Capital Thunder HS JVA",
-              "rating": -0.984,
+              "rating": -0.946,
               "rank": 6,
               "tier": "mid",
               "gamesPlayed": 1,
@@ -13357,15 +13576,15 @@
               "goalsFor": 1,
               "goalsAgainst": 5,
               "goalDiff": -4,
-              "offense": -2.129,
-              "defense": -0.71,
-              "experimentalRating": -2.839,
-              "experimentalRank": 8,
+              "offense": -1.955,
+              "defense": -0.766,
+              "experimentalRating": -2.721,
+              "experimentalRank": 7,
               "experimentalTier": "low"
             },
             {
               "name": "Cupertino Cougars 16A",
-              "rating": -1.264,
+              "rating": -1.236,
               "rank": 7,
               "tier": "mid",
               "gamesPlayed": 4,
@@ -13376,15 +13595,15 @@
               "goalsFor": 2,
               "goalsAgainst": 18,
               "goalDiff": -16,
-              "offense": -1.228,
-              "defense": 0.174,
-              "experimentalRating": -1.054,
+              "offense": -1.368,
+              "defense": 0.226,
+              "experimentalRating": -1.142,
               "experimentalRank": 6,
               "experimentalTier": "mid"
             },
             {
               "name": "Santa Clara Blackhawks 16A",
-              "rating": -3.764,
+              "rating": -3.765,
               "rank": 8,
               "tier": "low",
               "gamesPlayed": 6,
@@ -13395,28 +13614,28 @@
               "goalsFor": 12,
               "goalsAgainst": 58,
               "goalDiff": -46,
-              "offense": -0.485,
-              "defense": -2.26,
-              "experimentalRating": -2.745,
-              "experimentalRank": 7,
+              "offense": -0.592,
+              "defense": -2.182,
+              "experimentalRating": -2.774,
+              "experimentalRank": 8,
               "experimentalTier": "low"
             },
             {
               "name": "Vacaville Jets 16A",
-              "rating": -3.979,
+              "rating": -4.066,
               "rank": 9,
               "tier": "low",
-              "gamesPlayed": 5,
+              "gamesPlayed": 6,
               "wins": 0,
-              "losses": 5,
+              "losses": 6,
               "ties": 0,
               "points": 0,
-              "goalsFor": 7,
-              "goalsAgainst": 49,
-              "goalDiff": -42,
-              "offense": -1.931,
-              "defense": -2.201,
-              "experimentalRating": -4.132,
+              "goalsFor": 8,
+              "goalsAgainst": 67,
+              "goalDiff": -59,
+              "offense": -1.674,
+              "defense": -2.29,
+              "experimentalRating": -3.964,
               "experimentalRank": 9,
               "experimentalTier": "low"
             }
@@ -13715,28 +13934,9 @@
         "Regular": {
           "teams": [
             {
-              "name": "San Jose Jr Sharks 16A-2",
-              "rating": 2.978,
-              "rank": 1,
-              "tier": "top",
-              "gamesPlayed": 3,
-              "wins": 2,
-              "losses": 1,
-              "ties": 0,
-              "points": 4,
-              "goalsFor": 20,
-              "goalsAgainst": 7,
-              "goalDiff": 13,
-              "offense": 1.434,
-              "defense": 1.732,
-              "experimentalRating": 3.166,
-              "experimentalRank": 2,
-              "experimentalTier": "top"
-            },
-            {
               "name": "San Francisco Sabercats 16A",
-              "rating": 2.91,
-              "rank": 2,
+              "rating": 2.864,
+              "rank": 1,
               "tier": "top",
               "gamesPlayed": 3,
               "wins": 3,
@@ -13746,15 +13946,34 @@
               "goalsFor": 16,
               "goalsAgainst": 3,
               "goalDiff": 13,
-              "offense": 1.116,
-              "defense": 2.084,
-              "experimentalRating": 3.2,
+              "offense": 1.241,
+              "defense": 1.756,
+              "experimentalRating": 2.997,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
+              "name": "San Jose Jr Sharks 16A-2",
+              "rating": 2.806,
+              "rank": 2,
+              "tier": "top",
+              "gamesPlayed": 3,
+              "wins": 2,
+              "losses": 1,
+              "ties": 0,
+              "points": 4,
+              "goalsFor": 20,
+              "goalsAgainst": 7,
+              "goalDiff": 13,
+              "offense": 1.226,
+              "defense": 1.706,
+              "experimentalRating": 2.932,
+              "experimentalRank": 2,
+              "experimentalTier": "top"
+            },
+            {
               "name": "Tri Valley Blue Devils 16A",
-              "rating": 2.527,
+              "rating": 2.462,
               "rank": 3,
               "tier": "top",
               "gamesPlayed": 3,
@@ -13765,16 +13984,35 @@
               "goalsFor": 18,
               "goalsAgainst": 8,
               "goalDiff": 10,
-              "offense": 2.054,
-              "defense": 0.522,
-              "experimentalRating": 2.576,
+              "offense": 2.178,
+              "defense": 0.193,
+              "experimentalRating": 2.371,
               "experimentalRank": 3,
               "experimentalTier": "top"
             },
             {
-              "name": "Reno Ice 16A",
-              "rating": -0.646,
+              "name": "San Jose Jr Sharks 16A-1",
+              "rating": 0.798,
               "rank": 4,
+              "tier": "mid",
+              "gamesPlayed": 1,
+              "wins": 1,
+              "losses": 0,
+              "ties": 0,
+              "points": 2,
+              "goalsFor": 18,
+              "goalsAgainst": 1,
+              "goalDiff": 17,
+              "offense": 0.427,
+              "defense": 1.253,
+              "experimentalRating": 1.68,
+              "experimentalRank": 4,
+              "experimentalTier": "top"
+            },
+            {
+              "name": "Reno Ice 16A",
+              "rating": -0.452,
+              "rank": 5,
               "tier": "mid",
               "gamesPlayed": 1,
               "wins": 1,
@@ -13784,16 +14022,16 @@
               "goalsFor": 5,
               "goalsAgainst": 3,
               "goalDiff": 2,
-              "offense": -0.971,
-              "defense": -0.4,
-              "experimentalRating": -1.371,
-              "experimentalRank": 4,
+              "offense": -1.239,
+              "defense": -0.414,
+              "experimentalRating": -1.653,
+              "experimentalRank": 6,
               "experimentalTier": "mid"
             },
             {
               "name": "Cupertino Cougars 16A",
-              "rating": -1.486,
-              "rank": 5,
+              "rating": -1.431,
+              "rank": 6,
               "tier": "mid",
               "gamesPlayed": 2,
               "wins": 0,
@@ -13803,16 +14041,16 @@
               "goalsFor": 1,
               "goalsAgainst": 10,
               "goalDiff": -9,
-              "offense": -1.631,
-              "defense": 0.165,
-              "experimentalRating": -1.466,
+              "offense": -1.78,
+              "defense": 0.129,
+              "experimentalRating": -1.651,
               "experimentalRank": 5,
               "experimentalTier": "mid"
             },
             {
               "name": "Santa Clara Blackhawks 16A",
-              "rating": -2.78,
-              "rank": 6,
+              "rating": -2.952,
+              "rank": 7,
               "tier": "low",
               "gamesPlayed": 3,
               "wins": 1,
@@ -13822,53 +14060,36 @@
               "goalsFor": 8,
               "goalsAgainst": 21,
               "goalDiff": -13,
-              "offense": -0.753,
-              "defense": -1.706,
-              "experimentalRating": -2.459,
-              "experimentalRank": 6,
-              "experimentalTier": "low"
+              "offense": -0.961,
+              "defense": -1.731,
+              "experimentalRating": -2.692,
+              "experimentalRank": 7,
+              "experimentalTier": "mid"
             },
             {
               "name": "Vacaville Jets 16A",
-              "rating": -3.502,
-              "rank": 7,
+              "rating": -4.095,
+              "rank": 8,
               "tier": "low",
-              "gamesPlayed": 3,
+              "gamesPlayed": 4,
               "wins": 0,
-              "losses": 3,
+              "losses": 4,
               "ties": 0,
               "points": 0,
-              "goalsFor": 7,
-              "goalsAgainst": 23,
-              "goalDiff": -16,
-              "offense": -1.248,
-              "defense": -2.397,
-              "experimentalRating": -3.645,
-              "experimentalRank": 7,
+              "goalsFor": 8,
+              "goalsAgainst": 41,
+              "goalDiff": -33,
+              "offense": -1.093,
+              "defense": -2.892,
+              "experimentalRating": -3.985,
+              "experimentalRank": 8,
               "experimentalTier": "low"
             }
           ],
-          "unratedTeams": [
-            "San Jose Jr Sharks 16A-1"
-          ]
+          "unratedTeams": []
         }
       },
       "games": [
-        {
-          "gameId": "60093",
-          "date": "10/25/26",
-          "day": "Sun",
-          "time": "4:15PM",
-          "rink": "San Jose Black",
-          "type": "Regular",
-          "away": "Vacaville Jets 16A",
-          "home": "San Jose Jr Sharks 16A-1",
-          "awayGoals": null,
-          "homeGoals": null,
-          "played": false,
-          "ageLabel": "16U",
-          "levelLabel": "A"
-        },
         {
           "gameId": "56962",
           "date": "11/07/26",
@@ -14710,6 +14931,21 @@
           "levelLabel": "A"
         },
         {
+          "gameId": "60093",
+          "date": "10/25/26",
+          "day": "Sun",
+          "time": "4:15PM",
+          "rink": "San Jose Black",
+          "type": "Regular",
+          "away": "Vacaville Jets 16A",
+          "home": "San Jose Jr Sharks 16A-1",
+          "awayGoals": 1,
+          "homeGoals": 18,
+          "played": true,
+          "ageLabel": "16U",
+          "levelLabel": "A"
+        },
+        {
           "gameId": "60085",
           "date": "10/25/26",
           "day": "Sun",
@@ -15056,14 +15292,14 @@
         }
       ],
       "teamLinks": {
-        "San Jose Jr Sharks 16A-1": "https://stats.caha.timetoscore.com/display-schedule?team=45&season=33&league=3&stat_class=1",
-        "Reno Ice 16A": "https://stats.caha.timetoscore.com/display-schedule?team=4560&season=33&league=3&stat_class=1",
-        "Vacaville Jets 16A": "https://stats.caha.timetoscore.com/display-schedule?team=3660&season=33&league=3&stat_class=1",
-        "San Francisco Sabercats 16A": "https://stats.caha.timetoscore.com/display-schedule?team=3103&season=33&league=3&stat_class=1",
-        "Tri Valley Blue Devils 16A": "https://stats.caha.timetoscore.com/display-schedule?team=4580&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 16A-2": "https://stats.caha.timetoscore.com/display-schedule?team=4268&season=33&league=3&stat_class=1",
         "Cupertino Cougars 16A": "https://stats.caha.timetoscore.com/display-schedule?team=122&season=33&league=3&stat_class=1",
-        "Santa Clara Blackhawks 16A": "https://stats.caha.timetoscore.com/display-schedule?team=71&season=33&league=3&stat_class=1"
+        "Santa Clara Blackhawks 16A": "https://stats.caha.timetoscore.com/display-schedule?team=71&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 16A-2": "https://stats.caha.timetoscore.com/display-schedule?team=4268&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 16A-1": "https://stats.caha.timetoscore.com/display-schedule?team=45&season=33&league=3&stat_class=1",
+        "San Francisco Sabercats 16A": "https://stats.caha.timetoscore.com/display-schedule?team=3103&season=33&league=3&stat_class=1",
+        "Vacaville Jets 16A": "https://stats.caha.timetoscore.com/display-schedule?team=3660&season=33&league=3&stat_class=1",
+        "Reno Ice 16A": "https://stats.caha.timetoscore.com/display-schedule?team=4560&season=33&league=3&stat_class=1",
+        "Tri Valley Blue Devils 16A": "https://stats.caha.timetoscore.com/display-schedule?team=4580&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -15074,28 +15310,9 @@
         "All": {
           "teams": [
             {
-              "name": "Lake Tahoe Grizzlies 12BB",
-              "rating": 10.04,
-              "rank": 1,
-              "tier": "top",
-              "gamesPlayed": 7,
-              "wins": 5,
-              "losses": 1,
-              "ties": 1,
-              "points": 11,
-              "goalsFor": 46,
-              "goalsAgainst": 22,
-              "goalDiff": 24,
-              "offense": 1.948,
-              "defense": 1.177,
-              "experimentalRating": 9.347,
-              "experimentalRank": 2,
-              "experimentalTier": "top"
-            },
-            {
               "name": "Oakland Bears 12BB",
-              "rating": 9.409,
-              "rank": 2,
+              "rating": 9.573,
+              "rank": 1,
               "tier": "top",
               "gamesPlayed": 9,
               "wins": 6,
@@ -15105,53 +15322,72 @@
               "goalsFor": 60,
               "goalsAgainst": 31,
               "goalDiff": 29,
-              "offense": 2.287,
-              "defense": 1.205,
-              "experimentalRating": 9.756,
+              "offense": 2.248,
+              "defense": 1.259,
+              "experimentalRating": 9.781,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
-              "name": "Stockton Colts 12BB",
-              "rating": 8.89,
-              "rank": 3,
+              "name": "Lake Tahoe Grizzlies 12BB",
+              "rating": 9.517,
+              "rank": 2,
               "tier": "top",
-              "gamesPlayed": 9,
-              "wins": 6,
+              "gamesPlayed": 8,
+              "wins": 5,
               "losses": 2,
               "ties": 1,
-              "points": 13,
-              "goalsFor": 67,
-              "goalsAgainst": 38,
-              "goalDiff": 29,
-              "offense": 2.392,
-              "defense": 0.7,
-              "experimentalRating": 9.135,
+              "points": 11,
+              "goalsFor": 52,
+              "goalsAgainst": 31,
+              "goalDiff": 21,
+              "offense": 2.049,
+              "defense": 0.968,
+              "experimentalRating": 9.203,
               "experimentalRank": 3,
               "experimentalTier": "top"
             },
             {
+              "name": "Stockton Colts 12BB",
+              "rating": 9.229,
+              "rank": 3,
+              "tier": "top",
+              "gamesPlayed": 10,
+              "wins": 7,
+              "losses": 2,
+              "ties": 1,
+              "points": 15,
+              "goalsFor": 76,
+              "goalsAgainst": 44,
+              "goalDiff": 32,
+              "offense": 2.549,
+              "defense": 0.602,
+              "experimentalRating": 9.212,
+              "experimentalRank": 2,
+              "experimentalTier": "top"
+            },
+            {
               "name": "San Jose Jr Sharks Girls 12AAA",
-              "rating": 7.275,
+              "rating": 7.446,
               "rank": 4,
-              "tier": "mid",
-              "gamesPlayed": 6,
-              "wins": 3,
+              "tier": "top",
+              "gamesPlayed": 7,
+              "wins": 4,
               "losses": 3,
               "ties": 0,
-              "points": 6,
-              "goalsFor": 39,
+              "points": 8,
+              "goalsFor": 46,
               "goalsAgainst": 16,
-              "goalDiff": 23,
-              "offense": 0.134,
-              "defense": 1.03,
-              "experimentalRating": 6.782,
+              "goalDiff": 30,
+              "offense": 0.315,
+              "defense": 1.042,
+              "experimentalRating": 6.957,
               "experimentalRank": 4,
               "experimentalTier": "mid"
             },
             {
               "name": "Delta Knights 12AA",
-              "rating": 6.159,
+              "rating": 6.173,
               "rank": 5,
               "tier": "mid",
               "gamesPlayed": 5,
@@ -15162,15 +15398,15 @@
               "goalsFor": 10,
               "goalsAgainst": 21,
               "goalDiff": -11,
-              "offense": -0.945,
-              "defense": 0.848,
-              "experimentalRating": 6.001,
+              "offense": -0.962,
+              "defense": 0.883,
+              "experimentalRating": 6.012,
               "experimentalRank": 5,
               "experimentalTier": "mid"
             },
             {
               "name": "San Francisco Sabercats 12BB",
-              "rating": 4.598,
+              "rating": 4.53,
               "rank": 6,
               "tier": "mid",
               "gamesPlayed": 8,
@@ -15181,9 +15417,9 @@
               "goalsFor": 27,
               "goalsAgainst": 52,
               "goalDiff": -25,
-              "offense": -0.53,
-              "defense": -0.252,
-              "experimentalRating": 5.396,
+              "offense": -0.589,
+              "defense": -0.208,
+              "experimentalRating": 5.369,
               "experimentalRank": 6,
               "experimentalTier": "mid"
             },
@@ -15191,7 +15427,7 @@
               "name": "Capital Thunder 12B",
               "rating": 3.648,
               "rank": 7,
-              "tier": "low",
+              "tier": "mid",
               "gamesPlayed": 8,
               "wins": 5,
               "losses": 1,
@@ -15200,15 +15436,15 @@
               "goalsFor": 72,
               "goalsAgainst": 27,
               "goalDiff": 45,
-              "offense": -1.216,
-              "defense": -0.375,
+              "offense": -1.304,
+              "defense": -0.237,
               "experimentalRating": 3.13,
               "experimentalRank": 7,
               "experimentalTier": "low"
             },
             {
               "name": "San Mateo Black Stars 12BB",
-              "rating": 3.15,
+              "rating": 2.995,
               "rank": 8,
               "tier": "low",
               "gamesPlayed": 7,
@@ -15219,15 +15455,15 @@
               "goalsFor": 26,
               "goalsAgainst": 37,
               "goalDiff": -11,
-              "offense": -1.368,
-              "defense": -1.313,
-              "experimentalRating": 2.714,
+              "offense": -1.4,
+              "defense": -1.274,
+              "experimentalRating": 2.71,
               "experimentalRank": 8,
               "experimentalTier": "low"
             },
             {
               "name": "Santa Clara Blackhawks 12BB",
-              "rating": 2.689,
+              "rating": 2.609,
               "rank": 9,
               "tier": "low",
               "gamesPlayed": 7,
@@ -15238,29 +15474,29 @@
               "goalsFor": 27,
               "goalsAgainst": 50,
               "goalDiff": -23,
-              "offense": -0.45,
-              "defense": -2.72,
-              "experimentalRating": 2.377,
+              "offense": -0.457,
+              "defense": -2.717,
+              "experimentalRating": 2.366,
               "experimentalRank": 9,
               "experimentalTier": "low"
             },
             {
               "name": "Tri Valley Blue Devils 12BB",
-              "rating": 1.519,
+              "rating": 1.441,
               "rank": 10,
               "tier": "low",
-              "gamesPlayed": 5,
+              "gamesPlayed": 6,
               "wins": 0,
-              "losses": 5,
+              "losses": 6,
               "ties": 0,
               "points": 0,
               "goalsFor": 3,
-              "goalsAgainst": 58,
-              "goalDiff": -55,
-              "offense": -2.428,
-              "defense": -1.563,
-              "experimentalRating": 1.243,
-              "experimentalRank": 10,
+              "goalsAgainst": 65,
+              "goalDiff": -62,
+              "offense": -2.482,
+              "defense": -1.739,
+              "experimentalRating": 1.047,
+              "experimentalRank": 11,
               "experimentalTier": "low"
             },
             {
@@ -15276,14 +15512,16 @@
               "goalsFor": 46,
               "goalsAgainst": 50,
               "goalDiff": -4,
-              "offense": -2.502,
-              "defense": -1.799,
+              "offense": -2.472,
+              "defense": -1.834,
               "experimentalRating": 1.083,
-              "experimentalRank": 11,
+              "experimentalRank": 10,
               "experimentalTier": "low"
             }
           ],
-          "unratedTeams": []
+          "unratedTeams": [
+            "Away"
+          ]
         },
         "Exhibition": {
           "teams": [
@@ -15668,29 +15906,48 @@
         "Regular": {
           "teams": [
             {
-              "name": "Lake Tahoe Grizzlies 12BB",
-              "rating": 3.547,
+              "name": "Stockton Colts 12BB",
+              "rating": 4.191,
               "rank": 1,
               "tier": "top",
-              "gamesPlayed": 3,
-              "wins": 2,
+              "gamesPlayed": 2,
+              "wins": 1,
               "losses": 0,
               "ties": 1,
+              "points": 3,
+              "goalsFor": 13,
+              "goalsAgainst": 10,
+              "goalDiff": 3,
+              "offense": 2.003,
+              "defense": 1.455,
+              "experimentalRating": 3.458,
+              "experimentalRank": 2,
+              "experimentalTier": "top"
+            },
+            {
+              "name": "Lake Tahoe Grizzlies 12BB",
+              "rating": 3.548,
+              "rank": 2,
+              "tier": "top",
+              "gamesPlayed": 4,
+              "wins": 2,
+              "losses": 1,
+              "ties": 1,
               "points": 5,
-              "goalsFor": 26,
-              "goalsAgainst": 9,
-              "goalDiff": 17,
-              "offense": 2.3,
-              "defense": 1.192,
-              "experimentalRating": 3.492,
-              "experimentalRank": 1,
+              "goalsFor": 32,
+              "goalsAgainst": 18,
+              "goalDiff": 14,
+              "offense": 2.494,
+              "defense": 0.811,
+              "experimentalRating": 3.305,
+              "experimentalRank": 3,
               "experimentalTier": "top"
             },
             {
               "name": "Oakland Bears 12BB",
-              "rating": 2.077,
-              "rank": 2,
-              "tier": "top",
+              "rating": 1.792,
+              "rank": 3,
+              "tier": "mid",
               "gamesPlayed": 1,
               "wins": 1,
               "losses": 0,
@@ -15699,55 +15956,36 @@
               "goalsFor": 7,
               "goalsAgainst": 0,
               "goalDiff": 7,
-              "offense": 1.265,
-              "defense": 1.917,
-              "experimentalRating": 3.182,
-              "experimentalRank": 2,
-              "experimentalTier": "top"
-            },
-            {
-              "name": "Stockton Colts 12BB",
-              "rating": 1.394,
-              "rank": 3,
-              "tier": "top",
-              "gamesPlayed": 1,
-              "wins": 0,
-              "losses": 0,
-              "ties": 1,
-              "points": 1,
-              "goalsFor": 4,
-              "goalsAgainst": 4,
-              "goalDiff": 0,
-              "offense": 0.813,
-              "defense": 2.097,
-              "experimentalRating": 2.91,
-              "experimentalRank": 3,
+              "offense": 2.055,
+              "defense": 3.779,
+              "experimentalRating": 5.834,
+              "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks Girls 12AAA",
-              "rating": -0.723,
+              "rating": 0.042,
               "rank": 4,
               "tier": "mid",
-              "gamesPlayed": 1,
-              "wins": 0,
+              "gamesPlayed": 2,
+              "wins": 1,
               "losses": 1,
               "ties": 0,
-              "points": 0,
-              "goalsFor": 0,
+              "points": 2,
+              "goalsFor": 7,
               "goalsAgainst": 7,
-              "goalDiff": -7,
-              "offense": -1.917,
-              "defense": -1.265,
-              "experimentalRating": -3.182,
-              "experimentalRank": 7,
-              "experimentalTier": "low"
+              "goalDiff": 0,
+              "offense": 0.232,
+              "defense": -0.232,
+              "experimentalRating": 0.0,
+              "experimentalRank": 4,
+              "experimentalTier": "mid"
             },
             {
               "name": "San Francisco Sabercats 12BB",
-              "rating": -1.283,
+              "rating": -1.673,
               "rank": 5,
-              "tier": "mid",
+              "tier": "low",
               "gamesPlayed": 3,
               "wins": 1,
               "losses": 2,
@@ -15756,16 +15994,35 @@
               "goalsFor": 12,
               "goalsAgainst": 25,
               "goalDiff": -13,
-              "offense": 0.059,
-              "defense": -0.427,
-              "experimentalRating": -0.368,
-              "experimentalRank": 4,
+              "offense": -0.32,
+              "defense": -0.2,
+              "experimentalRating": -0.52,
+              "experimentalRank": 5,
               "experimentalTier": "mid"
             },
             {
-              "name": "San Mateo Black Stars 12BB",
-              "rating": -2.284,
+              "name": "Tri Valley Blue Devils 12BB",
+              "rating": -1.708,
               "rank": 6,
+              "tier": "low",
+              "gamesPlayed": 1,
+              "wins": 0,
+              "losses": 1,
+              "ties": 0,
+              "points": 0,
+              "goalsFor": 0,
+              "goalsAgainst": 7,
+              "goalDiff": -7,
+              "offense": -3.779,
+              "defense": -2.055,
+              "experimentalRating": -5.834,
+              "experimentalRank": 8,
+              "experimentalTier": "low"
+            },
+            {
+              "name": "San Mateo Black Stars 12BB",
+              "rating": -2.877,
+              "rank": 7,
               "tier": "low",
               "gamesPlayed": 2,
               "wins": 1,
@@ -15775,16 +16032,16 @@
               "goalsFor": 9,
               "goalsAgainst": 9,
               "goalDiff": 0,
-              "offense": -1.67,
-              "defense": -1.204,
-              "experimentalRating": -2.874,
-              "experimentalRank": 5,
+              "offense": -1.932,
+              "defense": -1.041,
+              "experimentalRating": -2.973,
+              "experimentalRank": 6,
               "experimentalTier": "low"
             },
             {
               "name": "Santa Clara Blackhawks 12BB",
-              "rating": -2.728,
-              "rank": 7,
+              "rating": -3.315,
+              "rank": 8,
               "tier": "low",
               "gamesPlayed": 3,
               "wins": 1,
@@ -15794,49 +16051,24 @@
               "goalsFor": 12,
               "goalsAgainst": 16,
               "goalDiff": -4,
-              "offense": -0.85,
-              "defense": -2.311,
-              "experimentalRating": -3.161,
-              "experimentalRank": 6,
+              "offense": -0.753,
+              "defense": -2.518,
+              "experimentalRating": -3.271,
+              "experimentalRank": 7,
               "experimentalTier": "low"
             }
           ],
+          "unratedTeams": []
+        },
+        "Tournament": {
+          "teams": [],
           "unratedTeams": [
-            "Tri Valley Blue Devils 12BB"
+            "Away",
+            "Santa Clara Blackhawks 12BB"
           ]
         }
       },
       "games": [
-        {
-          "gameId": "58400",
-          "date": "10/25/26",
-          "day": "Sun",
-          "time": "3:30PM",
-          "rink": "Lake Tahoe",
-          "type": "Regular",
-          "away": "Stockton Colts 12BB",
-          "home": "Lake Tahoe Grizzlies 12BB",
-          "awayGoals": null,
-          "homeGoals": null,
-          "played": false,
-          "ageLabel": "12U",
-          "levelLabel": "BB"
-        },
-        {
-          "gameId": "60090",
-          "date": "10/25/26",
-          "day": "Sun",
-          "time": "5:00PM",
-          "rink": "San Jose Orange",
-          "type": "Regular",
-          "away": "Tri Valley Blue Devils 12BB",
-          "home": "San Jose Jr Sharks Girls 12AAA",
-          "awayGoals": null,
-          "homeGoals": null,
-          "played": false,
-          "ageLabel": "12U",
-          "levelLabel": "BB"
-        },
         {
           "gameId": "56752",
           "date": "10/31/26",
@@ -16723,6 +16955,36 @@
           "levelLabel": "BB"
         },
         {
+          "gameId": "60090",
+          "date": "10/25/26",
+          "day": "Sun",
+          "time": "5:00PM",
+          "rink": "San Jose Orange",
+          "type": "Regular",
+          "away": "Tri Valley Blue Devils 12BB",
+          "home": "San Jose Jr Sharks Girls 12AAA",
+          "awayGoals": 0,
+          "homeGoals": 7,
+          "played": true,
+          "ageLabel": "12U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "58400",
+          "date": "10/25/26",
+          "day": "Sun",
+          "time": "3:30PM",
+          "rink": "Lake Tahoe",
+          "type": "Regular",
+          "away": "Stockton Colts 12BB",
+          "home": "Lake Tahoe Grizzlies 12BB",
+          "awayGoals": 9,
+          "homeGoals": 6,
+          "played": true,
+          "ageLabel": "12U",
+          "levelLabel": "BB"
+        },
+        {
           "gameId": "57516",
           "date": "10/25/26",
           "day": "Sun",
@@ -16843,6 +17105,21 @@
           "levelLabel": "BB"
         },
         {
+          "gameId": "63326",
+          "date": "10/11/26",
+          "day": "Sun",
+          "time": "7:09AM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 12BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "12U",
+          "levelLabel": "BB"
+        },
+        {
           "gameId": "58346",
           "date": "10/10/26",
           "day": "Sat",
@@ -16869,6 +17146,51 @@
           "awayGoals": 5,
           "homeGoals": 8,
           "played": true,
+          "ageLabel": "12U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "63325",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "4:20PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 12BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "12U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "63324",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "9:39AM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 12BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "12U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "63322",
+          "date": "10/09/26",
+          "day": "Fri",
+          "time": "6:24PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 12BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
           "ageLabel": "12U",
           "levelLabel": "BB"
         },
@@ -17250,16 +17572,16 @@
       ],
       "teamLinks": {
         "Santa Clara Blackhawks 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=76&season=33&league=3&stat_class=1",
-        "Delta Knights 12AA": "https://stats.caha.timetoscore.com/display-schedule?team=4344&season=33&league=3&stat_class=1",
-        "Tri Valley Blue Devils 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=340&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks Girls 12AAA": "https://stats.caha.timetoscore.com/display-schedule?team=52&season=33&league=3&stat_class=1",
-        "San Francisco Sabercats 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=63&season=33&league=3&stat_class=1",
-        "Lake Tahoe Grizzlies 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=668&season=33&league=3&stat_class=1",
         "San Mateo Black Stars 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=79&season=33&league=3&stat_class=1",
-        "Stockton Colts 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=365&season=33&league=3&stat_class=1",
         "Fresno Jr Monsters 12A": "https://stats.caha.timetoscore.com/display-schedule?team=113&season=33&league=3&stat_class=1",
+        "Lake Tahoe Grizzlies 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=668&season=33&league=3&stat_class=1",
+        "Tri Valley Blue Devils 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=340&season=33&league=3&stat_class=1",
+        "Delta Knights 12AA": "https://stats.caha.timetoscore.com/display-schedule?team=4344&season=33&league=3&stat_class=1",
         "Vacaville Jets 12A": "https://stats.caha.timetoscore.com/display-schedule?team=27&season=33&league=3&stat_class=1",
-        "Oakland Bears 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=693&season=33&league=3&stat_class=1"
+        "San Francisco Sabercats 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=63&season=33&league=3&stat_class=1",
+        "Stockton Colts 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=365&season=33&league=3&stat_class=1",
+        "Oakland Bears 12BB": "https://stats.caha.timetoscore.com/display-schedule?team=693&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks Girls 12AAA": "https://stats.caha.timetoscore.com/display-schedule?team=52&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -17271,7 +17593,7 @@
           "teams": [
             {
               "name": "Oakland Bears 10BB",
-              "rating": 19.344,
+              "rating": 19.428,
               "rank": 1,
               "tier": "top",
               "gamesPlayed": 8,
@@ -17284,13 +17606,13 @@
               "goalDiff": 50,
               "offense": 2.073,
               "defense": 1.004,
-              "experimentalRating": 17.372,
+              "experimentalRating": 17.479,
               "experimentalRank": 2,
               "experimentalTier": "top"
             },
             {
               "name": "Reno Ice 10BB",
-              "rating": 18.569,
+              "rating": 18.653,
               "rank": 2,
               "tier": "top",
               "gamesPlayed": 9,
@@ -17303,13 +17625,13 @@
               "goalDiff": 36,
               "offense": 2.448,
               "defense": 1.166,
-              "experimentalRating": 17.945,
+              "experimentalRating": 18.052,
               "experimentalRank": 1,
               "experimentalTier": "top"
             },
             {
               "name": "Santa Rosa Flyers 10BB",
-              "rating": 17.853,
+              "rating": 17.937,
               "rank": 3,
               "tier": "top",
               "gamesPlayed": 8,
@@ -17322,13 +17644,13 @@
               "goalDiff": 9,
               "offense": 2.323,
               "defense": 0.068,
-              "experimentalRating": 16.974,
+              "experimentalRating": 17.081,
               "experimentalRank": 4,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks 10BB-2",
-              "rating": 17.788,
+              "rating": 17.872,
               "rank": 4,
               "tier": "top",
               "gamesPlayed": 8,
@@ -17341,13 +17663,13 @@
               "goalDiff": 28,
               "offense": 1.232,
               "defense": 1.636,
-              "experimentalRating": 17.193,
+              "experimentalRating": 17.3,
               "experimentalRank": 3,
               "experimentalTier": "top"
             },
             {
               "name": "Capital Thunder 10BB",
-              "rating": 17.004,
+              "rating": 17.088,
               "rank": 5,
               "tier": "mid",
               "gamesPlayed": 12,
@@ -17360,13 +17682,13 @@
               "goalDiff": 15,
               "offense": 0.432,
               "defense": 1.276,
-              "experimentalRating": 16.16,
+              "experimentalRating": 16.267,
               "experimentalRank": 5,
               "experimentalTier": "top"
             },
             {
               "name": "Vacaville Jets 10BB",
-              "rating": 15.952,
+              "rating": 16.036,
               "rank": 6,
               "tier": "mid",
               "gamesPlayed": 10,
@@ -17379,13 +17701,13 @@
               "goalDiff": 13,
               "offense": 0.73,
               "defense": 0.247,
-              "experimentalRating": 15.392,
+              "experimentalRating": 15.499,
               "experimentalRank": 7,
               "experimentalTier": "top"
             },
             {
               "name": "San Jose Jr Sharks 10BB-1",
-              "rating": 15.717,
+              "rating": 15.801,
               "rank": 7,
               "tier": "mid",
               "gamesPlayed": 8,
@@ -17398,13 +17720,13 @@
               "goalDiff": 6,
               "offense": 0.431,
               "defense": 1.206,
-              "experimentalRating": 15.78,
+              "experimentalRating": 15.887,
               "experimentalRank": 6,
               "experimentalTier": "top"
             },
             {
               "name": "Tri Valley Lady Blue Devils 10BB",
-              "rating": 14.087,
+              "rating": 14.171,
               "rank": 8,
               "tier": "low",
               "gamesPlayed": 10,
@@ -17417,13 +17739,13 @@
               "goalDiff": 13,
               "offense": -0.829,
               "defense": 0.055,
-              "experimentalRating": 13.561,
+              "experimentalRating": 13.668,
               "experimentalRank": 9,
               "experimentalTier": "mid"
             },
             {
               "name": "San Francisco Sabercats 10BB",
-              "rating": 13.398,
+              "rating": 13.482,
               "rank": 9,
               "tier": "low",
               "gamesPlayed": 9,
@@ -17436,13 +17758,13 @@
               "goalDiff": -19,
               "offense": 0.222,
               "defense": -0.705,
-              "experimentalRating": 13.857,
+              "experimentalRating": 13.964,
               "experimentalRank": 8,
               "experimentalTier": "mid"
             },
             {
               "name": "Santa Clara Blackhawks 10BB",
-              "rating": 13.05,
+              "rating": 13.134,
               "rank": 10,
               "tier": "low",
               "gamesPlayed": 8,
@@ -17455,13 +17777,13 @@
               "goalDiff": -7,
               "offense": -0.833,
               "defense": -0.556,
-              "experimentalRating": 12.881,
+              "experimentalRating": 12.988,
               "experimentalRank": 11,
               "experimentalTier": "mid"
             },
             {
               "name": "Fresno Jr Monsters 10BB",
-              "rating": 12.398,
+              "rating": 12.482,
               "rank": 11,
               "tier": "low",
               "gamesPlayed": 9,
@@ -17474,13 +17796,13 @@
               "goalDiff": 1,
               "offense": -0.856,
               "defense": -0.593,
-              "experimentalRating": 12.894,
+              "experimentalRating": 13.001,
               "experimentalRank": 10,
               "experimentalTier": "mid"
             },
             {
               "name": "Lake Tahoe Grizzlies 10BB",
-              "rating": 11.959,
+              "rating": 12.043,
               "rank": 12,
               "tier": "low",
               "gamesPlayed": 7,
@@ -17493,13 +17815,13 @@
               "goalDiff": -4,
               "offense": -1.157,
               "defense": -1.368,
-              "experimentalRating": 11.217,
+              "experimentalRating": 11.324,
               "experimentalRank": 13,
               "experimentalTier": "low"
             },
             {
               "name": "Stockton Colts 10BB",
-              "rating": 11.052,
+              "rating": 11.136,
               "rank": 13,
               "tier": "low",
               "gamesPlayed": 9,
@@ -17512,7 +17834,7 @@
               "goalDiff": 10,
               "offense": -1.179,
               "defense": -1.951,
-              "experimentalRating": 11.276,
+              "experimentalRating": 11.383,
               "experimentalRank": 12,
               "experimentalTier": "low"
             }
@@ -18269,7 +18591,8 @@
           "teams": [],
           "unratedTeams": [
             "Away",
-            "Capital Thunder 10BB"
+            "Capital Thunder 10BB",
+            "Santa Clara Blackhawks 10BB"
           ]
         }
       },
@@ -19700,6 +20023,21 @@
           "levelLabel": "BB"
         },
         {
+          "gameId": "63321",
+          "date": "10/11/26",
+          "day": "Sun",
+          "time": "12:15PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 10BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "10U",
+          "levelLabel": "BB"
+        },
+        {
           "gameId": "60056",
           "date": "10/11/26",
           "day": "Sun",
@@ -19760,6 +20098,21 @@
           "levelLabel": "BB"
         },
         {
+          "gameId": "63320",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "7:40PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 10BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "10U",
+          "levelLabel": "BB"
+        },
+        {
           "gameId": "57554",
           "date": "10/10/26",
           "day": "Sat",
@@ -19801,6 +20154,36 @@
           "awayGoals": 4,
           "homeGoals": 17,
           "played": true,
+          "ageLabel": "10U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "63319",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "7:00AM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 10BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "10U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "63318",
+          "date": "10/09/26",
+          "day": "Fri",
+          "time": "5:03PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 10BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
           "ageLabel": "10U",
           "levelLabel": "BB"
         },
@@ -20376,24 +20759,24 @@
         }
       ],
       "teamLinks": {
-        "Oakland Bears 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=541&season=33&league=3&stat_class=1",
-        "Santa Clara Blackhawks 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=77&season=33&league=3&stat_class=1",
-        "Capital Thunder 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=136&season=33&league=3&stat_class=1",
-        "Lake Tahoe Grizzlies 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=93&season=33&league=3&stat_class=1",
         "San Jose Jr Sharks 10BB-2": "https://stats.caha.timetoscore.com/display-schedule?team=542&season=33&league=3&stat_class=1",
-        "Santa Rosa Flyers 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=682&season=33&league=3&stat_class=1",
-        "Fresno Jr Monsters 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1",
+        "Capital Thunder 10B": "https://stats.caha.timetoscore.com/display-schedule?team=3094&season=33&league=3&stat_class=1",
+        "San Mateo Black Stars 10A": "https://stats.caha.timetoscore.com/display-schedule?team=373&season=33&league=3&stat_class=1",
+        "Cupertino Cougars 10B": "https://stats.caha.timetoscore.com/display-schedule?team=130&season=33&league=3&stat_class=1",
         "Reno Ice 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=3657&season=33&league=3&stat_class=1",
+        "San Francisco Sabercats 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=64&season=33&league=3&stat_class=1",
+        "Capital Thunder 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=136&season=33&league=3&stat_class=1",
         "San Jose Jr Sharks 10BB-1": "https://stats.caha.timetoscore.com/display-schedule?team=59&season=33&league=3&stat_class=1",
         "Stockton Colts 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=593&season=33&league=3&stat_class=1",
-        "Cupertino Cougars 10B": "https://stats.caha.timetoscore.com/display-schedule?team=130&season=33&league=3&stat_class=1",
-        "Capital Thunder 10B": "https://stats.caha.timetoscore.com/display-schedule?team=3094&season=33&league=3&stat_class=1",
-        "San Mateo Black Stars 10B-1": "https://stats.caha.timetoscore.com/display-schedule?team=2906&season=33&league=3&stat_class=1",
+        "Santa Clara Blackhawks 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=77&season=33&league=3&stat_class=1",
+        "Vacaville Jets 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=694&season=33&league=3&stat_class=1",
+        "Fresno Jr Monsters 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=114&season=33&league=3&stat_class=1",
+        "Oakland Bears 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=541&season=33&league=3&stat_class=1",
         "Santa Clara Blackhawks 10B": "https://stats.caha.timetoscore.com/display-schedule?team=78&season=33&league=3&stat_class=1",
+        "Lake Tahoe Grizzlies 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=93&season=33&league=3&stat_class=1",
+        "San Mateo Black Stars 10B-1": "https://stats.caha.timetoscore.com/display-schedule?team=2906&season=33&league=3&stat_class=1",
         "Tri Valley Lady Blue Devils 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=2924&season=33&league=3&stat_class=1",
-        "San Mateo Black Stars 10A": "https://stats.caha.timetoscore.com/display-schedule?team=373&season=33&league=3&stat_class=1",
-        "San Francisco Sabercats 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=64&season=33&league=3&stat_class=1",
-        "Vacaville Jets 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=694&season=33&league=3&stat_class=1"
+        "Santa Rosa Flyers 10BB": "https://stats.caha.timetoscore.com/display-schedule?team=682&season=33&league=3&stat_class=1"
       }
     },
     {
@@ -20575,7 +20958,9 @@
               "experimentalTier": "low"
             }
           ],
-          "unratedTeams": []
+          "unratedTeams": [
+            "Away"
+          ]
         },
         "Exhibition": {
           "teams": [
@@ -20974,6 +21359,13 @@
             }
           ],
           "unratedTeams": []
+        },
+        "Tournament": {
+          "teams": [],
+          "unratedTeams": [
+            "Away",
+            "Santa Clara Blackhawks 14BB"
+          ]
         }
       },
       "games": [
@@ -21983,6 +22375,36 @@
           "levelLabel": "BB"
         },
         {
+          "gameId": "63331",
+          "date": "10/11/26",
+          "day": "Sun",
+          "time": "10:58AM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 14BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "14U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "63330",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "9:53PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 14BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "14U",
+          "levelLabel": "BB"
+        },
+        {
           "gameId": "56613",
           "date": "10/10/26",
           "day": "Sat",
@@ -21994,6 +22416,36 @@
           "awayGoals": 1,
           "homeGoals": 13,
           "played": true,
+          "ageLabel": "14U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "63328",
+          "date": "10/10/26",
+          "day": "Sat",
+          "time": "1:10PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 14BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
+          "ageLabel": "14U",
+          "levelLabel": "BB"
+        },
+        {
+          "gameId": "63327",
+          "date": "10/09/26",
+          "day": "Fri",
+          "time": "9:15PM",
+          "rink": "Nevada",
+          "type": "Tournament",
+          "away": "Away",
+          "home": "Santa Clara Blackhawks 14BB",
+          "awayGoals": null,
+          "homeGoals": null,
+          "played": false,
           "ageLabel": "14U",
           "levelLabel": "BB"
         },
@@ -22254,19 +22706,19 @@
         }
       ],
       "teamLinks": {
-        "Fresno Jr Monsters 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=112&season=33&league=3&stat_class=1",
-        "San Francisco Sabercats 14A": "https://stats.caha.timetoscore.com/display-schedule?team=545&season=33&league=3&stat_class=1",
-        "Santa Rosa Flyers 14A": "https://stats.caha.timetoscore.com/display-schedule?team=37&season=33&league=3&stat_class=1",
-        "Oakland Bears 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=671&season=33&league=3&stat_class=1",
-        "San Jose Jr Sharks 14A-2": "https://stats.caha.timetoscore.com/display-schedule?team=701&season=33&league=3&stat_class=1",
-        "Tri Valley Blue Devils 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=309&season=33&league=3&stat_class=1",
         "Cupertino Cougars 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=124&season=33&league=3&stat_class=1",
+        "Santa Rosa Flyers 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=3696&season=33&league=3&stat_class=1",
+        "San Francisco Sabercats 14A": "https://stats.caha.timetoscore.com/display-schedule?team=545&season=33&league=3&stat_class=1",
+        "Oakland Bears 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=671&season=33&league=3&stat_class=1",
         "Capital Thunder 14A": "https://stats.caha.timetoscore.com/display-schedule?team=132&season=33&league=3&stat_class=1",
-        "Stockton Colts 14A": "https://stats.caha.timetoscore.com/display-schedule?team=33&season=33&league=3&stat_class=1",
-        "Lake Tahoe Grizzlies 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=374&season=33&league=3&stat_class=1",
-        "San Mateo Black Stars 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=436&season=33&league=3&stat_class=1",
         "Santa Clara Blackhawks 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=72&season=33&league=3&stat_class=1",
-        "Santa Rosa Flyers 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=3696&season=33&league=3&stat_class=1"
+        "San Mateo Black Stars 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=436&season=33&league=3&stat_class=1",
+        "Tri Valley Blue Devils 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=309&season=33&league=3&stat_class=1",
+        "Fresno Jr Monsters 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=112&season=33&league=3&stat_class=1",
+        "Lake Tahoe Grizzlies 14BB": "https://stats.caha.timetoscore.com/display-schedule?team=374&season=33&league=3&stat_class=1",
+        "San Jose Jr Sharks 14A-2": "https://stats.caha.timetoscore.com/display-schedule?team=701&season=33&league=3&stat_class=1",
+        "Santa Rosa Flyers 14A": "https://stats.caha.timetoscore.com/display-schedule?team=37&season=33&league=3&stat_class=1",
+        "Stockton Colts 14A": "https://stats.caha.timetoscore.com/display-schedule?team=33&season=33&league=3&stat_class=1"
       }
     }
   ],
@@ -22274,147 +22726,147 @@
     "10U": {
       "teams": {
         "San Jose Jr Sharks 10A-1": {
-          "rating": 27.917,
+          "rating": 28.001,
           "gamesPlayed": 6
         },
         "Cupertino Cougars 10A": {
-          "rating": 23.272,
+          "rating": 23.356,
           "gamesPlayed": 7
         },
         "San Jose Jr Sharks 10A-2": {
-          "rating": 22.554,
+          "rating": 22.638,
           "gamesPlayed": 6
         },
         "Away": {
-          "rating": 22.195,
+          "rating": 22.279,
           "gamesPlayed": 1
         },
         "Tri Valley Blue Devils 10A-2": {
-          "rating": 21.007,
+          "rating": 21.091,
           "gamesPlayed": 7
         },
         "Tri Valley Blue Devils 10A-1": {
-          "rating": 19.409,
+          "rating": 19.493,
           "gamesPlayed": 7
         },
         "San Mateo Black Stars 10A": {
-          "rating": 18.947,
+          "rating": 19.031,
           "gamesPlayed": 6
         },
         "San Jose Jr Sharks Girls 10B": {
-          "rating": 2.65,
+          "rating": 3.225,
+          "gamesPlayed": 6
+        },
+        "Lake Tahoe Grizzlies 10B": {
+          "rating": 1.993,
           "gamesPlayed": 5
         },
         "Vacaville Jets 10B": {
-          "rating": 2.004,
+          "rating": 1.786,
           "gamesPlayed": 7
         },
-        "Lake Tahoe Grizzlies 10B": {
-          "rating": 1.992,
+        "Oakland Bears 10B": {
+          "rating": 1.33,
           "gamesPlayed": 5
         },
         "Santa Rosa Flyers 10B": {
-          "rating": 1.573,
-          "gamesPlayed": 6
-        },
-        "Oakland Bears 10B": {
-          "rating": 1.134,
-          "gamesPlayed": 5
+          "rating": 1.072,
+          "gamesPlayed": 7
         },
         "Stockton Colts Girls 10B": {
-          "rating": 0.733,
+          "rating": 0.635,
           "gamesPlayed": 7
         },
         "Fresno Jr Monsters Girls 10B": {
-          "rating": -4.782,
+          "rating": -4.762,
           "gamesPlayed": 7
         },
         "San Mateo Black Stars 10B-2": {
-          "rating": -5.303,
+          "rating": -5.279,
           "gamesPlayed": 6
         },
         "Oakland Bears 10BB": {
-          "rating": 19.344,
+          "rating": 19.428,
           "gamesPlayed": 7
         },
         "Reno Ice 10BB": {
-          "rating": 18.569,
+          "rating": 18.653,
           "gamesPlayed": 9
         },
         "Santa Rosa Flyers 10BB": {
-          "rating": 17.853,
+          "rating": 17.937,
           "gamesPlayed": 6
         },
         "San Jose Jr Sharks 10BB-2": {
-          "rating": 17.788,
+          "rating": 17.872,
           "gamesPlayed": 7
         },
         "Capital Thunder 10BB": {
-          "rating": 17.004,
+          "rating": 17.088,
           "gamesPlayed": 11
         },
         "Vacaville Jets 10BB": {
-          "rating": 15.952,
+          "rating": 16.036,
           "gamesPlayed": 9
         },
         "San Jose Jr Sharks 10BB-1": {
-          "rating": 15.717,
+          "rating": 15.801,
           "gamesPlayed": 7
         },
         "Tri Valley Lady Blue Devils 10BB": {
-          "rating": 14.087,
+          "rating": 14.171,
           "gamesPlayed": 7
         },
         "San Francisco Sabercats 10BB": {
-          "rating": 13.398,
+          "rating": 13.482,
           "gamesPlayed": 6
         },
         "Santa Clara Blackhawks 10BB": {
-          "rating": 13.05,
+          "rating": 13.134,
           "gamesPlayed": 7
         },
         "Fresno Jr Monsters 10BB": {
-          "rating": 12.398,
+          "rating": 12.482,
           "gamesPlayed": 6
         },
         "Lake Tahoe Grizzlies 10BB": {
-          "rating": 11.959,
+          "rating": 12.043,
           "gamesPlayed": 5
         },
         "Stockton Colts 10BB": {
-          "rating": 11.052,
+          "rating": 11.136,
           "gamesPlayed": 5
         },
         "Cupertino Cougars 10B": {
-          "rating": 11.717,
+          "rating": 11.784,
           "gamesPlayed": 4
         },
         "Santa Clara Blackhawks 10B": {
-          "rating": 9.912,
+          "rating": 9.978,
           "gamesPlayed": 5
         },
         "Capital Thunder 10B": {
-          "rating": 7.918,
+          "rating": 8.013,
           "gamesPlayed": 2
         },
         "San Francisco Sabercats 10B": {
-          "rating": 5.393,
+          "rating": 5.483,
           "gamesPlayed": 4
         },
         "Tri Valley Blue Devils 10B": {
-          "rating": 5.288,
-          "gamesPlayed": 3
-        },
-        "San Mateo Black Stars 10B-1": {
-          "rating": 4.873,
+          "rating": 5.278,
           "gamesPlayed": 4
         },
+        "San Mateo Black Stars 10B-1": {
+          "rating": 4.999,
+          "gamesPlayed": 5
+        },
         "San Jose Jr Sharks 10B-1": {
-          "rating": 7.952,
+          "rating": 7.972,
           "gamesPlayed": 8
         },
         "San Jose Jr Sharks 10B-2": {
-          "rating": 4.923,
+          "rating": 4.903,
           "gamesPlayed": 8
         }
       },
@@ -22426,7 +22878,7 @@
           "bridgeGames": []
         },
         "B East": {
-          "offset": 7.517,
+          "offset": 7.589,
           "evidenceCount": 7,
           "priorAnchor": {
             "source": "historical",
@@ -22439,7 +22891,7 @@
               "awayTeam": "Fresno Jr Monsters Girls 10B",
               "awayTier": "B West",
               "margin": 7,
-              "impliedGap": 4.447
+              "impliedGap": 4.549
             },
             {
               "homeTeam": "San Mateo Black Stars 10B-1",
@@ -22447,7 +22899,7 @@
               "awayTeam": "Oakland Bears 10B",
               "awayTier": "B West",
               "margin": 7,
-              "impliedGap": 10.778
+              "impliedGap": 10.92
             },
             {
               "homeTeam": "Oakland Bears 10B",
@@ -22455,7 +22907,7 @@
               "awayTeam": "San Francisco Sabercats 10B",
               "awayTier": "B East",
               "margin": -6,
-              "impliedGap": 9.258
+              "impliedGap": 9.436
             },
             {
               "homeTeam": "San Mateo Black Stars 10B-1",
@@ -22463,7 +22915,7 @@
               "awayTeam": "San Jose Jr Sharks Girls 10B",
               "awayTier": "B West",
               "margin": 7,
-              "impliedGap": 12.294
+              "impliedGap": 12.815
             },
             {
               "homeTeam": "Stockton Colts Girls 10B",
@@ -22471,7 +22923,7 @@
               "awayTeam": "San Francisco Sabercats 10B",
               "awayTier": "B East",
               "margin": -5,
-              "impliedGap": 7.857
+              "impliedGap": 7.741
             },
             {
               "homeTeam": "Capital Thunder 10B",
@@ -22479,7 +22931,7 @@
               "awayTeam": "Vacaville Jets 10B",
               "awayTier": "B West",
               "margin": 7,
-              "impliedGap": 8.603
+              "impliedGap": 8.362
             },
             {
               "homeTeam": "Tri Valley Blue Devils 10B",
@@ -22487,12 +22939,12 @@
               "awayTeam": "Oakland Bears 10B",
               "awayTier": "B West",
               "margin": -2,
-              "impliedGap": 1.363
+              "impliedGap": 1.641
             }
           ]
         },
         "BB": {
-          "offset": 15.244,
+          "offset": 15.328,
           "evidenceCount": 10,
           "priorAnchor": {
             "source": "historical",
@@ -22505,7 +22957,7 @@
               "awayTeam": "Tri Valley Lady Blue Devils 10BB",
               "awayTier": "BB",
               "margin": -7,
-              "impliedGap": 8.558
+              "impliedGap": 8.581
             },
             {
               "homeTeam": "Fresno Jr Monsters 10BB",
@@ -22513,7 +22965,7 @@
               "awayTeam": "Santa Clara Blackhawks 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 12.241
+              "impliedGap": 12.235
             },
             {
               "homeTeam": "San Jose Jr Sharks 10BB-2",
@@ -22521,7 +22973,7 @@
               "awayTeam": "Cupertino Cougars 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 8.656
+              "impliedGap": 8.651
             },
             {
               "homeTeam": "Lake Tahoe Grizzlies 10BB",
@@ -22529,7 +22981,7 @@
               "awayTeam": "Capital Thunder 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 10.686
+              "impliedGap": 10.709
             },
             {
               "homeTeam": "San Francisco Sabercats 10BB",
@@ -22537,7 +22989,7 @@
               "awayTeam": "Cupertino Cougars 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 13.046
+              "impliedGap": 13.041
             },
             {
               "homeTeam": "Lake Tahoe Grizzlies 10BB",
@@ -22545,7 +22997,7 @@
               "awayTeam": "San Mateo Black Stars 10B-1",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 7.641
+              "impliedGap": 7.695
             },
             {
               "homeTeam": "Cupertino Cougars 10B",
@@ -22553,7 +23005,7 @@
               "awayTeam": "Vacaville Jets 10BB",
               "awayTier": "BB",
               "margin": -7,
-              "impliedGap": 10.492
+              "impliedGap": 10.487
             },
             {
               "homeTeam": "San Mateo Black Stars 10B-1",
@@ -22561,7 +23013,7 @@
               "awayTeam": "San Francisco Sabercats 10BB",
               "awayTier": "BB",
               "margin": -7,
-              "impliedGap": 6.202
+              "impliedGap": 6.256
             },
             {
               "homeTeam": "San Jose Jr Sharks 10BB-1",
@@ -22569,7 +23021,7 @@
               "awayTeam": "Cupertino Cougars 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 10.727
+              "impliedGap": 10.722
             },
             {
               "homeTeam": "Santa Clara Blackhawks 10BB",
@@ -22577,12 +23029,12 @@
               "awayTeam": "San Mateo Black Stars 10B-1",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 6.55
+              "impliedGap": 6.604
             }
           ]
         },
         "A": {
-          "offset": 22.186,
+          "offset": 22.27,
           "evidenceCount": 5,
           "priorAnchor": {
             "source": "historical",
@@ -22634,147 +23086,147 @@
       },
       "experimentalTeams": {
         "Away": {
-          "rating": 22.133,
+          "rating": 22.24,
           "gamesPlayed": 1
         },
         "Cupertino Cougars 10A": {
-          "rating": 22.236,
+          "rating": 22.343,
           "gamesPlayed": 7
         },
         "San Jose Jr Sharks 10A-1": {
-          "rating": 26.1,
+          "rating": 26.207,
           "gamesPlayed": 6
         },
         "San Jose Jr Sharks 10A-2": {
-          "rating": 22.258,
+          "rating": 22.365,
           "gamesPlayed": 6
         },
         "San Mateo Black Stars 10A": {
-          "rating": 17.682,
+          "rating": 17.789,
           "gamesPlayed": 6
         },
         "Tri Valley Blue Devils 10A-1": {
-          "rating": 18.751,
+          "rating": 18.858,
           "gamesPlayed": 7
         },
         "Tri Valley Blue Devils 10A-2": {
-          "rating": 21.376,
+          "rating": 21.483,
           "gamesPlayed": 7
         },
         "Fresno Jr Monsters Girls 10B": {
-          "rating": -4.114,
+          "rating": -4.091,
           "gamesPlayed": 7
         },
         "Lake Tahoe Grizzlies 10B": {
-          "rating": 2.089,
+          "rating": 2.099,
           "gamesPlayed": 5
         },
         "Oakland Bears 10B": {
-          "rating": 1.019,
+          "rating": 1.201,
           "gamesPlayed": 5
         },
         "San Jose Jr Sharks Girls 10B": {
-          "rating": 2.214,
-          "gamesPlayed": 5
+          "rating": 2.709,
+          "gamesPlayed": 6
         },
         "San Mateo Black Stars 10B-2": {
-          "rating": -5.173,
+          "rating": -5.144,
           "gamesPlayed": 6
         },
         "Santa Rosa Flyers 10B": {
-          "rating": 0.764,
-          "gamesPlayed": 6
+          "rating": 0.315,
+          "gamesPlayed": 7
         },
         "Stockton Colts Girls 10B": {
-          "rating": 0.955,
+          "rating": 0.871,
           "gamesPlayed": 7
         },
         "Vacaville Jets 10B": {
-          "rating": 2.247,
+          "rating": 2.041,
           "gamesPlayed": 7
         },
         "Capital Thunder 10BB": {
-          "rating": 16.16,
+          "rating": 16.267,
           "gamesPlayed": 11
         },
         "Fresno Jr Monsters 10BB": {
-          "rating": 12.894,
+          "rating": 13.001,
           "gamesPlayed": 6
         },
         "Lake Tahoe Grizzlies 10BB": {
-          "rating": 11.217,
+          "rating": 11.324,
           "gamesPlayed": 5
         },
         "Oakland Bears 10BB": {
-          "rating": 17.372,
+          "rating": 17.479,
           "gamesPlayed": 7
         },
         "Reno Ice 10BB": {
-          "rating": 17.945,
+          "rating": 18.052,
           "gamesPlayed": 9
         },
         "San Francisco Sabercats 10BB": {
-          "rating": 13.857,
+          "rating": 13.964,
           "gamesPlayed": 6
         },
         "San Jose Jr Sharks 10BB-1": {
-          "rating": 15.78,
+          "rating": 15.887,
           "gamesPlayed": 7
         },
         "San Jose Jr Sharks 10BB-2": {
-          "rating": 17.193,
+          "rating": 17.3,
           "gamesPlayed": 7
         },
         "Santa Clara Blackhawks 10BB": {
-          "rating": 12.881,
+          "rating": 12.988,
           "gamesPlayed": 7
         },
         "Santa Rosa Flyers 10BB": {
-          "rating": 16.974,
+          "rating": 17.081,
           "gamesPlayed": 6
         },
         "Stockton Colts 10BB": {
-          "rating": 11.276,
+          "rating": 11.383,
           "gamesPlayed": 5
         },
         "Tri Valley Lady Blue Devils 10BB": {
-          "rating": 13.561,
+          "rating": 13.668,
           "gamesPlayed": 7
         },
         "Vacaville Jets 10BB": {
-          "rating": 15.392,
+          "rating": 15.499,
           "gamesPlayed": 9
         },
         "Capital Thunder 10B": {
-          "rating": 7.806,
+          "rating": 7.953,
           "gamesPlayed": 2
         },
         "Cupertino Cougars 10B": {
-          "rating": 11.011,
+          "rating": 11.038,
           "gamesPlayed": 4
         },
         "San Francisco Sabercats 10B": {
-          "rating": 5.398,
+          "rating": 5.491,
           "gamesPlayed": 4
         },
         "San Mateo Black Stars 10B-1": {
-          "rating": 4.549,
-          "gamesPlayed": 4
+          "rating": 4.846,
+          "gamesPlayed": 5
         },
         "Santa Clara Blackhawks 10B": {
-          "rating": 10.128,
+          "rating": 10.143,
           "gamesPlayed": 5
         },
         "Tri Valley Blue Devils 10B": {
-          "rating": 5.948,
-          "gamesPlayed": 3
+          "rating": 5.721,
+          "gamesPlayed": 4
         },
         "San Jose Jr Sharks 10B-1": {
           "rating": 8.036,
           "gamesPlayed": 8
         },
         "San Jose Jr Sharks 10B-2": {
-          "rating": 4.844,
+          "rating": 4.823,
           "gamesPlayed": 8
         }
       },
@@ -22786,7 +23238,7 @@
           "bridgeGames": []
         },
         "B East": {
-          "offset": 7.473,
+          "offset": 7.532,
           "evidenceCount": 7,
           "priorAnchor": {
             "source": "historical",
@@ -22799,7 +23251,7 @@
               "awayTeam": "Fresno Jr Monsters Girls 10B",
               "awayTier": "B West",
               "margin": 7,
-              "impliedGap": 4.411
+              "impliedGap": 4.72
             },
             {
               "homeTeam": "San Mateo Black Stars 10B-1",
@@ -22807,7 +23259,7 @@
               "awayTeam": "Oakland Bears 10B",
               "awayTier": "B West",
               "margin": 7,
-              "impliedGap": 10.943
+              "impliedGap": 10.887
             },
             {
               "homeTeam": "Oakland Bears 10B",
@@ -22815,7 +23267,7 @@
               "awayTeam": "San Francisco Sabercats 10B",
               "awayTier": "B East",
               "margin": -6,
-              "impliedGap": 9.094
+              "impliedGap": 9.242
             },
             {
               "homeTeam": "San Mateo Black Stars 10B-1",
@@ -22823,7 +23275,7 @@
               "awayTeam": "San Jose Jr Sharks Girls 10B",
               "awayTier": "B West",
               "margin": 7,
-              "impliedGap": 12.138
+              "impliedGap": 12.395
             },
             {
               "homeTeam": "Stockton Colts Girls 10B",
@@ -22831,7 +23283,7 @@
               "awayTeam": "San Francisco Sabercats 10B",
               "awayTier": "B East",
               "margin": -5,
-              "impliedGap": 8.03
+              "impliedGap": 7.912
             },
             {
               "homeTeam": "Capital Thunder 10B",
@@ -22839,7 +23291,7 @@
               "awayTeam": "Vacaville Jets 10B",
               "awayTier": "B West",
               "margin": 7,
-              "impliedGap": 8.914
+              "impliedGap": 8.62
             },
             {
               "homeTeam": "Tri Valley Blue Devils 10B",
@@ -22847,12 +23299,12 @@
               "awayTeam": "Oakland Bears 10B",
               "awayTier": "B West",
               "margin": -2,
-              "impliedGap": 0.544
+              "impliedGap": 1.012
             }
           ]
         },
         "BB": {
-          "offset": 14.808,
+          "offset": 14.915,
           "evidenceCount": 10,
           "priorAnchor": {
             "source": "historical",
@@ -22865,7 +23317,7 @@
               "awayTeam": "Tri Valley Lady Blue Devils 10BB",
               "awayTier": "BB",
               "margin": -7,
-              "impliedGap": 8.58
+              "impliedGap": 8.668
             },
             {
               "homeTeam": "Fresno Jr Monsters 10BB",
@@ -22873,7 +23325,7 @@
               "awayTeam": "Santa Clara Blackhawks 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 11.569
+              "impliedGap": 11.525
             },
             {
               "homeTeam": "San Jose Jr Sharks 10BB-2",
@@ -22881,7 +23333,7 @@
               "awayTeam": "Cupertino Cougars 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 8.153
+              "impliedGap": 8.121
             },
             {
               "homeTeam": "Lake Tahoe Grizzlies 10BB",
@@ -22889,7 +23341,7 @@
               "awayTeam": "Capital Thunder 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 10.924
+              "impliedGap": 11.012
             },
             {
               "homeTeam": "San Francisco Sabercats 10BB",
@@ -22897,7 +23349,7 @@
               "awayTeam": "Cupertino Cougars 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 11.489
+              "impliedGap": 11.457
             },
             {
               "homeTeam": "Lake Tahoe Grizzlies 10BB",
@@ -22905,7 +23357,7 @@
               "awayTeam": "San Mateo Black Stars 10B-1",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 7.667
+              "impliedGap": 7.905
             },
             {
               "homeTeam": "Cupertino Cougars 10B",
@@ -22913,7 +23365,7 @@
               "awayTeam": "Vacaville Jets 10BB",
               "awayTier": "BB",
               "margin": -7,
-              "impliedGap": 9.954
+              "impliedGap": 9.922
             },
             {
               "homeTeam": "San Mateo Black Stars 10B-1",
@@ -22921,7 +23373,7 @@
               "awayTeam": "San Francisco Sabercats 10BB",
               "awayTier": "BB",
               "margin": -7,
-              "impliedGap": 5.027
+              "impliedGap": 5.265
             },
             {
               "homeTeam": "San Jose Jr Sharks 10BB-1",
@@ -22929,7 +23381,7 @@
               "awayTeam": "Cupertino Cougars 10B",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 9.566
+              "impliedGap": 9.534
             },
             {
               "homeTeam": "Santa Clara Blackhawks 10BB",
@@ -22937,12 +23389,12 @@
               "awayTeam": "San Mateo Black Stars 10B-1",
               "awayTier": "B East",
               "margin": 7,
-              "impliedGap": 6.003
+              "impliedGap": 6.241
             }
           ]
         },
         "A": {
-          "offset": 21.505,
+          "offset": 21.612,
           "evidenceCount": 5,
           "priorAnchor": {
             "source": "historical",
@@ -22996,36 +23448,40 @@
     "12U": {
       "teams": {
         "San Jose Jr Sharks 12AA-3": {
-          "rating": 14.379,
+          "rating": 14.44,
           "gamesPlayed": 2
         },
         "Vacaville Jets 12A": {
-          "rating": 12.774,
+          "rating": 12.677,
           "gamesPlayed": 5
         },
         "San Jose Jr Sharks 12A": {
-          "rating": 12.344,
-          "gamesPlayed": 7
+          "rating": 12.089,
+          "gamesPlayed": 8
         },
         "Santa Clara Blackhawks 12A": {
           "rating": 11.867,
-          "gamesPlayed": 5
+          "gamesPlayed": 7
+        },
+        "Away": {
+          "rating": 11.705,
+          "gamesPlayed": 2
         },
         "Cupertino Cougars 12A": {
-          "rating": 11.199,
+          "rating": 11.162,
           "gamesPlayed": 9
         },
         "Tri Valley Blue Devils 12A": {
-          "rating": 8.972,
+          "rating": 8.984,
           "gamesPlayed": 6
         },
         "Fresno Jr Monsters 12A": {
-          "rating": 8.702,
+          "rating": 8.657,
           "gamesPlayed": 7
         },
         "Santa Rosa Flyers 12A": {
-          "rating": 7.162,
-          "gamesPlayed": 7
+          "rating": 7.366,
+          "gamesPlayed": 8
         },
         "Capital Thunder 12B": {
           "rating": 3.648,
@@ -23052,64 +23508,64 @@
           "gamesPlayed": 7
         },
         "Tri Valley Blue Devils 12AA-1": {
-          "rating": 20.372,
+          "rating": 20.414,
           "gamesPlayed": 6
         },
         "San Jose Jr Sharks 12AA-1": {
-          "rating": 18.793,
+          "rating": 18.835,
           "gamesPlayed": 5
         },
         "Cupertino Cougars 12AA": {
-          "rating": 14.917,
+          "rating": 14.959,
           "gamesPlayed": 6
         },
         "Tri Valley Blue Devils 12AA-2": {
-          "rating": 14.416,
+          "rating": 14.458,
           "gamesPlayed": 7
         },
         "Reno Ice 12AA": {
-          "rating": 13.75,
+          "rating": 13.792,
           "gamesPlayed": 6
         },
         "San Jose Jr Sharks 12AA-2": {
-          "rating": 13.465,
+          "rating": 13.507,
+          "gamesPlayed": 8
+        },
+        "Oakland Bears 12BB": {
+          "rating": 9.573,
           "gamesPlayed": 8
         },
         "Lake Tahoe Grizzlies 12BB": {
-          "rating": 10.04,
-          "gamesPlayed": 6
-        },
-        "Oakland Bears 12BB": {
-          "rating": 9.409,
-          "gamesPlayed": 8
-        },
-        "Stockton Colts 12BB": {
-          "rating": 8.89,
+          "rating": 9.517,
           "gamesPlayed": 7
         },
+        "Stockton Colts 12BB": {
+          "rating": 9.229,
+          "gamesPlayed": 8
+        },
         "San Jose Jr Sharks Girls 12AAA": {
-          "rating": 7.275,
-          "gamesPlayed": 5
+          "rating": 7.446,
+          "gamesPlayed": 6
         },
         "Delta Knights 12AA": {
-          "rating": 6.159,
+          "rating": 6.173,
           "gamesPlayed": 5
         },
         "San Francisco Sabercats 12BB": {
-          "rating": 4.598,
+          "rating": 4.53,
           "gamesPlayed": 7
         },
         "San Mateo Black Stars 12BB": {
-          "rating": 3.15,
+          "rating": 2.995,
           "gamesPlayed": 6
         },
         "Santa Clara Blackhawks 12BB": {
-          "rating": 2.689,
+          "rating": 2.609,
           "gamesPlayed": 6
         },
         "Tri Valley Blue Devils 12BB": {
-          "rating": 1.519,
-          "gamesPlayed": 4
+          "rating": 1.441,
+          "gamesPlayed": 5
         }
       },
       "tierOffsets": {
@@ -23120,7 +23576,7 @@
           "bridgeGames": []
         },
         "BB": {
-          "offset": 5.97,
+          "offset": 5.946,
           "evidenceCount": 3,
           "priorAnchor": {
             "source": "historical",
@@ -23133,7 +23589,7 @@
               "awayTeam": "San Francisco Sabercats 12BB",
               "awayTier": "BB",
               "margin": -2,
-              "impliedGap": 4.165
+              "impliedGap": 4.209
             },
             {
               "homeTeam": "San Mateo Black Stars 12BB",
@@ -23141,7 +23597,7 @@
               "awayTeam": "Oakland Bears 12B",
               "awayTier": "B",
               "margin": 4,
-              "impliedGap": 7.613
+              "impliedGap": 7.744
             },
             {
               "homeTeam": "Stockton Colts 12BB",
@@ -23149,12 +23605,12 @@
               "awayTeam": "Capital Thunder 12B",
               "awayTier": "B",
               "margin": 7,
-              "impliedGap": 7.728
+              "impliedGap": 7.365
             }
           ]
         },
         "A": {
-          "offset": 10.925,
+          "offset": 10.994,
           "evidenceCount": 6,
           "priorAnchor": {
             "source": "historical",
@@ -23167,7 +23623,7 @@
               "awayTeam": "Santa Clara Blackhawks 12BB",
               "awayTier": "BB",
               "margin": 7,
-              "impliedGap": 5.942
+              "impliedGap": 6.0
             },
             {
               "homeTeam": "Stockton Colts 12BB",
@@ -23175,7 +23631,7 @@
               "awayTeam": "Fresno Jr Monsters 12A",
               "awayTier": "A",
               "margin": 4,
-              "impliedGap": 1.143
+              "impliedGap": 1.62
             },
             {
               "homeTeam": "Lake Tahoe Grizzlies 12BB",
@@ -23183,7 +23639,7 @@
               "awayTeam": "Vacaville Jets 12A",
               "awayTier": "A",
               "margin": -4,
-              "impliedGap": 6.221
+              "impliedGap": 5.888
             },
             {
               "homeTeam": "San Jose Jr Sharks Girls 12AAA",
@@ -23191,7 +23647,7 @@
               "awayTeam": "Vacaville Jets 12A",
               "awayTier": "A",
               "margin": -4,
-              "impliedGap": 3.456
+              "impliedGap": 3.817
             },
             {
               "homeTeam": "Oakland Bears 12BB",
@@ -23199,7 +23655,7 @@
               "awayTeam": "Vacaville Jets 12A",
               "awayTier": "A",
               "margin": -5,
-              "impliedGap": 6.59
+              "impliedGap": 6.944
             },
             {
               "homeTeam": "Vacaville Jets 12A",
@@ -23207,12 +23663,12 @@
               "awayTeam": "Tri Valley Blue Devils 12BB",
               "awayTier": "BB",
               "margin": 7,
-              "impliedGap": 0.7
+              "impliedGap": 0.812
             }
           ]
         },
         "AA": {
-          "offset": 15.952,
+          "offset": 15.994,
           "evidenceCount": 11,
           "priorAnchor": {
             "source": "default",
@@ -23225,7 +23681,7 @@
               "awayTeam": "Tri Valley Blue Devils 12A",
               "awayTier": "A",
               "margin": 7,
-              "impliedGap": 7.249
+              "impliedGap": 7.192
             },
             {
               "homeTeam": "Reno Ice 12AA",
@@ -23233,7 +23689,7 @@
               "awayTeam": "Tri Valley Blue Devils 12A",
               "awayTier": "A",
               "margin": 7,
-              "impliedGap": 7.249
+              "impliedGap": 7.192
             },
             {
               "homeTeam": "San Jose Jr Sharks 12AA-3",
@@ -23241,7 +23697,7 @@
               "awayTeam": "San Jose Jr Sharks 12AA-2",
               "awayTier": "AA",
               "margin": 6,
-              "impliedGap": -0.059
+              "impliedGap": -0.067
             },
             {
               "homeTeam": "San Jose Jr Sharks 12AA-3",
@@ -23249,7 +23705,7 @@
               "awayTeam": "Cupertino Cougars 12AA",
               "awayTier": "AA",
               "margin": 7,
-              "impliedGap": -2.511
+              "impliedGap": -2.519
             },
             {
               "homeTeam": "Tri Valley Blue Devils 12AA-2",
@@ -23257,7 +23713,7 @@
               "awayTeam": "San Jose Jr Sharks 12AA-3",
               "awayTier": "A",
               "margin": -5,
-              "impliedGap": -0.01
+              "impliedGap": -0.018
             },
             {
               "homeTeam": "Santa Clara Blackhawks 12A",
@@ -23265,7 +23721,7 @@
               "awayTeam": "Tri Valley Blue Devils 12AA-2",
               "awayTier": "AA",
               "margin": -1,
-              "impliedGap": 3.478
+              "impliedGap": 3.409
             },
             {
               "homeTeam": "Tri Valley Blue Devils 12AA-2",
@@ -23273,7 +23729,7 @@
               "awayTeam": "San Jose Jr Sharks 12AA-3",
               "awayTier": "A",
               "margin": -3,
-              "impliedGap": 1.99
+              "impliedGap": 1.982
             },
             {
               "homeTeam": "San Jose Jr Sharks 12AA-3",
@@ -23281,7 +23737,7 @@
               "awayTeam": "Cupertino Cougars 12AA",
               "awayTier": "AA",
               "margin": 4,
-              "impliedGap": 0.489
+              "impliedGap": 0.481
             },
             {
               "homeTeam": "Santa Clara Blackhawks 12A",
@@ -23289,7 +23745,7 @@
               "awayTeam": "San Jose Jr Sharks 12AA-2",
               "awayTier": "AA",
               "margin": -6,
-              "impliedGap": 9.429
+              "impliedGap": 9.36
             },
             {
               "homeTeam": "Reno Ice 12AA",
@@ -23297,7 +23753,7 @@
               "awayTeam": "Santa Clara Blackhawks 12A",
               "awayTier": "A",
               "margin": 7,
-              "impliedGap": 10.144
+              "impliedGap": 10.075
             },
             {
               "homeTeam": "Santa Clara Blackhawks 12A",
@@ -23305,42 +23761,46 @@
               "awayTeam": "Cupertino Cougars 12AA",
               "awayTier": "AA",
               "margin": -6,
-              "impliedGap": 7.977
+              "impliedGap": 7.908
             }
           ]
         }
       },
       "experimentalTeams": {
+        "Away": {
+          "rating": 11.116,
+          "gamesPlayed": 2
+        },
         "Cupertino Cougars 12A": {
-          "rating": 11.059,
+          "rating": 11.034,
           "gamesPlayed": 9
         },
         "Fresno Jr Monsters 12A": {
-          "rating": 8.583,
+          "rating": 8.553,
           "gamesPlayed": 7
         },
         "San Jose Jr Sharks 12A": {
-          "rating": 12.336,
-          "gamesPlayed": 7
+          "rating": 12.079,
+          "gamesPlayed": 8
         },
         "San Jose Jr Sharks 12AA-3": {
-          "rating": 13.978,
+          "rating": 14.065,
           "gamesPlayed": 2
         },
         "Santa Clara Blackhawks 12A": {
-          "rating": 11.165,
-          "gamesPlayed": 5
-        },
-        "Santa Rosa Flyers 12A": {
-          "rating": 7.028,
+          "rating": 11.154,
           "gamesPlayed": 7
         },
+        "Santa Rosa Flyers 12A": {
+          "rating": 7.243,
+          "gamesPlayed": 8
+        },
         "Tri Valley Blue Devils 12A": {
-          "rating": 8.759,
+          "rating": 8.781,
           "gamesPlayed": 6
         },
         "Vacaville Jets 12A": {
-          "rating": 12.684,
+          "rating": 12.618,
           "gamesPlayed": 5
         },
         "Capital Thunder 12B": {
@@ -23368,64 +23828,64 @@
           "gamesPlayed": 8
         },
         "Cupertino Cougars 12AA": {
-          "rating": 14.716,
+          "rating": 14.756,
           "gamesPlayed": 6
         },
         "Reno Ice 12AA": {
-          "rating": 13.347,
+          "rating": 13.387,
           "gamesPlayed": 6
         },
         "San Jose Jr Sharks 12AA-1": {
-          "rating": 17.972,
+          "rating": 18.012,
           "gamesPlayed": 5
         },
         "San Jose Jr Sharks 12AA-2": {
-          "rating": 13.125,
+          "rating": 13.165,
           "gamesPlayed": 8
         },
         "Tri Valley Blue Devils 12AA-1": {
-          "rating": 19.476,
+          "rating": 19.516,
           "gamesPlayed": 6
         },
         "Tri Valley Blue Devils 12AA-2": {
-          "rating": 13.98,
+          "rating": 14.02,
           "gamesPlayed": 7
         },
         "Delta Knights 12AA": {
-          "rating": 6.001,
+          "rating": 6.012,
           "gamesPlayed": 5
         },
         "Lake Tahoe Grizzlies 12BB": {
-          "rating": 9.347,
-          "gamesPlayed": 6
+          "rating": 9.203,
+          "gamesPlayed": 7
         },
         "Oakland Bears 12BB": {
-          "rating": 9.756,
+          "rating": 9.781,
           "gamesPlayed": 8
         },
         "San Francisco Sabercats 12BB": {
-          "rating": 5.396,
+          "rating": 5.369,
           "gamesPlayed": 7
         },
         "San Jose Jr Sharks Girls 12AAA": {
-          "rating": 6.782,
-          "gamesPlayed": 5
+          "rating": 6.957,
+          "gamesPlayed": 6
         },
         "San Mateo Black Stars 12BB": {
-          "rating": 2.714,
+          "rating": 2.71,
           "gamesPlayed": 6
         },
         "Santa Clara Blackhawks 12BB": {
-          "rating": 2.377,
+          "rating": 2.366,
           "gamesPlayed": 6
         },
         "Stockton Colts 12BB": {
-          "rating": 9.135,
-          "gamesPlayed": 7
+          "rating": 9.212,
+          "gamesPlayed": 8
         },
         "Tri Valley Blue Devils 12BB": {
-          "rating": 1.243,
-          "gamesPlayed": 4
+          "rating": 1.047,
+          "gamesPlayed": 5
         }
       },
       "experimentalTierOffsets": {
@@ -23436,7 +23896,7 @@
           "bridgeGames": []
         },
         "BB": {
-          "offset": 5.861,
+          "offset": 5.851,
           "evidenceCount": 3,
           "priorAnchor": {
             "source": "historical",
@@ -23449,7 +23909,7 @@
               "awayTeam": "San Francisco Sabercats 12BB",
               "awayTier": "BB",
               "margin": -2,
-              "impliedGap": 3.548
+              "impliedGap": 3.565
             },
             {
               "homeTeam": "San Mateo Black Stars 12BB",
@@ -23457,7 +23917,7 @@
               "awayTeam": "Oakland Bears 12B",
               "awayTier": "B",
               "margin": 4,
-              "impliedGap": 8.23
+              "impliedGap": 8.224
             },
             {
               "homeTeam": "Stockton Colts 12BB",
@@ -23465,12 +23925,12 @@
               "awayTeam": "Capital Thunder 12B",
               "awayTier": "B",
               "margin": 7,
-              "impliedGap": 6.856
+              "impliedGap": 6.769
             }
           ]
         },
         "A": {
-          "offset": 10.699,
+          "offset": 10.738,
           "evidenceCount": 6,
           "priorAnchor": {
             "source": "historical",
@@ -23483,7 +23943,7 @@
               "awayTeam": "Santa Clara Blackhawks 12BB",
               "awayTier": "BB",
               "margin": 7,
-              "impliedGap": 5.632
+              "impliedGap": 5.7
             },
             {
               "homeTeam": "Stockton Colts 12BB",
@@ -23491,7 +23951,7 @@
               "awayTeam": "Fresno Jr Monsters 12A",
               "awayTier": "A",
               "margin": 4,
-              "impliedGap": 1.39
+              "impliedGap": 1.546
             },
             {
               "homeTeam": "Lake Tahoe Grizzlies 12BB",
@@ -23499,7 +23959,7 @@
               "awayTeam": "Vacaville Jets 12A",
               "awayTier": "A",
               "margin": -4,
-              "impliedGap": 5.501
+              "impliedGap": 5.472
             },
             {
               "homeTeam": "San Jose Jr Sharks Girls 12AAA",
@@ -23507,7 +23967,7 @@
               "awayTeam": "Vacaville Jets 12A",
               "awayTier": "A",
               "margin": -4,
-              "impliedGap": 2.936
+              "impliedGap": 3.226
             },
             {
               "homeTeam": "Oakland Bears 12BB",
@@ -23515,7 +23975,7 @@
               "awayTeam": "Vacaville Jets 12A",
               "awayTier": "A",
               "margin": -5,
-              "impliedGap": 6.91
+              "impliedGap": 7.05
             },
             {
               "homeTeam": "Vacaville Jets 12A",
@@ -23523,12 +23983,12 @@
               "awayTeam": "Tri Valley Blue Devils 12BB",
               "awayTier": "BB",
               "margin": 7,
-              "impliedGap": 0.397
+              "impliedGap": 0.316
             }
           ]
         },
         "AA": {
-          "offset": 15.436,
+          "offset": 15.476,
           "evidenceCount": 11,
           "priorAnchor": {
             "source": "default",
@@ -23541,7 +24001,7 @@
               "awayTeam": "Tri Valley Blue Devils 12A",
               "awayTier": "A",
               "margin": 7,
-              "impliedGap": 7.149
+              "impliedGap": 7.132
             },
             {
               "homeTeam": "Reno Ice 12AA",
@@ -23549,7 +24009,7 @@
               "awayTeam": "Tri Valley Blue Devils 12A",
               "awayTier": "A",
               "margin": 7,
-              "impliedGap": 7.149
+              "impliedGap": 7.132
             },
             {
               "homeTeam": "San Jose Jr Sharks 12AA-3",
@@ -23557,7 +24017,7 @@
               "awayTeam": "San Jose Jr Sharks 12AA-2",
               "awayTier": "AA",
               "margin": 6,
-              "impliedGap": -0.41
+              "impliedGap": -0.362
             },
             {
               "homeTeam": "San Jose Jr Sharks 12AA-3",
@@ -23565,7 +24025,7 @@
               "awayTeam": "Cupertino Cougars 12AA",
               "awayTier": "AA",
               "margin": 7,
-              "impliedGap": -3.001
+              "impliedGap": -2.953
             },
             {
               "homeTeam": "Tri Valley Blue Devils 12AA-2",
@@ -23573,7 +24033,7 @@
               "awayTeam": "San Jose Jr Sharks 12AA-3",
               "awayTier": "A",
               "margin": -5,
-              "impliedGap": -0.265
+              "impliedGap": -0.217
             },
             {
               "homeTeam": "Santa Clara Blackhawks 12A",
@@ -23581,7 +24041,7 @@
               "awayTeam": "Tri Valley Blue Devils 12AA-2",
               "awayTier": "AA",
               "margin": -1,
-              "impliedGap": 2.922
+              "impliedGap": 2.872
             },
             {
               "homeTeam": "Tri Valley Blue Devils 12AA-2",
@@ -23589,7 +24049,7 @@
               "awayTeam": "San Jose Jr Sharks 12AA-3",
               "awayTier": "A",
               "margin": -3,
-              "impliedGap": 1.735
+              "impliedGap": 1.783
             },
             {
               "homeTeam": "San Jose Jr Sharks 12AA-3",
@@ -23597,7 +24057,7 @@
               "awayTeam": "Cupertino Cougars 12AA",
               "awayTier": "AA",
               "margin": 4,
-              "impliedGap": -0.001
+              "impliedGap": 0.047
             },
             {
               "homeTeam": "Santa Clara Blackhawks 12A",
@@ -23605,7 +24065,7 @@
               "awayTeam": "San Jose Jr Sharks 12AA-2",
               "awayTier": "AA",
               "margin": -6,
-              "impliedGap": 8.777
+              "impliedGap": 8.727
             },
             {
               "homeTeam": "Reno Ice 12AA",
@@ -23613,7 +24073,7 @@
               "awayTeam": "Santa Clara Blackhawks 12A",
               "awayTier": "A",
               "margin": 7,
-              "impliedGap": 9.555
+              "impliedGap": 9.505
             },
             {
               "homeTeam": "Santa Clara Blackhawks 12A",
@@ -23621,7 +24081,7 @@
               "awayTeam": "Cupertino Cougars 12AA",
               "awayTier": "AA",
               "margin": -6,
-              "impliedGap": 7.186
+              "impliedGap": 7.136
             }
           ]
         }
@@ -24120,40 +24580,40 @@
     "16U": {
       "teams": {
         "San Francisco Sabercats 16A": {
-          "rating": 3.302,
+          "rating": 3.312,
           "gamesPlayed": 7
         },
         "San Jose Jr Sharks 16A-1": {
-          "rating": 2.84,
-          "gamesPlayed": 3
+          "rating": 2.877,
+          "gamesPlayed": 4
         },
         "San Jose Jr Sharks 16A-2": {
-          "rating": 2.426,
+          "rating": 2.407,
           "gamesPlayed": 6
         },
         "Reno Ice 16A": {
-          "rating": 0.936,
+          "rating": 0.91,
           "gamesPlayed": 3
         },
         "Tri Valley Blue Devils 16A": {
-          "rating": 0.487,
+          "rating": 0.508,
           "gamesPlayed": 5
         },
         "Capital Thunder HS JVA": {
-          "rating": -0.984,
+          "rating": -0.946,
           "gamesPlayed": 1
         },
         "Cupertino Cougars 16A": {
-          "rating": -1.264,
+          "rating": -1.236,
           "gamesPlayed": 4
         },
         "Santa Clara Blackhawks 16A": {
-          "rating": -3.764,
+          "rating": -3.765,
           "gamesPlayed": 6
         },
         "Vacaville Jets 16A": {
-          "rating": -3.979,
-          "gamesPlayed": 5
+          "rating": -4.066,
+          "gamesPlayed": 6
         }
       },
       "tierOffsets": {
@@ -24166,40 +24626,40 @@
       },
       "experimentalTeams": {
         "Capital Thunder HS JVA": {
-          "rating": -2.839,
+          "rating": -2.721,
           "gamesPlayed": 1
         },
         "Cupertino Cougars 16A": {
-          "rating": -1.054,
+          "rating": -1.142,
           "gamesPlayed": 4
         },
         "Reno Ice 16A": {
-          "rating": 0.593,
+          "rating": 0.735,
           "gamesPlayed": 3
         },
         "San Francisco Sabercats 16A": {
-          "rating": 3.937,
+          "rating": 3.902,
           "gamesPlayed": 7
         },
         "San Jose Jr Sharks 16A-1": {
-          "rating": 2.834,
-          "gamesPlayed": 3
+          "rating": 2.6,
+          "gamesPlayed": 4
         },
         "San Jose Jr Sharks 16A-2": {
-          "rating": 2.538,
+          "rating": 2.565,
           "gamesPlayed": 6
         },
         "Santa Clara Blackhawks 16A": {
-          "rating": -2.745,
+          "rating": -2.774,
           "gamesPlayed": 6
         },
         "Tri Valley Blue Devils 16A": {
-          "rating": 0.868,
+          "rating": 0.798,
           "gamesPlayed": 5
         },
         "Vacaville Jets 16A": {
-          "rating": -4.132,
-          "gamesPlayed": 5
+          "rating": -3.964,
+          "gamesPlayed": 6
         }
       },
       "experimentalTierOffsets": {
