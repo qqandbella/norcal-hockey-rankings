@@ -194,7 +194,18 @@ def discover_divisions(session: requests.Session) -> dict[int, str]:
     divisions: dict[int, str] = {}
     for label, level_id in LEVEL_LINE_RE.findall(resp.text):
         divisions[int(level_id)] = label.strip()
-    divisions.update(KNOWN_MISSING_LEVELS)
+    # Only trust KNOWN_MISSING_LEVELS (a level confirmed missing from the
+    # site's own menu under otherwise-normal conditions) once real
+    # discovery actually found something -- confirmed in production
+    # (2026-11-27): NorCal's page returned content with zero "Level: ..."
+    # matches (a transient fetch failure, not a real empty schedule; the
+    # site was back to normal on retry), and unconditionally merging this
+    # constant in regardless masked it from main()'s own "no divisions
+    # discovered -- abort without overwriting data" guard, which checks
+    # this function's return value AFTER the merge. An empty real
+    # discovery must stay empty here so that guard actually fires.
+    if divisions:
+        divisions.update(KNOWN_MISSING_LEVELS)
     return divisions
 
 
@@ -938,8 +949,19 @@ def merge_raw_games_into_label(
 def main() -> int:
     session = _session()
     divisions = discover_divisions(session)
-    if not divisions:
-        print("No divisions discovered -- aborting without overwriting data/latest.json", file=sys.stderr)
+    # A real, healthy response has had >=11 divisions throughout this
+    # project's history -- a much lower count (even nonzero) is more
+    # likely a partial/transient fetch failure than a genuine schedule
+    # change, and silently publishing it would wipe out most of the site's
+    # real data (see discover_divisions' own doc for the full-zero case
+    # this complements).
+    MIN_EXPECTED_DIVISIONS = 5
+    if len(divisions) < MIN_EXPECTED_DIVISIONS:
+        print(
+            f"Only {len(divisions)} division(s) discovered (expected >= {MIN_EXPECTED_DIVISIONS}) "
+            "-- aborting without overwriting data/latest.json",
+            file=sys.stderr,
+        )
         return 1
     team_ids = load_team_ids()
     team_aliases = load_team_aliases()
